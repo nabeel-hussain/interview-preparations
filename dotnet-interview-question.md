@@ -62,6 +62,10 @@
 - [How do you handle timeouts in async operations?](#how-do-you-handle-timeouts-in-async-operations)
 - [What is the difference between `Task.Run()` and `Task.Factory.StartNew()`?](#what-is-the-difference-between-taskrun-and-taskfactorystartnew)
 - [Explain the concept of async streams and `IAsyncDisposable`](#explain-the-concept-of-async-streams-and-iasyncdisposable)
+- [What is the difference between `Task.FromResult()` and `Task.Run()`?](#what-is-the-difference-between-taskfromresult-and-taskrun)
+- [How do you implement async/await in a custom class or library?](#how-do-you-implement-asyncawait-in-a-custom-class-or-library)
+- [What are the performance implications of async/await?](#what-are-the-performance-implications-of-asyncawait)
+- [How do you handle async operations in constructors and static methods?](#how-do-you-handle-async-operations-in-constructors-and-static-methods)
 
 ### [ASP.NET Core](#aspnet-core)
 - [Explain the middleware pipeline in ASP.NET Core](#explain-the-middleware-pipeline-in-aspnet-core)
@@ -9475,6 +9479,1445 @@ public async Task ProcessPipelineAsync(List items)
 5. **Avoid over-parallelization:**
    - Too many threads can degrade performance
    - Measure and optimize based on actual workload
+---
+
+### What is the difference between `Task.FromResult()` and `Task.Run()`?
+
+**Answer:**
+
+**`Task.FromResult()`** creates a completed task with a result value, while **`Task.Run()`** queues work to run on the ThreadPool. The key difference is that `Task.FromResult()` is synchronous and immediate, while `Task.Run()` is asynchronous and offloads work to a background thread.
+
+**Key Differences:**
+
+| Aspect | `Task.FromResult()` | `Task.Run()` |
+|--------|-------------------|--------------|
+| **Execution** | Synchronous, immediate | Asynchronous, queued |
+| **Thread** | Runs on current thread | Runs on ThreadPool thread |
+| **Use Case** | Already computed values | CPU-bound work |
+| **Performance** | No overhead | Thread switching overhead |
+| **When to Use** | Converting sync to async API | Offloading CPU work |
+
+**Example:**
+
+```csharp
+public class TaskCreationComparison
+{
+    // Task.FromResult() - for already computed values
+    public async Task<string> GetCachedDataAsync(string key)
+    {
+        // Simulate cache lookup (synchronous operation)
+        string cachedValue = GetFromCache(key);
+        
+        if (cachedValue != null)
+        {
+            // Already have the value - use Task.FromResult()
+            return await Task.FromResult(cachedValue);
+        }
+        
+        // Need to fetch from database (async operation)
+        return await FetchFromDatabaseAsync(key);
+    }
+    
+    // Task.Run() - for CPU-bound work
+    public async Task<int> CalculatePrimeCountAsync(int maxNumber)
+    {
+        // CPU-intensive work - offload to ThreadPool
+        return await Task.Run(() =>
+        {
+            int count = 0;
+            for (int i = 2; i <= maxNumber; i++)
+            {
+                if (IsPrime(i))
+                    count++;
+            }
+            return count;
+        });
+    }
+    
+    // WRONG: Using Task.Run() for already computed values
+    public async Task<string> GetCachedDataWrongAsync(string key)
+    {
+        string cachedValue = GetFromCache(key);
+        
+        if (cachedValue != null)
+        {
+            // BAD: Unnecessary thread switching overhead
+            return await Task.Run(() => cachedValue);
+        }
+        
+        return await FetchFromDatabaseAsync(key);
+    }
+    
+    // WRONG: Using Task.FromResult() for CPU-bound work
+    public async Task<int> CalculatePrimeCountWrongAsync(int maxNumber)
+    {
+        // BAD: Blocks the current thread
+        int count = 0;
+        for (int i = 2; i <= maxNumber; i++)
+        {
+            if (IsPrime(i))
+                count++;
+        }
+        
+        return await Task.FromResult(count);
+    }
+    
+    private string GetFromCache(string key)
+    {
+        // Simulate cache lookup
+        return key == "cached" ? "cached_value" : null;
+    }
+    
+    private async Task<string> FetchFromDatabaseAsync(string key)
+    {
+        await Task.Delay(1000); // Simulate database call
+        return $"database_value_for_{key}";
+    }
+    
+    private bool IsPrime(int number)
+    {
+        if (number < 2) return false;
+        for (int i = 2; i * i <= number; i++)
+        {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+}
+```
+
+**Advanced Examples:**
+
+```csharp
+public class AdvancedTaskCreation
+{
+    // Task.FromResult() for configuration values
+    public async Task<AppSettings> GetAppSettingsAsync()
+    {
+        // Configuration is already loaded - no need for async
+        var settings = LoadConfiguration();
+        return await Task.FromResult(settings);
+    }
+    
+    // Task.FromResult() for constants
+    public async Task<string> GetApiVersionAsync()
+    {
+        return await Task.FromResult("v1.0");
+    }
+    
+    // Task.FromResult() for simple calculations
+    public async Task<decimal> CalculateTaxAsync(decimal amount, decimal rate)
+    {
+        decimal tax = amount * rate;
+        return await Task.FromResult(tax);
+    }
+    
+    // Task.Run() for file processing
+    public async Task<string> ProcessLargeFileAsync(string filePath)
+    {
+        return await Task.Run(() =>
+        {
+            // CPU-intensive file processing
+            var lines = File.ReadAllLines(filePath);
+            var processedLines = lines
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .Select(line => line.ToUpper())
+                .OrderBy(line => line)
+                .ToArray();
+            
+            return string.Join("\n", processedLines);
+        });
+    }
+    
+    // Task.Run() for image processing
+    public async Task<byte[]> ResizeImageAsync(byte[] imageData, int width, int height)
+    {
+        return await Task.Run(() =>
+        {
+            // CPU-intensive image processing
+            using (var originalImage = Image.FromStream(new MemoryStream(imageData)))
+            using (var resizedImage = new Bitmap(originalImage, width, height))
+            using (var stream = new MemoryStream())
+            {
+                resizedImage.Save(stream, ImageFormat.Jpeg);
+                return stream.ToArray();
+            }
+        });
+    }
+    
+    private AppSettings LoadConfiguration()
+    {
+        // Simulate configuration loading
+        return new AppSettings { DatabaseConnection = "Server=localhost", ApiKey = "secret" };
+    }
+}
+
+public class AppSettings
+{
+    public string DatabaseConnection { get; set; }
+    public string ApiKey { get; set; }
+}
+```
+
+**Performance Comparison:**
+
+```csharp
+public class PerformanceComparison
+{
+    public async Task ComparePerformance()
+    {
+        const int iterations = 10000;
+        
+        // Task.FromResult() - very fast
+        var stopwatch = Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            await Task.FromResult(i);
+        }
+        stopwatch.Stop();
+        Console.WriteLine($"Task.FromResult(): {stopwatch.ElapsedMilliseconds}ms");
+        
+        // Task.Run() - slower due to thread switching
+        stopwatch.Restart();
+        for (int i = 0; i < iterations; i++)
+        {
+            await Task.Run(() => i);
+        }
+        stopwatch.Stop();
+        Console.WriteLine($"Task.Run(): {stopwatch.ElapsedMilliseconds}ms");
+    }
+}
+```
+
+**Best Practices:**
+
+**Use `Task.FromResult()` when:**
+- You already have the computed value
+- Converting synchronous APIs to async
+- Returning constants or configuration values
+- Simple calculations that don't block
+
+**Use `Task.Run()` when:**
+- Performing CPU-intensive work
+- Processing large files or data
+- Image/video processing
+- Mathematical calculations
+- Any work that could block the UI thread
+
+**Avoid `Task.Run()` when:**
+- You already have the result
+- The work is already asynchronous
+- You're just wrapping synchronous I/O operations
+- The operation is very fast
+
+**Common Anti-patterns:**
+
+```csharp
+// BAD: Unnecessary Task.Run()
+public async Task<string> GetUserNameAsync(int userId)
+{
+    var user = await GetUserFromDatabaseAsync(userId);
+    return await Task.Run(() => user.Name); // Unnecessary!
+}
+
+// GOOD: Use Task.FromResult() or just return directly
+public async Task<string> GetUserNameAsync(int userId)
+{
+    var user = await GetUserFromDatabaseAsync(userId);
+    return user.Name; // Simple return
+}
+
+// BAD: Blocking with Task.FromResult()
+public async Task<string> ProcessDataAsync(string data)
+{
+    var result = ExpensiveProcessing(data); // Blocks current thread
+    return await Task.FromResult(result);
+}
+
+// GOOD: Use Task.Run() for CPU work
+public async Task<string> ProcessDataAsync(string data)
+{
+    return await Task.Run(() => ExpensiveProcessing(data));
+}
+```
+
+**Summary:**
+- `Task.FromResult()`: For already computed values, no thread switching
+- `Task.Run()`: For CPU-bound work that needs to run on background thread
+- Choose based on whether you need to offload work or just return a value
+- Performance matters: avoid unnecessary thread switching
+
+---
+
+### How do you implement async/await in a custom class or library?
+
+**Answer:**
+
+Implementing async/await in custom classes requires following specific patterns to ensure proper async behavior, exception handling, and resource management. The key is to implement the async pattern correctly and provide both sync and async versions when appropriate.
+
+**Basic Async Implementation:**
+
+```csharp
+public class DataService
+{
+    private readonly HttpClient httpClient;
+    
+    public DataService(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+    
+    // Async method with proper naming convention
+    public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Use ConfigureAwait(false) in library code
+            var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return content;
+        }
+        catch (HttpRequestException ex)
+        {
+            // Wrap in more specific exception
+            throw new DataServiceException($"Failed to retrieve data from {url}", ex);
+        }
+    }
+    
+    // Async method with return value
+    public async Task<T> GetDataAsync<T>(string url, CancellationToken cancellationToken = default)
+    {
+        var json = await GetDataAsync(url, cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<T>(json);
+    }
+    
+    // Async method with multiple operations
+    public async Task<ProcessedData> ProcessDataAsync(string input, CancellationToken cancellationToken = default)
+    {
+        // Validate input
+        if (string.IsNullOrEmpty(input))
+            throw new ArgumentException("Input cannot be null or empty", nameof(input));
+        
+        // Step 1: Fetch data
+        var rawData = await GetDataAsync("https://api.example.com/data", cancellationToken).ConfigureAwait(false);
+        
+        // Step 2: Process data (CPU-bound work)
+        var processedData = await Task.Run(() => ProcessRawData(rawData), cancellationToken).ConfigureAwait(false);
+        
+        // Step 3: Save result
+        await SaveDataAsync(processedData, cancellationToken).ConfigureAwait(false);
+        
+        return processedData;
+    }
+    
+    private ProcessedData ProcessRawData(string rawData)
+    {
+        // CPU-intensive processing
+        Thread.Sleep(1000); // Simulate processing
+        return new ProcessedData { Content = rawData.ToUpper(), ProcessedAt = DateTime.UtcNow };
+    }
+    
+    private async Task SaveDataAsync(ProcessedData data, CancellationToken cancellationToken)
+    {
+        // Simulate saving to database
+        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+    }
+}
+
+public class ProcessedData
+{
+    public string Content { get; set; }
+    public DateTime ProcessedAt { get; set; }
+}
+
+public class DataServiceException : Exception
+{
+    public DataServiceException(string message) : base(message) { }
+    public DataServiceException(string message, Exception innerException) : base(message, innerException) { }
+}
+```
+
+**Advanced Async Patterns:**
+
+```csharp
+public class FileProcessor
+{
+    private readonly SemaphoreSlim semaphore;
+    private readonly ILogger logger;
+    
+    public FileProcessor(int maxConcurrency = 4, ILogger logger = null)
+    {
+        this.semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+        this.logger = logger;
+    }
+    
+    // Async method with concurrency control
+    public async Task<ProcessingResult> ProcessFileAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        
+        try
+        {
+            logger?.LogInformation($"Starting to process file: {filePath}");
+            
+            // Validate file exists
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"File not found: {filePath}");
+            
+            // Read file asynchronously
+            var content = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
+            
+            // Process content (CPU-bound)
+            var processedContent = await Task.Run(() => ProcessContent(content), cancellationToken).ConfigureAwait(false);
+            
+            // Write result asynchronously
+            var outputPath = GetOutputPath(filePath);
+            await File.WriteAllTextAsync(outputPath, processedContent, cancellationToken).ConfigureAwait(false);
+            
+            logger?.LogInformation($"Successfully processed file: {filePath}");
+            
+            return new ProcessingResult
+            {
+                InputPath = filePath,
+                OutputPath = outputPath,
+                ProcessedAt = DateTime.UtcNow,
+                Success = true
+            };
+        }
+        catch (OperationCanceledException)
+        {
+            logger?.LogWarning($"Processing cancelled for file: {filePath}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex, $"Error processing file: {filePath}");
+            return new ProcessingResult
+            {
+                InputPath = filePath,
+                ProcessedAt = DateTime.UtcNow,
+                Success = false,
+                Error = ex.Message
+            };
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }
+    
+    // Batch processing with progress reporting
+    public async Task<BatchProcessingResult> ProcessFilesAsync(
+        IEnumerable<string> filePaths, 
+        IProgress<ProcessingProgress> progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        var tasks = filePaths.Select(async filePath =>
+        {
+            var result = await ProcessFileAsync(filePath, cancellationToken).ConfigureAwait(false);
+            progress?.Report(new ProcessingProgress { FilePath = filePath, Completed = true });
+            return result;
+        });
+        
+        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+        
+        return new BatchProcessingResult
+        {
+            TotalFiles = results.Length,
+            SuccessfulFiles = results.Count(r => r.Success),
+            FailedFiles = results.Count(r => !r.Success),
+            Results = results
+        };
+    }
+    
+    private string ProcessContent(string content)
+    {
+        // Simulate CPU-intensive processing
+        Thread.Sleep(500);
+        return content.ToUpper();
+    }
+    
+    private string GetOutputPath(string inputPath)
+    {
+        return Path.ChangeExtension(inputPath, ".processed");
+    }
+    
+    public void Dispose()
+    {
+        semaphore?.Dispose();
+    }
+}
+
+public class ProcessingResult
+{
+    public string InputPath { get; set; }
+    public string OutputPath { get; set; }
+    public DateTime ProcessedAt { get; set; }
+    public bool Success { get; set; }
+    public string Error { get; set; }
+}
+
+public class BatchProcessingResult
+{
+    public int TotalFiles { get; set; }
+    public int SuccessfulFiles { get; set; }
+    public int FailedFiles { get; set; }
+    public ProcessingResult[] Results { get; set; }
+}
+
+public class ProcessingProgress
+{
+    public string FilePath { get; set; }
+    public bool Completed { get; set; }
+}
+```
+
+**Async Stream Implementation:**
+
+```csharp
+public class DataStreamer
+{
+    private readonly HttpClient httpClient;
+    
+    public DataStreamer(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+    
+    // Async enumerable for streaming data
+    public async IAsyncEnumerable<DataItem> StreamDataAsync(
+        string endpoint,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.GetAsync(endpoint, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+            .ConfigureAwait(false);
+        
+        response.EnsureSuccessStatusCode();
+        
+        using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        using var reader = new StreamReader(stream);
+        
+        string line;
+        while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                var item = ParseDataItem(line);
+                yield return item;
+            }
+        }
+    }
+    
+    // Async method with timeout
+    public async Task<string> GetDataWithTimeoutAsync(string url, TimeSpan timeout)
+    {
+        using var cts = new CancellationTokenSource(timeout);
+        
+        try
+        {
+            var response = await httpClient.GetAsync(url, cts.Token).ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cts.Token.IsCancellationRequested)
+        {
+            throw new TimeoutException($"Request timed out after {timeout.TotalSeconds} seconds");
+        }
+    }
+    
+    private DataItem ParseDataItem(string line)
+    {
+        // Simple parsing logic
+        var parts = line.Split(',');
+        return new DataItem
+        {
+            Id = parts[0],
+            Value = parts[1],
+            Timestamp = DateTime.Parse(parts[2])
+        };
+    }
+}
+
+public class DataItem
+{
+    public string Id { get; set; }
+    public string Value { get; set; }
+    public DateTime Timestamp { get; set; }
+}
+```
+
+**Async Factory Pattern:**
+
+```csharp
+public class DatabaseConnection
+{
+    private readonly string connectionString;
+    
+    private DatabaseConnection(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    // Async factory method
+    public static async Task<DatabaseConnection> CreateAsync(string connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+            throw new ArgumentException("Connection string cannot be null or empty", nameof(connectionString));
+        
+        var connection = new DatabaseConnection(connectionString);
+        
+        // Test the connection asynchronously
+        await connection.TestConnectionAsync().ConfigureAwait(false);
+        
+        return connection;
+    }
+    
+    private async Task TestConnectionAsync()
+    {
+        // Simulate connection test
+        await Task.Delay(100).ConfigureAwait(false);
+        
+        // In real implementation, you would test the actual database connection
+        if (connectionString.Contains("invalid"))
+            throw new InvalidOperationException("Invalid connection string");
+    }
+    
+    public async Task<T> QueryAsync<T>(string sql, CancellationToken cancellationToken = default)
+    {
+        // Simulate database query
+        await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        
+        // Return mock data
+        return default(T);
+    }
+}
+```
+
+**Best Practices for Async Implementation:**
+
+1. **Naming Convention:**
+   - Always suffix async methods with `Async`
+   - Use descriptive names that indicate the operation
+
+2. **Return Types:**
+   - Use `Task` for void operations
+   - Use `Task<T>` for operations that return values
+   - Use `IAsyncEnumerable<T>` for streaming data
+
+3. **Cancellation Support:**
+   - Always accept `CancellationToken` parameters
+   - Pass cancellation tokens to all async operations
+   - Check `cancellationToken.IsCancellationRequested` in loops
+
+4. **Exception Handling:**
+   - Let exceptions bubble up naturally
+   - Wrap low-level exceptions in domain-specific exceptions
+   - Use `ConfigureAwait(false)` in library code
+
+5. **Resource Management:**
+   - Use `using` statements for disposable resources
+   - Implement `IAsyncDisposable` when needed
+   - Clean up resources in finally blocks
+
+6. **Performance:**
+   - Use `ConfigureAwait(false)` in library code
+   - Avoid blocking async methods with `.Result` or `.Wait()`
+   - Use `Task.Run()` only for CPU-bound work
+
+---
+
+### What are the performance implications of async/await?
+
+**Answer:**
+
+Async/await has both benefits and performance costs. Understanding these implications is crucial for making informed decisions about when to use async programming and how to optimize it.
+
+**Performance Benefits:**
+
+1. **Better Resource Utilization**
+2. **Improved Scalability**
+3. **Non-blocking I/O Operations**
+4. **Better User Experience**
+
+**Performance Costs:**
+
+1. **Memory Allocation Overhead**
+2. **State Machine Generation**
+3. **Context Switching**
+4. **Exception Handling Overhead**
+
+**Example:**
+
+```csharp
+public class PerformanceAnalysis
+{
+    private readonly HttpClient httpClient = new HttpClient();
+    
+    // Synchronous version - blocks thread
+    public string GetDataSync(string url)
+    {
+        var response = httpClient.GetStringAsync(url).Result; // BAD: Blocking
+        return response;
+    }
+    
+    // Asynchronous version - better resource utilization
+    public async Task<string> GetDataAsync(string url)
+    {
+        var response = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+        return response;
+    }
+    
+    // Performance comparison
+    public async Task ComparePerformance()
+    {
+        const int iterations = 1000;
+        var urls = Enumerable.Range(1, iterations)
+            .Select(i => $"https://api.example.com/data/{i}")
+            .ToArray();
+        
+        // Synchronous approach - sequential, blocking
+        var stopwatch = Stopwatch.StartNew();
+        var syncResults = new List<string>();
+        
+        foreach (var url in urls.Take(10)) // Limit to 10 for demo
+        {
+            syncResults.Add(GetDataSync(url));
+        }
+        
+        stopwatch.Stop();
+        Console.WriteLine($"Synchronous: {stopwatch.ElapsedMilliseconds}ms for 10 requests");
+        
+        // Asynchronous approach - concurrent, non-blocking
+        stopwatch.Restart();
+        var asyncTasks = urls.Take(10).Select(GetDataAsync);
+        var asyncResults = await Task.WhenAll(asyncTasks);
+        
+        stopwatch.Stop();
+        Console.WriteLine($"Asynchronous: {stopwatch.ElapsedMilliseconds}ms for 10 requests");
+    }
+}
+```
+
+**Memory Allocation Analysis:**
+
+```csharp
+public class MemoryAllocationAnalysis
+{
+    // High allocation - creates new Task for each operation
+    public async Task<string> HighAllocationAsync(string input)
+    {
+        // Each await creates a state machine
+        var step1 = await ProcessStep1Async(input).ConfigureAwait(false);
+        var step2 = await ProcessStep2Async(step1).ConfigureAwait(false);
+        var step3 = await ProcessStep3Async(step2).ConfigureAwait(false);
+        
+        return step3;
+    }
+    
+    // Lower allocation - fewer await points
+    public async Task<string> LowerAllocationAsync(string input)
+    {
+        // Batch operations to reduce state machine overhead
+        var (step1, step2, step3) = await ProcessAllStepsAsync(input).ConfigureAwait(false);
+        
+        return step3;
+    }
+    
+    // Optimized - minimal allocation
+    public Task<string> OptimizedAsync(string input)
+    {
+        // For simple operations, consider if async is needed
+        if (IsCached(input))
+        {
+            return Task.FromResult(GetCachedValue(input));
+        }
+        
+        return ProcessAsync(input);
+    }
+    
+    private async Task<string> ProcessStep1Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+    
+    private async Task<string> ProcessStep2Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input + "_processed";
+    }
+    
+    private async Task<string> ProcessStep3Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input + "_final";
+    }
+    
+    private async Task<(string, string, string)> ProcessAllStepsAsync(string input)
+    {
+        await Task.Delay(30).ConfigureAwait(false); // Simulate all work
+        return (input.ToUpper(), input.ToUpper() + "_processed", input.ToUpper() + "_processed_final");
+    }
+    
+    private bool IsCached(string input) => input.Length < 5;
+    private string GetCachedValue(string input) => input.ToUpper();
+    private async Task<string> ProcessAsync(string input)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+}
+```
+
+**When Async Hurts Performance:**
+
+```csharp
+public class AsyncPerformancePitfalls
+{
+    // BAD: Unnecessary async for simple operations
+    public async Task<int> BadAsync(int a, int b)
+    {
+        // This creates unnecessary overhead
+        return await Task.FromResult(a + b).ConfigureAwait(false);
+    }
+    
+    // GOOD: Simple synchronous operation
+    public int GoodSync(int a, int b)
+    {
+        return a + b;
+    }
+    
+    // BAD: Using Task.Run() for I/O operations
+    public async Task<string> BadTaskRunAsync(string url)
+    {
+        // Task.Run() is for CPU-bound work, not I/O
+        return await Task.Run(async () =>
+        {
+            var client = new HttpClient();
+            return await client.GetStringAsync(url);
+        }).ConfigureAwait(false);
+    }
+    
+    // GOOD: Direct async I/O
+    public async Task<string> GoodAsync(string url)
+    {
+        var client = new HttpClient();
+        return await client.GetStringAsync(url).ConfigureAwait(false);
+    }
+    
+    // BAD: Blocking async methods
+    public string BadBlockingAsync(string url)
+    {
+        // This defeats the purpose of async
+        return GetDataAsync(url).Result; // Can cause deadlocks
+    }
+    
+    // BAD: Fire-and-forget without proper error handling
+    public void BadFireAndForget(string url)
+    {
+        // Exceptions will be lost
+        _ = GetDataAsync(url);
+    }
+    
+    // GOOD: Proper fire-and-forget with error handling
+    public void GoodFireAndForget(string url)
+    {
+        _ = GetDataAsync(url).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Log the exception
+                Console.WriteLine($"Error: {task.Exception?.GetBaseException().Message}");
+            }
+        }, TaskContinuationOptions.OnlyOnFaulted);
+    }
+    
+    private async Task<string> GetDataAsync(string url)
+    {
+        var client = new HttpClient();
+        return await client.GetStringAsync(url).ConfigureAwait(false);
+    }
+}
+```
+
+**Performance Optimization Techniques:**
+
+```csharp
+public class AsyncOptimization
+{
+    private readonly HttpClient httpClient = new HttpClient();
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(10, 10); // Limit concurrency
+    
+    // Optimized: Limit concurrent operations
+    public async Task<string[]> GetDataWithConcurrencyLimitAsync(string[] urls)
+    {
+        var tasks = urls.Select(async url =>
+        {
+            await semaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                return await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+        
+        return await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+    
+    // Optimized: Use ValueTask for hot paths
+    public async ValueTask<string> GetCachedDataAsync(string key)
+    {
+        if (TryGetFromCache(key, out string cachedValue))
+        {
+            return cachedValue; // No allocation
+        }
+        
+        var value = await FetchFromDatabaseAsync(key).ConfigureAwait(false);
+        CacheValue(key, value);
+        return value;
+    }
+    
+    // Optimized: Batch operations
+    public async Task<Dictionary<string, string>> GetMultipleDataAsync(string[] keys)
+    {
+        // Single database call instead of multiple
+        return await FetchMultipleFromDatabaseAsync(keys).ConfigureAwait(false);
+    }
+    
+    // Optimized: Use ConfigureAwait(false) in library code
+    public async Task<string> LibraryMethodAsync(string input)
+    {
+        var result = await ProcessInputAsync(input).ConfigureAwait(false);
+        return await TransformResultAsync(result).ConfigureAwait(false);
+    }
+    
+    private bool TryGetFromCache(string key, out string value)
+    {
+        // Simulate cache lookup
+        value = key == "cached" ? "cached_value" : null;
+        return value != null;
+    }
+    
+    private void CacheValue(string key, string value)
+    {
+        // Simulate caching
+    }
+    
+    private async Task<string> FetchFromDatabaseAsync(string key)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return $"database_value_for_{key}";
+    }
+    
+    private async Task<Dictionary<string, string>> FetchMultipleFromDatabaseAsync(string[] keys)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return keys.ToDictionary(k => k, k => $"database_value_for_{k}");
+    }
+    
+    private async Task<string> ProcessInputAsync(string input)
+    {
+        await Task.Delay(50).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+    
+    private async Task<string> TransformResultAsync(string input)
+    {
+        await Task.Delay(50).ConfigureAwait(false);
+        return input + "_transformed";
+    }
+}
+```
+
+**Performance Measurement:**
+
+```csharp
+public class AsyncPerformanceMeasurement
+{
+    public async Task MeasureAsyncPerformance()
+    {
+        const int iterations = 10000;
+        
+        // Measure memory allocation
+        var initialMemory = GC.GetTotalMemory(true);
+        
+        // Test 1: Simple async method
+        var stopwatch = Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            await SimpleAsyncMethod().ConfigureAwait(false);
+        }
+        stopwatch.Stop();
+        
+        var finalMemory = GC.GetTotalMemory(false);
+        var allocatedMemory = finalMemory - initialMemory;
+        
+        Console.WriteLine($"Simple async method:");
+        Console.WriteLine($"  Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine($"  Memory allocated: {allocatedMemory / 1024.0:F2} KB");
+        Console.WriteLine($"  Memory per call: {allocatedMemory / (double)iterations:F2} bytes");
+        
+        // Test 2: Synchronous equivalent
+        initialMemory = GC.GetTotalMemory(true);
+        stopwatch.Restart();
+        
+        for (int i = 0; i < iterations; i++)
+        {
+            SimpleSyncMethod();
+        }
+        stopwatch.Stop();
+        
+        finalMemory = GC.GetTotalMemory(false);
+        allocatedMemory = finalMemory - initialMemory;
+        
+        Console.WriteLine($"\nSynchronous method:");
+        Console.WriteLine($"  Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine($"  Memory allocated: {allocatedMemory / 1024.0:F2} KB");
+        Console.WriteLine($"  Memory per call: {allocatedMemory / (double)iterations:F2} bytes");
+    }
+    
+    private async Task<int> SimpleAsyncMethod()
+    {
+        await Task.Delay(1).ConfigureAwait(false);
+        return 42;
+    }
+    
+    private int SimpleSyncMethod()
+    {
+        Thread.Sleep(1);
+        return 42;
+    }
+}
+```
+
+**Best Practices for Performance:**
+
+1. **Use async only when beneficial:**
+   - I/O operations (network, file, database)
+   - Operations that can benefit from concurrency
+   - Operations that might block the UI thread
+
+2. **Avoid async for:**
+   - Simple calculations
+   - Already computed values
+   - CPU-bound work (use Task.Run() instead)
+
+3. **Optimize hot paths:**
+   - Use `ValueTask` for frequently called methods
+   - Cache results when possible
+   - Batch operations when feasible
+
+4. **Monitor performance:**
+   - Profile memory allocation
+   - Measure execution time
+   - Use performance counters
+
+5. **Use proper patterns:**
+   - `ConfigureAwait(false)` in library code
+   - Limit concurrency with `SemaphoreSlim`
+   - Handle exceptions properly
+
+**Summary:**
+- Async/await has overhead but provides scalability benefits
+- Use async for I/O operations, not CPU-bound work
+- Monitor memory allocation and execution time
+- Optimize hot paths with `ValueTask` and caching
+- Use proper async patterns to avoid performance pitfalls
+
+---
+
+### How do you handle async operations in constructors and static methods?
+
+**Answer:**
+
+Constructors cannot be async, and static methods have specific considerations for async operations. This limitation requires alternative patterns and approaches to handle asynchronous initialization and operations.
+
+**Constructor Limitations and Solutions:**
+
+```csharp
+public class DatabaseService
+{
+    private readonly string connectionString;
+    private Task<IDbConnection> connectionTask;
+    
+    // Constructor cannot be async
+    public DatabaseService(string connectionString)
+    {
+        this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        
+        // Start async initialization but don't await
+        this.connectionTask = InitializeConnectionAsync();
+    }
+    
+    // Async initialization method
+    private async Task<IDbConnection> InitializeConnectionAsync()
+    {
+        var connection = new SqlConnection(connectionString);
+        await connection.OpenAsync().ConfigureAwait(false);
+        return connection;
+    }
+    
+    // Public method to get the connection when needed
+    public async Task<IDbConnection> GetConnectionAsync()
+    {
+        return await connectionTask.ConfigureAwait(false);
+    }
+    
+    // Example usage
+    public async Task<User> GetUserAsync(int userId)
+    {
+        var connection = await GetConnectionAsync().ConfigureAwait(false);
+        // Use connection for database operations
+        return new User { Id = userId, Name = "John Doe" };
+    }
+}
+
+public interface IDbConnection
+{
+    Task OpenAsync();
+    void Close();
+}
+
+public class SqlConnection : IDbConnection
+{
+    private readonly string connectionString;
+    
+    public SqlConnection(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    public async Task OpenAsync()
+    {
+        await Task.Delay(100).ConfigureAwait(false); // Simulate connection
+    }
+    
+    public void Close()
+    {
+        // Close connection
+    }
+}
+
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+```
+
+**Factory Pattern for Async Initialization:**
+
+```csharp
+public class FileProcessor
+{
+    private readonly string filePath;
+    private readonly Stream fileStream;
+    
+    // Private constructor
+    private FileProcessor(string filePath, Stream fileStream)
+    {
+        this.filePath = filePath;
+        this.fileStream = fileStream;
+    }
+    
+    // Async factory method
+    public static async Task<FileProcessor> CreateAsync(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+        
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException($"File not found: {filePath}");
+        
+        // Perform async initialization
+        var fileStream = await OpenFileAsync(filePath).ConfigureAwait(false);
+        
+        return new FileProcessor(filePath, fileStream);
+    }
+    
+    private static async Task<Stream> OpenFileAsync(string filePath)
+    {
+        // Simulate async file opening
+        await Task.Delay(100).ConfigureAwait(false);
+        return File.OpenRead(filePath);
+    }
+    
+    public async Task<string> ReadContentAsync()
+    {
+        using var reader = new StreamReader(fileStream);
+        return await reader.ReadToEndAsync().ConfigureAwait(false);
+    }
+    
+    public void Dispose()
+    {
+        fileStream?.Dispose();
+    }
+}
+
+// Usage
+public class FileProcessorExample
+{
+    public static async Task ProcessFileExample()
+    {
+        // Use factory method for async initialization
+        using var processor = await FileProcessor.CreateAsync("data.txt");
+        var content = await processor.ReadContentAsync();
+        Console.WriteLine(content);
+    }
+}
+```
+
+**Static Async Methods:**
+
+```csharp
+public static class UtilityService
+{
+    // Static async methods are allowed
+    public static async Task<string> GetConfigurationAsync(string key)
+    {
+        // Simulate async configuration loading
+        await Task.Delay(100).ConfigureAwait(false);
+        return $"config_value_for_{key}";
+    }
+    
+    public static async Task<T> DeserializeJsonAsync<T>(string json)
+    {
+        await Task.Delay(50).ConfigureAwait(false); // Simulate processing
+        return JsonSerializer.Deserialize<T>(json);
+    }
+    
+    // Static async method with caching
+    private static readonly ConcurrentDictionary<string, Task<string>> cache = new();
+    
+    public static async Task<string> GetCachedDataAsync(string key)
+    {
+        return await cache.GetOrAdd(key, async k =>
+        {
+            await Task.Delay(200).ConfigureAwait(false); // Simulate expensive operation
+            return $"expensive_data_for_{k}";
+        }).ConfigureAwait(false);
+    }
+    
+    // Static async method with error handling
+    public static async Task<bool> TryGetDataAsync(string url, out string data)
+    {
+        data = null;
+        
+        try
+        {
+            using var client = new HttpClient();
+            data = await client.GetStringAsync(url).ConfigureAwait(false);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+}
+
+// Usage of static async methods
+public class StaticAsyncExample
+{
+    public static async Task UseStaticAsyncMethods()
+    {
+        // Direct usage
+        var config = await UtilityService.GetConfigurationAsync("database");
+        Console.WriteLine(config);
+        
+        // With caching
+        var data1 = await UtilityService.GetCachedDataAsync("key1");
+        var data2 = await UtilityService.GetCachedDataAsync("key1"); // Uses cache
+        
+        // With error handling
+        if (await UtilityService.TryGetDataAsync("https://api.example.com/data", out string result))
+        {
+            Console.WriteLine(result);
+        }
+        else
+        {
+            Console.WriteLine("Failed to get data");
+        }
+    }
+}
+```
+
+**Lazy Initialization Pattern:**
+
+```csharp
+public class LazyAsyncService
+{
+    private readonly Lazy<Task<ExpensiveResource>> lazyResource;
+    
+    public LazyAsyncService()
+    {
+        // Lazy initialization of async resource
+        lazyResource = new Lazy<Task<ExpensiveResource>>(async () =>
+        {
+            await Task.Delay(1000).ConfigureAwait(false); // Simulate expensive initialization
+            return new ExpensiveResource();
+        });
+    }
+    
+    public async Task<string> DoWorkAsync()
+    {
+        // Resource is initialized only when first accessed
+        var resource = await lazyResource.Value.ConfigureAwait(false);
+        return await resource.ProcessAsync().ConfigureAwait(false);
+    }
+}
+
+public class ExpensiveResource
+{
+    public async Task<string> ProcessAsync()
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return "Processed by expensive resource";
+    }
+}
+```
+
+**Async Initialization with IAsyncDisposable:**
+
+```csharp
+public class AsyncInitializedService : IAsyncDisposable
+{
+    private readonly string connectionString;
+    private IDbConnection connection;
+    private bool isInitialized = false;
+    
+    public AsyncInitializedService(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    // Async initialization method
+    public async Task InitializeAsync()
+    {
+        if (isInitialized)
+            return;
+        
+        connection = new SqlConnection(connectionString);
+        await connection.OpenAsync().ConfigureAwait(false);
+        isInitialized = true;
+    }
+    
+    // Ensure initialization before use
+    private async Task EnsureInitializedAsync()
+    {
+        if (!isInitialized)
+        {
+            await InitializeAsync().ConfigureAwait(false);
+        }
+    }
+    
+    public async Task<User> GetUserAsync(int userId)
+    {
+        await EnsureInitializedAsync().ConfigureAwait(false);
+        
+        // Use the initialized connection
+        return new User { Id = userId, Name = "John Doe" };
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (connection != null)
+        {
+            connection.Close();
+            connection = null;
+        }
+        isInitialized = false;
+        await Task.CompletedTask.ConfigureAwait(false);
+    }
+}
+
+// Usage with using statement
+public class AsyncDisposableExample
+{
+    public static async Task UseAsyncDisposable()
+    {
+        await using var service = new AsyncInitializedService("connection_string");
+        await service.InitializeAsync();
+        
+        var user = await service.GetUserAsync(1);
+        Console.WriteLine(user.Name);
+    } // DisposeAsync is called automatically
+}
+```
+
+**Static Constructor with Async Initialization:**
+
+```csharp
+public static class StaticAsyncInitializer
+{
+    private static readonly Task initializationTask;
+    private static bool isInitialized = false;
+    
+    // Static constructor - cannot be async
+    static StaticAsyncInitializer()
+    {
+        initializationTask = InitializeAsync();
+    }
+    
+    private static async Task InitializeAsync()
+    {
+        // Perform async initialization
+        await Task.Delay(1000).ConfigureAwait(false);
+        isInitialized = true;
+    }
+    
+    // Public method to ensure initialization
+    public static async Task EnsureInitializedAsync()
+    {
+        await initializationTask.ConfigureAwait(false);
+    }
+    
+    public static async Task<string> GetDataAsync()
+    {
+        await EnsureInitializedAsync().ConfigureAwait(false);
+        return "Data from initialized service";
+    }
+}
+```
+
+**Best Practices:**
+
+1. **For Constructors:**
+   - Use factory methods for async initialization
+   - Start async operations but don't await them
+   - Provide methods to access async results
+   - Use lazy initialization when appropriate
+
+2. **For Static Methods:**
+   - Static async methods are perfectly fine
+   - Use caching for expensive operations
+   - Handle errors appropriately
+   - Consider thread safety
+
+3. **Alternative Patterns:**
+   - Factory pattern for async object creation
+   - Lazy initialization for expensive resources
+   - IAsyncDisposable for async cleanup
+   - Static async methods for utility functions
+
+4. **Common Pitfalls to Avoid:**
+   - Don't use `.Result` or `.Wait()` in constructors
+   - Don't make constructors async (it's not allowed)
+   - Don't forget to handle exceptions in async initialization
+   - Don't block on async operations in constructors
+
+**Summary:**
+- Constructors cannot be async - use factory methods or lazy initialization
+- Static async methods are allowed and useful for utility functions
+- Use proper patterns like factory methods, lazy initialization, and IAsyncDisposable
+- Always handle exceptions and ensure proper resource cleanup
+
 ---
 
 ## ASP.NET Core
