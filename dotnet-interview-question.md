@@ -97,6 +97,9 @@
 - [How do you handle concurrency in Entity Framework?](#how-do-you-handle-concurrency-in-entity-framework)
 - [Explain the difference between `SaveChanges()` and `SaveChangesAsync()`](#explain-the-difference-between-savechanges-and-savechangesasync)
 - [What are shadow properties in EF Core?](#what-are-shadow-properties-in-ef-core)
+- [How do you handle database transactions in Entity Framework Core?](#how-do-you-handle-database-transactions-in-entity-framework-core)
+- [What are global query filters and how do you use them?](#what-are-global-query-filters-and-how-do-you-use-them)
+- [How do you implement database connection management and connection pooling in EF Core?](#how-do-you-implement-database-connection-management-and-connection-pooling-in-ef-core)
 
 ### [Performance and Memory Management](#performance-and-memory-management)
 - [Explain garbage collection in .NET and its generations](#explain-garbage-collection-in-net-and-its-generations)
@@ -13751,6 +13754,1140 @@ Entity Framework Core provides a powerful and flexible ORM solution for .NET app
 12. **Shadow Properties**: Keep infrastructure concerns separate from domain model
 
 Master these concepts to build efficient, maintainable, and scalable applications with Entity Framework Core!
+---
+
+### How do you handle database transactions in Entity Framework Core?
+
+**Answer:**
+
+Database transactions in Entity Framework Core ensure data consistency by grouping multiple operations into a single unit of work. If any operation fails, all changes are rolled back.
+
+**1. Automatic Transactions (Default Behavior)**
+
+EF Core automatically creates a transaction for each `SaveChanges()` call:
+
+```csharp
+public class OrderService
+{
+    private readonly AppDbContext _context;
+
+    public OrderService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    // Single SaveChanges() = single transaction
+    public async Task CreateOrderAsync(Order order)
+    {
+        _context.Orders.Add(order);
+        _context.OrderItems.AddRange(order.OrderItems);
+        
+        // This creates and commits a transaction automatically
+        await _context.SaveChangesAsync();
+    }
+}
+```
+
+**2. Manual Transaction Management**
+
+Use `BeginTransaction()` for explicit transaction control:
+
+```csharp
+public async Task TransferMoneyAsync(int fromAccountId, int toAccountId, decimal amount)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        // Withdraw from source account
+        var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+        if (fromAccount.Balance < amount)
+            throw new InsufficientFundsException();
+        
+        fromAccount.Balance -= amount;
+        
+        // Deposit to target account
+        var toAccount = await _context.Accounts.FindAsync(toAccountId);
+        toAccount.Balance += amount;
+        
+        // Create transaction record
+        _context.Transactions.Add(new Transaction
+        {
+            FromAccountId = fromAccountId,
+            ToAccountId = toAccountId,
+            Amount = amount,
+            Timestamp = DateTime.UtcNow
+        });
+        
+        // Save all changes
+        await _context.SaveChangesAsync();
+        
+        // Commit transaction
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        // Rollback happens automatically when transaction is disposed
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**3. Transaction with Isolation Levels**
+
+Control transaction isolation for different consistency requirements:
+
+```csharp
+public async Task ProcessOrderWithLockAsync(int orderId)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync(
+        IsolationLevel.ReadCommitted);
+    
+    try
+    {
+        // Lock the order row for update
+        var order = await _context.Orders
+            .FromSqlRaw("SELECT * FROM Orders WITH (UPDLOCK) WHERE Id = {0}", orderId)
+            .FirstOrDefaultAsync();
+        
+        if (order.Status != OrderStatus.Pending)
+            throw new InvalidOperationException("Order already processed");
+        
+        order.Status = OrderStatus.Processing;
+        order.ProcessedAt = DateTime.UtcNow;
+        
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**4. Distributed Transactions (Multiple Contexts)**
+
+Handle transactions across multiple database contexts:
+
+```csharp
+public async Task ProcessOrderAcrossDatabasesAsync(Order order)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        // Save to main database
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        
+        // Save to audit database
+        using var auditContext = new AuditDbContext();
+        auditContext.Database.UseTransaction(transaction.GetDbTransaction());
+        
+        auditContext.AuditLogs.Add(new AuditLog
+        {
+            EntityType = "Order",
+            EntityId = order.Id,
+            Action = "Created",
+            Timestamp = DateTime.UtcNow
+        });
+        
+        await auditContext.SaveChangesAsync();
+        
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**5. Transaction Scope (System.Transactions)**
+
+Use `TransactionScope` for distributed transactions:
+
+```csharp
+public async Task ProcessOrderWithTransactionScopeAsync(Order order)
+{
+    using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+    
+    try
+    {
+        // Multiple operations that can span different databases
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
+        
+        // Call external service
+        await _paymentService.ProcessPaymentAsync(order.PaymentInfo);
+        
+        // Send notification
+        await _notificationService.SendOrderConfirmationAsync(order);
+        
+        scope.Complete(); // Commit all operations
+    }
+    catch
+    {
+        // Automatic rollback when scope is disposed
+        throw;
+    }
+}
+```
+
+**6. Nested Transactions**
+
+Handle nested transaction scenarios:
+
+```csharp
+public async Task ProcessBulkOrdersAsync(List<Order> orders)
+{
+    using var outerTransaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        foreach (var order in orders)
+        {
+            // Each order processing is a nested transaction
+            await ProcessSingleOrderAsync(order);
+        }
+        
+        await outerTransaction.CommitAsync();
+    }
+    catch
+    {
+        await outerTransaction.RollbackAsync();
+        throw;
+    }
+}
+
+private async Task ProcessSingleOrderAsync(Order order)
+{
+    using var innerTransaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        
+        // Additional processing
+        await UpdateInventoryAsync(order.OrderItems);
+        
+        await innerTransaction.CommitAsync();
+    }
+    catch
+    {
+        await innerTransaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**7. Transaction Best Practices**
+
+```csharp
+public class TransactionBestPractices
+{
+    private readonly AppDbContext _context;
+
+    // ✅ Good: Use using statements for automatic disposal
+    public async Task GoodTransactionAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            // Your operations here
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    // ❌ Bad: Manual transaction management without proper cleanup
+    public async Task BadTransactionAsync()
+    {
+        var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+        // Missing: transaction.Dispose() - can cause connection leaks
+    }
+
+    // ✅ Good: Appropriate isolation level
+    public async Task ReadCommittedTransactionAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync(
+            IsolationLevel.ReadCommitted);
+        
+        // Operations that need to see committed data
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+
+    // ✅ Good: Handle transaction timeouts
+    public async Task TransactionWithTimeoutAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        transaction.GetDbTransaction().CommandTimeout = 30; // 30 seconds
+        
+        try
+        {
+            // Long-running operations
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (SqlException ex) when (ex.Number == -2) // Timeout
+        {
+            await transaction.RollbackAsync();
+            throw new TimeoutException("Transaction timed out", ex);
+        }
+    }
+}
+```
+
+**8. Transaction Monitoring and Logging**
+
+```csharp
+public class TransactionMonitoring
+{
+    private readonly ILogger<TransactionMonitoring> _logger;
+
+    public async Task MonitoredTransactionAsync()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            _logger.LogInformation("Transaction started: {TransactionId}", 
+                transaction.TransactionId);
+            
+            // Your operations
+            await _context.SaveChangesAsync();
+            
+            await transaction.CommitAsync();
+            
+            stopwatch.Stop();
+            _logger.LogInformation("Transaction committed successfully in {Duration}ms", 
+                stopwatch.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            
+            stopwatch.Stop();
+            _logger.LogError(ex, "Transaction rolled back after {Duration}ms", 
+                stopwatch.ElapsedMilliseconds);
+            
+            throw;
+        }
+    }
+}
+```
+
+**Key Points:**
+
+1. **Automatic Transactions**: Each `SaveChanges()` creates a transaction automatically
+2. **Manual Control**: Use `BeginTransaction()` for explicit transaction management
+3. **Isolation Levels**: Control data consistency with different isolation levels
+4. **Distributed Transactions**: Handle transactions across multiple databases
+5. **Error Handling**: Always rollback on exceptions
+6. **Resource Management**: Use `using` statements for automatic cleanup
+7. **Performance**: Keep transactions short to avoid blocking
+8. **Monitoring**: Log transaction duration and outcomes
+
+**Best Practices:**
+
+- Keep transactions as short as possible
+- Use appropriate isolation levels
+- Always handle exceptions and rollback
+- Use `using` statements for automatic disposal
+- Monitor transaction performance
+- Avoid long-running operations in transactions
+- Consider using `TransactionScope` for distributed scenarios
+
+---
+
+### What are global query filters and how do you use them?
+
+**Answer:**
+
+Global query filters in Entity Framework Core allow you to automatically apply filtering logic to all queries for specific entity types. They're particularly useful for implementing soft deletes, multi-tenancy, and row-level security.
+
+**1. Basic Global Query Filter**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Category> Categories { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Global filter for soft deletes
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => !p.IsDeleted);
+        
+        modelBuilder.Entity<Category>()
+            .HasQueryFilter(c => !c.IsDeleted);
+    }
+}
+
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+}
+
+// Usage - filter is automatically applied
+var products = await context.Products.ToListAsync();
+// SQL: SELECT * FROM Products WHERE IsDeleted = 0
+```
+
+**2. Multi-Tenancy with Global Filters**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    private readonly ITenantService _tenantService;
+
+    public AppDbContext(DbContextOptions<AppDbContext> options, ITenantService tenantService)
+        : base(options)
+    {
+        _tenantService = tenantService;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Multi-tenant filter
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.TenantId == _tenantService.GetCurrentTenantId());
+        
+        modelBuilder.Entity<Order>()
+            .HasQueryFilter(o => o.TenantId == _tenantService.GetCurrentTenantId());
+    }
+}
+
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int TenantId { get; set; }
+}
+
+public interface ITenantService
+{
+    int GetCurrentTenantId();
+}
+
+// Usage - automatically filters by tenant
+var products = await context.Products.ToListAsync();
+// SQL: SELECT * FROM Products WHERE TenantId = @currentTenantId
+```
+
+**3. Complex Filter Conditions**
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    // Complex filter with multiple conditions
+    modelBuilder.Entity<Product>()
+        .HasQueryFilter(p => 
+            !p.IsDeleted && 
+            p.IsActive && 
+            p.PublishedAt <= DateTime.UtcNow);
+    
+    // Filter based on user permissions
+    modelBuilder.Entity<Document>()
+        .HasQueryFilter(d => 
+            d.IsPublic || 
+            d.OwnerId == _userService.GetCurrentUserId() ||
+            d.SharedWith.Contains(_userService.GetCurrentUserId()));
+}
+```
+
+**4. Ignoring Global Filters**
+
+Sometimes you need to bypass global filters:
+
+```csharp
+public class ProductService
+{
+    private readonly AppDbContext _context;
+
+    // Normal query - filter is applied
+    public async Task<List<Product>> GetActiveProductsAsync()
+    {
+        return await _context.Products.ToListAsync();
+        // SQL: SELECT * FROM Products WHERE IsDeleted = 0
+    }
+
+    // Ignore global filter - get all products including deleted
+    public async Task<List<Product>> GetAllProductsIncludingDeletedAsync()
+    {
+        return await _context.Products
+            .IgnoreQueryFilters()
+            .ToListAsync();
+        // SQL: SELECT * FROM Products (no WHERE clause)
+    }
+
+    // Ignore specific filter for admin operations
+    public async Task<List<Product>> GetProductsForAdminAsync()
+    {
+        return await _context.Products
+            .IgnoreQueryFilters()
+            .Where(p => p.IsDeleted)
+            .ToListAsync();
+    }
+}
+```
+
+**5. Dynamic Global Filters**
+
+Create filters that can be modified at runtime:
+
+```csharp
+public class AppDbContext : DbContext
+{
+    private readonly ICurrentUserService _userService;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Dynamic filter based on current user
+        modelBuilder.Entity<Document>()
+            .HasQueryFilter(d => 
+                d.IsPublic || 
+                d.OwnerId == _userService.GetCurrentUserId());
+    }
+}
+
+public interface ICurrentUserService
+{
+    int? GetCurrentUserId();
+}
+
+// Usage with different users
+public class DocumentService
+{
+    private readonly AppDbContext _context;
+    private readonly ICurrentUserService _userService;
+
+    public async Task<List<Document>> GetUserDocumentsAsync()
+    {
+        // Filter automatically applies based on current user
+        return await _context.Documents.ToListAsync();
+    }
+}
+```
+
+**6. Global Filters with Navigation Properties**
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    // Filter on related entities
+    modelBuilder.Entity<Order>()
+        .HasQueryFilter(o => 
+            !o.IsDeleted && 
+            o.Customer.IsActive);
+    
+    // Filter with multiple levels
+    modelBuilder.Entity<OrderItem>()
+        .HasQueryFilter(oi => 
+            !oi.Order.IsDeleted && 
+            !oi.Product.IsDeleted);
+}
+
+public class Order
+{
+    public int Id { get; set; }
+    public bool IsDeleted { get; set; }
+    public int CustomerId { get; set; }
+    public Customer Customer { get; set; }
+    public List<OrderItem> OrderItems { get; set; }
+}
+
+public class OrderItem
+{
+    public int Id { get; set; }
+    public int OrderId { get; set; }
+    public Order Order { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
+}
+```
+
+**7. Performance Considerations**
+
+```csharp
+public class OptimizedGlobalFilters
+{
+    // ✅ Good: Simple, indexed conditions
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.IsActive); // Simple boolean check
+    }
+
+    // ❌ Avoid: Complex calculations in filters
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => 
+                p.CreatedAt.AddDays(30) > DateTime.UtcNow); // Complex calculation
+    }
+
+    // ✅ Better: Pre-calculate values
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+        
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.CreatedAt > thirtyDaysAgo);
+    }
+}
+```
+
+**8. Testing with Global Filters**
+
+```csharp
+public class ProductServiceTests
+{
+    [Test]
+    public async Task GetProducts_ShouldExcludeDeletedProducts()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        using var context = new AppDbContext(options);
+        
+        // Add test data
+        context.Products.AddRange(new[]
+        {
+            new Product { Id = 1, Name = "Active Product", IsDeleted = false },
+            new Product { Id = 2, Name = "Deleted Product", IsDeleted = true }
+        });
+        await context.SaveChangesAsync();
+
+        // Act
+        var products = await context.Products.ToListAsync();
+
+        // Assert
+        Assert.That(products.Count, Is.EqualTo(1));
+        Assert.That(products[0].Name, Is.EqualTo("Active Product"));
+    }
+
+    [Test]
+    public async Task GetAllProducts_WithIgnoreQueryFilters_ShouldReturnAll()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        using var context = new AppDbContext(options);
+        
+        context.Products.AddRange(new[]
+        {
+            new Product { Id = 1, Name = "Active Product", IsDeleted = false },
+            new Product { Id = 2, Name = "Deleted Product", IsDeleted = true }
+        });
+        await context.SaveChangesAsync();
+
+        // Act
+        var products = await context.Products
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        // Assert
+        Assert.That(products.Count, Is.EqualTo(2));
+    }
+}
+```
+
+**9. Advanced Global Filter Patterns**
+
+```csharp
+public class AdvancedGlobalFilters
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Time-based filtering
+        modelBuilder.Entity<Event>()
+            .HasQueryFilter(e => e.StartDate > DateTime.UtcNow);
+        
+        // Status-based filtering
+        modelBuilder.Entity<Job>()
+            .HasQueryFilter(j => j.Status != JobStatus.Cancelled);
+        
+        // Permission-based filtering
+        modelBuilder.Entity<File>()
+            .HasQueryFilter(f => 
+                f.IsPublic || 
+                f.OwnerId == _userService.GetCurrentUserId() ||
+                f.Permissions.Any(p => p.UserId == _userService.GetCurrentUserId()));
+        
+        // Hierarchical filtering
+        modelBuilder.Entity<Comment>()
+            .HasQueryFilter(c => 
+                !c.IsDeleted && 
+                !c.Post.IsDeleted && 
+                c.Post.IsPublished);
+    }
+}
+```
+
+**Key Benefits:**
+
+1. **Automatic Filtering**: No need to remember to add filters to every query
+2. **Consistency**: Ensures all queries follow the same filtering rules
+3. **Security**: Implements row-level security automatically
+4. **Multi-tenancy**: Easy implementation of tenant isolation
+5. **Soft Deletes**: Automatic exclusion of deleted records
+
+**Best Practices:**
+
+- Keep filters simple and performant
+- Use indexed columns in filter conditions
+- Test with `IgnoreQueryFilters()` when needed
+- Consider performance impact on complex filters
+- Use for security and data isolation, not business logic
+- Document global filters for team understanding
+
+---
+
+### How do you implement database connection management and connection pooling in EF Core?
+
+**Answer:**
+
+Database connection management and pooling in EF Core are crucial for performance and scalability. EF Core uses ADO.NET connection pooling by default, but you can configure and optimize it for your specific needs.
+
+**1. Basic Connection String Configuration**
+
+```csharp
+// appsettings.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=MyApp;Trusted_Connection=true;TrustServerCertificate=true;",
+    "ProductionConnection": "Server=prod-server;Database=MyApp;User Id=appuser;Password=securepassword;TrustServerCertificate=true;"
+  }
+}
+
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+```
+
+**2. Connection Pooling Configuration**
+
+```csharp
+// Connection string with pooling settings
+var connectionString = "Server=localhost;Database=MyApp;Trusted_Connection=true;" +
+    "Min Pool Size=5;" +           // Minimum connections in pool
+    "Max Pool Size=100;" +         // Maximum connections in pool
+    "Connection Lifetime=300;" +   // Connection lifetime in seconds
+    "Connection Timeout=30;" +     // Connection timeout
+    "Command Timeout=60;" +        // Command timeout
+    "Pooling=true;";               // Enable pooling (default: true)
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+```
+
+**3. Advanced Connection Configuration**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.CommandTimeout(60);
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            });
+        }
+    }
+}
+```
+
+**4. Multiple Database Contexts with Different Pools**
+
+```csharp
+// Program.cs
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<AuditDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuditConnection")));
+
+builder.Services.AddDbContext<ReportingDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ReportingConnection")));
+
+// Usage in services
+public class OrderService
+{
+    private readonly AppDbContext _context;
+    private readonly AuditDbContext _auditContext;
+
+    public OrderService(AppDbContext context, AuditDbContext auditContext)
+    {
+        _context = context;
+        _auditContext = auditContext;
+    }
+}
+```
+
+**5. Connection Pool Monitoring**
+
+```csharp
+public class ConnectionPoolMonitor
+{
+    private readonly ILogger<ConnectionPoolMonitor> _logger;
+    private readonly AppDbContext _context;
+
+    public ConnectionPoolMonitor(ILogger<ConnectionPoolMonitor> logger, AppDbContext context)
+    {
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task MonitorConnectionPoolAsync()
+    {
+        try
+        {
+            // Get connection pool statistics
+            var connection = _context.Database.GetDbConnection();
+            
+            if (connection is SqlConnection sqlConnection)
+            {
+                _logger.LogInformation("Connection Pool Statistics:");
+                _logger.LogInformation("Connection String: {ConnectionString}", 
+                    sqlConnection.ConnectionString);
+                _logger.LogInformation("Connection State: {State}", 
+                    sqlConnection.State);
+                _logger.LogInformation("Server Version: {Version}", 
+                    sqlConnection.ServerVersion);
+            }
+
+            // Test connection
+            await _context.Database.OpenConnectionAsync();
+            _logger.LogInformation("Database connection successful");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database connection failed");
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+    }
+}
+```
+
+**6. Custom Connection Factory**
+
+```csharp
+public class CustomConnectionFactory : IDbConnectionFactory
+{
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<CustomConnectionFactory> _logger;
+
+    public CustomConnectionFactory(IConfiguration configuration, ILogger<CustomConnectionFactory> logger)
+    {
+        _configuration = configuration;
+        _logger = logger;
+    }
+
+    public DbConnection CreateConnection(string connectionString)
+    {
+        var connection = new SqlConnection(connectionString);
+        
+        // Add connection event handlers
+        connection.StateChange += OnConnectionStateChange;
+        connection.InfoMessage += OnConnectionInfoMessage;
+        
+        return connection;
+    }
+
+    private void OnConnectionStateChange(object sender, StateChangeEventArgs e)
+    {
+        _logger.LogInformation("Connection state changed from {OriginalState} to {CurrentState}",
+            e.OriginalState, e.CurrentState);
+    }
+
+    private void OnConnectionInfoMessage(object sender, SqlInfoMessageEventArgs e)
+    {
+        _logger.LogInformation("SQL Info: {Message}", e.Message);
+    }
+}
+
+// Register custom connection factory
+builder.Services.AddSingleton<IDbConnectionFactory, CustomConnectionFactory>();
+```
+
+**7. Connection Resilience and Retry Policies**
+
+```csharp
+// Program.cs
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        // Retry policy for transient failures
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+        
+        // Connection timeout
+        sqlOptions.CommandTimeout(60);
+    });
+});
+
+// Custom retry policy
+public class ResilientDbContext : AppDbContext
+{
+    public ResilientDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var retryPolicy = Policy
+            .Handle<SqlException>(ex => IsTransientError(ex))
+            .WaitAndRetryAsync(
+                retryCount: 3,
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                onRetry: (outcome, timespan, retryCount, context) =>
+                {
+                    Console.WriteLine($"Retry {retryCount} after {timespan} seconds");
+                });
+
+        return await retryPolicy.ExecuteAsync(async () =>
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        });
+    }
+
+    private static bool IsTransientError(SqlException ex)
+    {
+        // SQL Server transient error numbers
+        var transientErrors = new[] { 2, 53, 121, 1205, 1222, 8645, 8651 };
+        return transientErrors.Contains(ex.Number);
+    }
+}
+```
+
+**8. Connection Pool Optimization**
+
+```csharp
+public class ConnectionPoolOptimizer
+{
+    private readonly IConfiguration _configuration;
+
+    public ConnectionPoolOptimizer(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public string GetOptimizedConnectionString(string baseConnectionString)
+    {
+        var builder = new SqlConnectionStringBuilder(baseConnectionString);
+        
+        // Optimize for high-throughput scenarios
+        builder.MinPoolSize = 10;           // Keep more connections ready
+        builder.MaxPoolSize = 200;          // Allow more concurrent connections
+        builder.ConnectionLifetime = 600;   // 10 minutes connection lifetime
+        builder.ConnectionTimeout = 15;     // Faster connection timeout
+        builder.CommandTimeout = 30;        // Reasonable command timeout
+        
+        // Enable connection pooling
+        builder.Pooling = true;
+        
+        // Enable multiple active result sets
+        builder.MultipleActiveResultSets = true;
+        
+        // Optimize for read-heavy workloads
+        builder.ApplicationIntent = ApplicationIntent.ReadOnly;
+        
+        return builder.ConnectionString;
+    }
+
+    public string GetOptimizedConnectionStringForWrites(string baseConnectionString)
+    {
+        var builder = new SqlConnectionStringBuilder(baseConnectionString);
+        
+        // Optimize for write-heavy scenarios
+        builder.MinPoolSize = 5;            // Fewer connections for writes
+        builder.MaxPoolSize = 50;           // Limit concurrent writes
+        builder.ConnectionLifetime = 300;   // Shorter connection lifetime
+        builder.ConnectionTimeout = 30;     // Longer connection timeout for writes
+        builder.CommandTimeout = 60;        // Longer command timeout for writes
+        
+        // Enable connection pooling
+        builder.Pooling = true;
+        
+        // Optimize for write workloads
+        builder.ApplicationIntent = ApplicationIntent.ReadWrite;
+        
+        return builder.ConnectionString;
+    }
+}
+```
+
+**9. Environment-Specific Connection Management**
+
+```csharp
+// Program.cs
+public static void ConfigureDatabase(WebApplicationBuilder builder)
+{
+    var environment = builder.Environment.EnvironmentName;
+    
+    switch (environment)
+    {
+        case "Development":
+            ConfigureDevelopmentDatabase(builder);
+            break;
+        case "Staging":
+            ConfigureStagingDatabase(builder);
+            break;
+        case "Production":
+            ConfigureProductionDatabase(builder);
+            break;
+    }
+}
+
+private static void ConfigureDevelopmentDatabase(WebApplicationBuilder builder)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
+        options.LogTo(Console.WriteLine, LogLevel.Information);
+    });
+}
+
+private static void ConfigureProductionDatabase(WebApplicationBuilder builder)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("ProductionConnection");
+        
+        options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(30));
+            sqlOptions.CommandTimeout(60);
+        });
+        
+        // Disable sensitive data logging in production
+        options.EnableSensitiveDataLogging(false);
+        options.EnableDetailedErrors(false);
+    });
+}
+```
+
+**10. Connection Health Checks**
+
+```csharp
+public class DatabaseHealthCheck : IHealthCheck
+{
+    private readonly AppDbContext _context;
+
+    public DatabaseHealthCheck(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context, 
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Test database connection
+            await _context.Database.OpenConnectionAsync(cancellationToken);
+            
+            // Test simple query
+            await _context.Database.ExecuteSqlRawAsync("SELECT 1", cancellationToken);
+            
+            // Get connection pool info
+            var connection = _context.Database.GetDbConnection();
+            var connectionState = connection.State;
+            
+            return HealthCheckResult.Healthy($"Database is healthy. Connection state: {connectionState}");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Database connection failed", ex);
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+    }
+}
+
+// Register health check
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database");
+```
+
+**Key Points:**
+
+1. **Default Pooling**: EF Core uses ADO.NET connection pooling by default
+2. **Connection String**: Configure pool size, timeouts, and lifetime
+3. **Multiple Contexts**: Each context can have its own connection pool
+4. **Resilience**: Implement retry policies for transient failures
+5. **Monitoring**: Track connection pool health and performance
+6. **Environment-Specific**: Different configurations for different environments
+7. **Resource Management**: Proper disposal and connection lifecycle management
+
+**Best Practices:**
+
+- Configure appropriate pool sizes based on your workload
+- Use connection timeouts to prevent hanging connections
+- Implement retry policies for transient failures
+- Monitor connection pool health and performance
+- Use different connection strings for read vs write operations
+- Test connection resilience under load
+- Implement proper error handling and logging
+- Use health checks to monitor database connectivity
+
 ---
 
 ## Performance and Memory Management
