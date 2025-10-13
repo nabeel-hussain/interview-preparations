@@ -2,7 +2,7 @@
 
 ## C# and .NET Fundamentals
 
-### 1. Explain the difference between value types and reference types in C#.
+### Explain the difference between value types and reference types in C#.
 
 **Answer:**
 
@@ -60,7 +60,7 @@ Console.WriteLine(person2.Name);  // Output: "Jane"
 
 ---
 
-### 2. What is the difference between string and StringBuilder? When would you use each?
+### What is the difference between string and StringBuilder? When would you use each?
 
 **Answer:**
 
@@ -106,7 +106,7 @@ string result = sb.ToString();
 
 ---
 
-### 3. Explain the concepts of boxing and unboxing with performance implications.
+### Explain the concepts of boxing and unboxing with performance implications.
 
 **Answer:**
 
@@ -173,7 +173,7 @@ Print(42);  // No boxing!
 
 ---
 
-### 4. What are extension methods and when should you use them?
+### What are extension methods and when should you use them?
 
 **Answer:**
 
@@ -245,7 +245,7 @@ var result = numbers
 
 ---
 
-### 5. Explain the difference between IEnumerable, ICollection, IList, and IQueryable.
+### Explain the difference between IEnumerable, ICollection, IList, and IQueryable.
 
 **Answer:**
 
@@ -348,7 +348,7 @@ IQueryable users = dbContext.Users
 
 ---
 
-### 6. What is the difference between abstract class and interface? When would you use each?
+### What is the difference between abstract class and interface? When would you use each?
 
 **Answer:**
 
@@ -528,7 +528,7 @@ public interface ILogger
 
 ---
 
-### 7. Explain covariance and contravariance in C#.
+### Explain covariance and contravariance in C#.
 
 **Answer:**
 
@@ -693,7 +693,7 @@ public interface IValid
 
 ---
 
-### 8. What are delegates, events, and how do they differ?
+### What are delegates, events, and how do they differ?
 
 **Answer:**
 
@@ -948,7 +948,7 @@ bool valid = isValid("test");  // true
 
 ---
 
-### 9. Describe the difference between readonly and const in C#.
+### Describe the difference between readonly and const in C#.
 
 **Answer:**
 
@@ -1127,7 +1127,7 @@ public class Settings
 
 ---
 
-### 10. What is reflection and what are its use cases and drawbacks?
+### What is reflection and what are its use cases and drawbacks?
 
 **Answer:**
 
@@ -1401,7 +1401,7 @@ if (prop != null)
 
 ---
 
-### 11. Explain the concept of nullable reference types introduced in C# 8.0.
+### Explain the concept of nullable reference types introduced in C# 8.0.
 
 **Answer:**
 
@@ -1704,7 +1704,7 @@ public class Person
 
 ---
 
-### 12. What is the difference between Finalize() and Dispose() methods?
+### What is the difference between Finalize() and Dispose() methods?
 
 **Answer:**
 
@@ -2014,7 +2014,7 @@ public void Dispose()
 
 ## Object-Oriented Programming
 
-### 16. Explain the four pillars of OOP with real-world examples.
+### Explain the four pillars of OOP with real-world examples.
 
 **Answer:**
 
@@ -2692,7 +2692,7 @@ foreach (Employee emp in employees)
 
 ---
 
-### 17. What is the SOLID principle? Explain each letter with examples.
+### What is the SOLID principle? Explain each letter with examples.
 
 **Answer:**
 
@@ -3374,7 +3374,7 @@ orderService.PlaceOrder(order);
 ---
 # C# Object-Oriented Programming Concepts
 
-### 18. What is the difference between method overloading and method overriding?
+### What is the difference between method overloading and method overriding?
 
 **Method Overloading** occurs when multiple methods in the same class have the same name but different parameters (different number, type, or order of parameters). It's a compile-time polymorphism.
 
@@ -3439,7 +3439,7 @@ myDog.MakeSound();      // Outputs: Woof!
 
 ---
 
-### 19. Explain the concept of polymorphism with examples.
+### Explain the concept of polymorphism with examples.
 
 **Polymorphism** means "many forms" and allows objects to be treated as instances of their parent class while exhibiting behavior specific to their actual class. There are two types:
 
@@ -3521,7 +3521,7 @@ foreach (Shape shape in shapes)
 
 ---
 
-### 20. What are sealed classes and sealed methods?
+### What are sealed classes and sealed methods?
 
 **Sealed Classes** are classes that cannot be inherited. They prevent other classes from deriving from them.
 
@@ -3571,7 +3571,7 @@ public class DerivedClass : MiddleClass
 
 ---
 
-### 21. Describe the difference between composition and inheritance.
+### Describe the difference between composition and inheritance.
 
 **Inheritance** ("is-a" relationship) - A class derives from another class and inherits its members.
 
@@ -3652,7 +3652,7 @@ public class Car2
 
 ---
 
-### 22. What is the Liskov Substitution Principle and why is it important?
+### What is the Liskov Substitution Principle and why is it important?
 
 The **Liskov Substitution Principle (LSP)** is one of the SOLID principles. It states that objects of a derived class should be able to replace objects of the base class without affecting the correctness of the program.
 
@@ -3735,7 +3735,7 @@ public class Square : Shape
 
 ---
 
-### 23. Explain dependency injection and its benefits.
+### Explain dependency injection and its benefits.
 
 **Dependency Injection (DI)** is a design pattern where objects receive their dependencies from external sources rather than creating them internally. It implements the Dependency Inversion Principle (one of SOLID principles).
 
@@ -3836,7 +3836,7 @@ services.AddScoped<NotificationService>();
 
 ---
 
-### 24. What are design patterns? Name and explain 5 commonly used patterns.
+### What are design patterns? Name and explain 5 commonly used patterns.
 
 **Design Patterns** are reusable solutions to common software design problems. They represent best practices and provide a template for solving specific issues in software development.
 
@@ -4142,7 +4142,7 @@ var laptop = repository.GetById(1);
 
 ---
 
-### 25. What is the difference between shallow copy and deep copy?
+### What is the difference between shallow copy and deep copy?
 
 **Shallow Copy** creates a new object but copies only the reference of nested objects. Changes to nested objects affect both the original and copied object.
 
@@ -4269,7 +4269,7 @@ public class PersonSerializable
 
 ## Asynchronous Programming (12 questions)
 
-### 26. Explain `async` and `await` keywords in C#.
+### Explain `async` and `await` keywords in C#.
 
 **`async`** is a modifier that marks a method as asynchronous, indicating it can contain asynchronous operations.
 
@@ -4377,7 +4377,7 @@ var weatherData = await weatherService.GetWeatherForMultipleCitiesAsync(cities);
 
 ---
 
-### 27. What is the difference between `Task` and `Thread`?
+### What is the difference between `Task` and `Thread`?
 
 **Thread** is a lower-level construct that represents an actual OS thread. It's part of the threading infrastructure.
 
@@ -4537,7 +4537,7 @@ public class AsyncPatternExample
 
 ---
 
-### 28. What is `Task.Run()` vs `Task.Factory.StartNew()`?
+### What is `Task.Run()` vs `Task.Factory.StartNew()`?
 
 **`Task.Run()`** is the simpler, modern method for starting a task. It's the recommended approach for most scenarios.
 
@@ -4727,7 +4727,7 @@ public class CustomTaskScheduler : TaskScheduler
 
 ---
 
-### 29. Explain what `ConfigureAwait(false)` does and when to use it.
+### Explain what `ConfigureAwait(false)` does and when to use it.
 
 **`ConfigureAwait(false)`** tells the awaited task not to capture and resume on the original synchronization context. This improves performance and avoids potential deadlocks in library code.
 
@@ -4945,7 +4945,7 @@ public class BestPracticesExample
 
 ---
 
-### 30. What is a deadlock and how can async/await cause it?
+### What is a deadlock and how can async/await cause it?
 
 A **deadlock** occurs when two or more operations are waiting for each other to complete, causing the application to freeze indefinitely.
 
@@ -5246,7 +5246,7 @@ public class DeadlockDetection
 5. **Be careful with Task.WaitAll()** - Same issues as `.Result`
 
 ---
-### 31. Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`
+### Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`
 
 **Task.WhenAll()** waits for all tasks in a collection to complete before continuing. It returns a task that completes when all input tasks have completed.
 
@@ -5293,7 +5293,7 @@ var result = await dataTask;
 
 ---
 
-### 32. What is `ValueTask` and when should you use it over `Task`?
+### What is `ValueTask` and when should you use it over `Task`?
 
 **ValueTask** is a value type (struct) that represents an asynchronous operation, introduced to reduce heap allocations in high-performance scenarios.
 
@@ -5359,7 +5359,7 @@ public Task FetchDataAsync()
 
 ---
 
-### 33. How do you handle exceptions in async methods?
+### How do you handle exceptions in async methods?
 
 Exception handling in async methods uses try-catch blocks, but with important considerations for how exceptions are propagated.
 
@@ -5487,7 +5487,7 @@ public async Task ProcessAsync()
 
 ---
 
-### 34. What is the difference between synchronous and asynchronous programming?
+### What is the difference between synchronous and asynchronous programming?
 
 **Synchronous Programming:**
 
@@ -5583,7 +5583,7 @@ public async Task GetWebPageAsync(string url)
 
 ---
 
-### 35. Explain the concept of the `SynchronizationContext`
+### Explain the concept of the `SynchronizationContext`
 
 **SynchronizationContext** is an abstraction that represents a scheduling context where code can be executed. It determines which thread executes continuation code after an await.
 
@@ -5710,7 +5710,7 @@ public async Task Index()
 
 ---
 
-### 36. What are the best practices for cancellation in async operations using `CancellationToken`?
+### What are the best practices for cancellation in async operations using `CancellationToken`?
 
 **CancellationToken** provides a cooperative cancellation mechanism for async operations. Here are the best practices:
 
@@ -5953,7 +5953,7 @@ public class DataService
 
 ---
 
-### 37. How would you implement parallel processing in .NET?
+### How would you implement parallel processing in .NET?
 
 .NET provides several approaches for parallel processing depending on your scenario:
 
@@ -6245,7 +6245,7 @@ public async Task ProcessPipelineAsync(List items)
 
 ## ASP.NET Core (15 questions)
 
-### 1. Explain the middleware pipeline in ASP.NET Core
+### Explain the middleware pipeline in ASP.NET Core
 
 The middleware pipeline in ASP.NET Core is a series of components that handle HTTP requests and responses. Each middleware component can:
 
@@ -6294,7 +6294,7 @@ public void Configure(IApplicationBuilder app)
 6. Authorization
 7. Endpoints
 
-### 2. What is the difference between ASP.NET and ASP.NET Core?
+### What is the difference between ASP.NET and ASP.NET Core?
 
 | Feature | ASP.NET | ASP.NET Core |
 |---------|---------|--------------|
@@ -6317,7 +6317,7 @@ public void Configure(IApplicationBuilder app)
 - Unified programming model for web UI and web APIs
 - Can run on multiple platforms
 
-### 3. Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)
+### Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)
 
 Dependency Injection (DI) is a built-in design pattern in ASP.NET Core that achieves Inversion of Control (IoC) between classes and their dependencies. Services are registered with specific lifetimes.
 
@@ -6378,7 +6378,7 @@ var app = builder.Build();
 - Singleton services must be thread-safe
 - Scoped is the most commonly used lifetime for business logic
 
-### 4. What are action filters and how do you create custom filters?
+### What are action filters and how do you create custom filters?
 
 Action filters are attributes that add extra processing logic before or after specific stages in the request processing pipeline. They allow cross-cutting concerns like logging, caching, authorization, and exception handling.
 
@@ -6470,7 +6470,7 @@ builder.Services.AddControllers(options =>
 });
 ```
 
-### 5. Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type
+### Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type
 
 These are different return types for controller actions in ASP.NET Core, each with specific use cases.
 
@@ -6563,7 +6563,7 @@ public User GetUser(int id)
 
 **Best practice:** Use `ActionResult<T>` for modern ASP.NET Core Web APIs as it provides the best balance of flexibility and type safety.
 
-### 6. What is model binding and validation in ASP.NET Core?
+### What is model binding and validation in ASP.NET Core?
 
 Model binding is the process of mapping HTTP request data to action method parameters. Validation ensures that the bound data meets specified constraints before processing.
 
@@ -6726,7 +6726,7 @@ builder.Services.AddControllers()
 - Custom validation can be created via attributes or FluentValidation library
 
 ---
-### 44. How do you implement authentication and authorization in ASP.NET Core?
+### How do you implement authentication and authorization in ASP.NET Core?
 
 Authentication and authorization in ASP.NET Core are implemented through middleware and services:
 
@@ -6786,7 +6786,7 @@ public class SecureController : ControllerBase
 }
 ```
 
-### 45. Explain the difference between authentication and authorization.
+### Explain the difference between authentication and authorization.
 
 **Authentication** is the process of verifying WHO the user is (identity verification).
 - Confirms user identity through credentials (username/password, tokens, biometrics)
@@ -6811,7 +6811,7 @@ User Login → Authentication (verify credentials) → User Authenticated
 Access Admin Panel → Authorization (check role) → Access Granted/Denied
 ```
 
-### 46. What is JWT and how do you implement JWT authentication?
+### What is JWT and how do you implement JWT authentication?
 
 **JWT (JSON Web Token)** is a compact, URL-safe token format for securely transmitting information between parties as a JSON object. It consists of three parts: Header, Payload, and Signature.
 
@@ -6894,7 +6894,7 @@ public IActionResult Login([FromBody] LoginModel model)
 }
 ```
 
-### 47. How do you handle CORS in ASP.NET Core?
+### How do you handle CORS in ASP.NET Core?
 
 **CORS (Cross-Origin Resource Sharing)** allows you to control which domains can access your API.
 
@@ -6965,7 +6965,7 @@ policy.WithOrigins("https://myapp.com")
       .WithHeaders("Content-Type", "Authorization");
 ```
 
-### 48. What are the different ways to manage application configuration?
+### What are the different ways to manage application configuration?
 
 ASP.NET Core provides multiple ways to manage configuration:
 
@@ -7056,7 +7056,7 @@ public class HomeController : Controller
 4. appsettings.{Environment}.json
 5. appsettings.json
 
-### 49. Explain routing in ASP.NET Core (conventional vs attribute routing).
+### Explain routing in ASP.NET Core (conventional vs attribute routing).
 
 **Conventional Routing** defines routes in a central location using patterns.
 
@@ -7151,7 +7151,7 @@ public class CustomersController : ControllerBase
 | Visibility | Global patterns | Local to action |
 | Maintenance | Single location | Scattered across controllers |
 
-### 50. What is Razor Pages and how does it differ from MVC?
+### What is Razor Pages and how does it differ from MVC?
 
 **Razor Pages** is a page-based programming model that makes building web UI easier and more productive.
 
@@ -7256,7 +7256,7 @@ public class HomeController : Controller
 - **Razor Pages**: Simple pages, forms, CRUD operations, page-focused scenarios
 - **MVC**: Complex applications, RESTful APIs, when you need more control over routing
 
-### 51. How do you implement versioning in Web APIs?
+### How do you implement versioning in Web APIs?
 
 API versioning allows you to maintain multiple versions of your API simultaneously.
 
@@ -7375,7 +7375,7 @@ builder.Services.AddApiVersioning(options =>
 });
 ```
 
-### 52. What are health checks in ASP.NET Core?
+### What are health checks in ASP.NET Core?
 
 **Health Checks** allow you to monitor the health and availability of your application and its dependencies.
 
@@ -7536,7 +7536,7 @@ app.MapHealthChecksUI();
 
 ## Entity Framework and Database (12 questions)
 
-### 53. What is Entity Framework Core and how does it differ from Entity Framework 6?
+### What is Entity Framework Core and how does it differ from Entity Framework 6?
 
 **Entity Framework Core (EF Core)** is a lightweight, extensible, open-source, and cross-platform version of Entity Framework, Microsoft's Object-Relational Mapper (ORM) for .NET.
 
@@ -7561,7 +7561,7 @@ app.MapHealthChecksUI();
 - Entity splitting
 - Some inheritance strategies
 
-### 54. Explain Code First vs Database First approaches.
+### Explain Code First vs Database First approaches.
 
 **Code First Approach:**
 - Define your domain model classes first
@@ -7601,7 +7601,7 @@ dotnet ef dbcontext scaffold "ConnectionString" Microsoft.EntityFrameworkCore.Sq
 - **Code First**: New projects, agile development, domain-driven design
 - **Database First**: Legacy databases, DBA-controlled schemas, multiple applications sharing one database
 
-### 55. What is the difference between eager loading, lazy loading, and explicit loading?
+### What is the difference between eager loading, lazy loading, and explicit loading?
 
 **1. Eager Loading**
 Load related data as part of the initial query using `Include()`.
@@ -7674,7 +7674,7 @@ context.Entry(order)
 | Lazy | Load only what's needed | N+1 problem, requires open connection | Exploratory operations |
 | Explicit | Fine-grained control | More code, manual management | Conditional loading |
 
-### 56. What are migration strategies in EF Core?
+### What are migration strategies in EF Core?
 
 **Migrations** track changes to your data model and update the database schema.
 
@@ -7775,7 +7775,7 @@ protected override void Up(MigrationBuilder migrationBuilder)
 - Never modify applied migrations
 - Keep migration history in source control
 
-### 57. Explain the Unit of Work and Repository patterns.
+### Explain the Unit of Work and Repository patterns.
 
 **Repository Pattern**
 Abstracts data access logic and provides a collection-like interface for accessing domain objects.
@@ -7939,7 +7939,7 @@ public class ProductService
 
 **Note:** DbContext already implements Unit of Work pattern, so this is often considered over-engineering for simple applications.
 
-### 58. What is the N+1 query problem and how do you solve it?
+### What is the N+1 query problem and how do you solve it?
 
 **N+1 Query Problem** occurs when you execute 1 query to fetch N records, then N additional queries to fetch related data for each record.
 
@@ -8029,7 +8029,7 @@ optionsBuilder
     .LogTo(Console.WriteLine, LogLevel.Information);
 ```
 
-### 59. How do you optimize Entity Framework queries?
+### How do you optimize Entity Framework queries?
 
 **1. Use AsNoTracking() for Read-Only Queries**
 ```csharp
@@ -8148,7 +8148,7 @@ var count = context.Products
     .Count(p => p.Price > 100);
 ```
 
-### 60. Explain tracking vs no-tracking queries in EF Core.
+### Explain tracking vs no-tracking queries in EF Core.
 
 **Tracking Queries (Default)**
 EF Core keeps track of entity changes in the change tracker for `SaveChanges()`.
@@ -8261,7 +8261,7 @@ context.Entry(product).State = EntityState.Modified;
 context.Entry(product).Property(p => p.Price).IsModified = true;
 ```
 
-### 61. What are owned entities and table splitting in EF Core?
+### What are owned entities and table splitting in EF Core?
 
 **Owned Entities**
 Owned types are value objects that belong to another entity and share its lifetime.
@@ -8425,7 +8425,7 @@ var customersInNewYork = context.Customers
 | Querying | Part of owner | Can query independently |
 | Use Case | Value objects | Logical separation |
 
-### 62. How do you handle concurrency in Entity Framework?
+### How do you handle concurrency in Entity Framework?
 
 **Concurrency Control** prevents data conflicts when multiple users update the same record simultaneously.
 
@@ -8617,7 +8617,7 @@ modelBuilder.Entity()
 - Consider pessimistic locking (database locks) for critical sections
 - Log concurrency conflicts for monitoring
 ---
-### 63. Explain the difference between `SaveChanges()` and `SaveChangesAsync()`.
+### Explain the difference between `SaveChanges()` and `SaveChangesAsync()`.
 
 **SaveChanges()** - Synchronous
 Blocks the current thread until database operations complete.
@@ -8780,7 +8780,7 @@ using (var transaction = await context.Database.BeginTransactionAsync())
 }
 ```
 
-### 64. What are shadow properties in EF Core?
+### What are shadow properties in EF Core?
 
 **Shadow Properties** are properties that exist in the EF Core model but not in the .NET entity class. They only exist in the database and change tracker.
 
@@ -9078,7 +9078,7 @@ Master these concepts to build efficient, maintainable, and scalable application
 
 ## Performance and Memory Management (10 questions)
 
-### 65. Explain garbage collection in .NET and its generations.
+### Explain garbage collection in .NET and its generations.
 
 **Garbage Collection (GC)** is .NET's automatic memory management system that reclaims memory occupied by unused objects.
 
@@ -9344,7 +9344,7 @@ public class CacheManager
 - Pool objects for frequently allocated types
 - Monitor GC metrics in production
 
-### 66. What are memory leaks and how do you identify them in .NET?
+### What are memory leaks and how do you identify them in .NET?
 
 A **memory leak** in .NET occurs when objects that are no longer needed remain referenced, preventing garbage collection.
 
@@ -9730,7 +9730,7 @@ public class LeakDetector
 
 ## Memory Management
 
-### 67. What is the difference between stack and heap memory?
+### What is the difference between stack and heap memory?
 
 **Stack Memory:**
 - Used for static memory allocation
@@ -9778,7 +9778,7 @@ public void Example()
 
 ---
 
-### 68. How would you profile and optimize a .NET application?
+### How would you profile and optimize a .NET application?
 
 **Profiling Tools:**
 
@@ -9885,7 +9885,7 @@ public async Task GetDataAsync()
 
 ---
 
-### 69. What is `Span<T>` and `Memory<T>`? When should you use them?
+### What is `Span<T>` and `Memory<T>`? When should you use them?
 
 **Span<T>:**
 
@@ -10007,7 +10007,7 @@ public void SplitData(ReadOnlySpan data, Span ranges)
 
 ---
 
-### 70. Explain object pooling and when to use it.
+### Explain object pooling and when to use it.
 
 **Object Pooling** is a design pattern that reuses objects instead of creating and destroying them repeatedly, reducing garbage collection pressure and improving performance.
 
@@ -10218,7 +10218,7 @@ public class ImageProcessor
 - Thread pool
 
 ---
-### 71. What are the best practices for string concatenation in loops?
+### What are the best practices for string concatenation in loops?
 
 String concatenation in loops can severely impact performance because strings are immutable in C#. Each concatenation creates a new string object, leading to excessive memory allocations and garbage collection pressure.
 
@@ -10271,7 +10271,7 @@ string result = $"{firstName} {lastName}";
 
 ---
 
-### 72. How do you reduce memory allocations in performance-critical code?
+### How do you reduce memory allocations in performance-critical code?
 
 Reducing memory allocations minimizes garbage collection overhead and improves performance in hot paths.
 
@@ -10352,7 +10352,7 @@ public ValueTask GetCachedValueAsync(string key)
 
 ---
 
-### 73. What is the Large Object Heap (LOH)?
+### What is the Large Object Heap (LOH)?
 
 The Large Object Heap is a special region of the managed heap designed for objects larger than 85,000 bytes (approximately 85 KB).
 
@@ -10422,7 +10422,7 @@ long lohSize = GC.GetGCMemoryInfo().HeapSizeBytes;
 
 ---
 
-### 74. Explain the concept of weak references
+### Explain the concept of weak references
 
 Weak references allow you to maintain a reference to an object while still permitting the garbage collector to reclaim it if memory is needed.
 
@@ -10530,7 +10530,7 @@ else
 
 ## LINQ and Collections (10 questions)
 
-### 75. What is LINQ and what are its advantages?
+### What is LINQ and what are its advantages?
 
 **LINQ (Language Integrated Query)** is a powerful feature in C# that provides a unified syntax for querying different data sources including collections, databases, XML, and more.
 
@@ -10558,7 +10558,7 @@ foreach (int num in numbers)
 var evenNumbers = numbers.Where(n => n % 2 == 0);
 ```
 
-### 76. Explain the difference between LINQ query syntax and method syntax.
+### Explain the difference between LINQ query syntax and method syntax.
 
 **Query Syntax** (Comprehension Syntax):
 - SQL-like syntax using keywords like `from`, `where`, `select`
@@ -10593,7 +10593,7 @@ var methodResult = students
 - You can mix both syntaxes in a single query
 - Method syntax is more commonly used in practice
 
-### 77. What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?
+### What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?
 
 These methods retrieve elements from a collection but differ in their expectations and error handling:
 
@@ -10639,7 +10639,7 @@ var empty = new List();
 var result = empty.FirstOrDefault(); // returns 0
 ```
 
-### 78. Explain deferred execution in LINQ.
+### Explain deferred execution in LINQ.
 
 **Deferred Execution** means LINQ queries are not executed when they are defined, but only when the results are actually enumerated.
 
@@ -10688,7 +10688,7 @@ numbers.Add(8); // This won't affect immediateResult
 - `Skip()`, `Take()`, `GroupBy()`
 - `Join()`, `SelectMany()`
 
-### 79. What is the difference between `Select()` and `SelectMany()`?
+### What is the difference between `Select()` and `SelectMany()`?
 
 **`Select()`**
 - Projects each element into a new form (1-to-1 transformation)
@@ -10749,7 +10749,7 @@ var allWords = sentences.SelectMany(s => s.Split(' '));
 // Result: ["Hello", "world", "LINQ", "is", "powerful"]
 ```
 
-### 80. How do you optimize LINQ queries?
+### How do you optimize LINQ queries?
 
 **Optimization Techniques:**
 
@@ -10840,7 +10840,7 @@ var compiledQuery = EF.CompileQuery(
 );
 ```
 
-### 81. What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?
+### What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?
 
 **`List<T>`**
 - **Structure**: Dynamic array (ordered collection)
@@ -10911,7 +10911,7 @@ bool hasValue = dict.ContainsValue("Two"); // O(n)
 | Add/Remove | O(1) end, O(n) middle | O(1) | O(1) |
 | Memory | Less | More | Most |
 
-### 82. When would you use `ConcurrentDictionary` over `Dictionary`?
+### When would you use `ConcurrentDictionary` over `Dictionary`?
 
 **Use `ConcurrentDictionary<TKey, TValue>` when:**
 
@@ -11001,7 +11001,7 @@ Parallel.ForEach(documents, doc =>
 private static ConcurrentDictionary _sessions = new();
 ```
 
-### 83. Explain `GroupBy()` and `Join()` operations in LINQ.
+### Explain `GroupBy()` and `Join()` operations in LINQ.
 
 **`GroupBy()`**
 - Groups elements by a specified key
@@ -11136,7 +11136,7 @@ var leftJoin = from student in students
                };
 ```
 
-### 84. What is the difference between `Where().Select()` and `Select().Where()`?
+### What is the difference between `Where().Select()` and `Select().Where()`?
 
 Both produce the same final result, but they differ in **performance and efficiency**.
 
@@ -11243,7 +11243,7 @@ var result = items
 
 ## Testing (8 questions)
 
-### 85. What is unit testing and why is it important?
+### What is unit testing and why is it important?
 
 **Unit testing** is the practice of testing individual units or components of code in isolation, typically at the function or method level. A unit test verifies that a specific piece of code behaves as expected under various conditions.
 
@@ -11257,7 +11257,7 @@ var result = items
 - **Faster Development**: Though initial setup takes time, it speeds up long-term development
 - **Quality Assurance**: Provides confidence that code works correctly
 
-### 86. Explain the AAA pattern (Arrange, Act, Assert)
+### Explain the AAA pattern (Arrange, Act, Assert)
 
 The **AAA pattern** is a common structure for organizing unit tests, making them clear and consistent:
 
@@ -11291,7 +11291,7 @@ public void Withdraw_WithSufficientFunds_DecreasesBalance()
 }
 ```
 
-### 87. What is the difference between mocking, stubbing, and faking?
+### What is the difference between mocking, stubbing, and faking?
 
 These are different types of test doubles used to isolate code during testing:
 
@@ -11336,7 +11336,7 @@ public class FakeUserRepository : IUserRepository
 
 **Key Difference**: Stubs provide data, mocks verify behavior, fakes are simplified implementations.
 
-### 88. What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?
+### What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?
 
 **xUnit.net** (Modern, Recommended):
 - Most modern and actively maintained
@@ -11418,7 +11418,7 @@ public class CalculatorTests
 
 **Personal Preference**: xUnit for new projects due to modern design and .NET team support.
 
-### 89. How do you write testable code?
+### How do you write testable code?
 
 **Principles for testable code:**
 
@@ -11483,7 +11483,7 @@ public class OrderService
 - Program to interfaces, not implementations
 - Enables mocking and substitution
 
-### 90. What is TDD (Test-Driven Development)?
+### What is TDD (Test-Driven Development)?
 
 **Test-Driven Development** is a software development approach where tests are written before the actual code. It follows a cycle called **Red-Green-Refactor**:
 
@@ -11554,7 +11554,7 @@ public void Deposit(decimal amount)
 - Requires discipline
 - Not suitable for all scenarios (e.g., UI, exploratory work)
 
-### 91. Explain integration testing vs unit testing
+### Explain integration testing vs unit testing
 
 **Unit Testing**:
 - Tests individual components in isolation
@@ -11620,7 +11620,7 @@ public async Task CreateOrder_ValidData_SavesToDatabase()
 - 20% Integration Tests (middle)
 - 10% E2E/UI Tests (top)
 
-### 92. What is code coverage and what is a good coverage percentage?
+### What is code coverage and what is a good coverage percentage?
 
 **Code Coverage** is a metric that measures the percentage of code executed during automated tests. It shows which parts of your codebase are tested and which aren't.
 
@@ -11715,7 +11715,7 @@ public void Add_TwoNumbers_ReturnsCorrectSum()
 
 ## Microservices and Architecture (10 questions)
 
-### 93. What are microservices and what are their advantages and disadvantages?
+### What are microservices and what are their advantages and disadvantages?
 
 **Microservices** are an architectural style where an application is built as a collection of small, independent services that communicate over network protocols. Each service is self-contained, focuses on a specific business capability, and can be deployed independently.
 
@@ -11758,7 +11758,7 @@ public class ProductService
 
 ---
 
-### 94. Explain the difference between monolithic and microservices architecture.
+### Explain the difference between monolithic and microservices architecture.
 
 **Monolithic Architecture:**
 - Single, unified codebase and deployment unit
@@ -11826,7 +11826,7 @@ public class OrderServiceStartup
 
 ---
 
-### 95. What is API Gateway pattern?
+### What is API Gateway pattern?
 
 The **API Gateway pattern** provides a single entry point for all clients to access microservices. It acts as a reverse proxy, routing requests to appropriate microservices and aggregating responses.
 
@@ -11935,7 +11935,7 @@ public class ApiGatewayController : ControllerBase
 
 ---
 
-### 96. How do you handle inter-service communication in microservices?
+### How do you handle inter-service communication in microservices?
 
 Inter-service communication can be **synchronous** or **asynchronous**.
 
@@ -12117,7 +12117,7 @@ public class ServiceBusConsumer : BackgroundService
 
 ---
 
-### 97. What is the Circuit Breaker pattern?
+### What is the Circuit Breaker pattern?
 
 The **Circuit Breaker pattern** prevents an application from repeatedly trying to execute an operation that's likely to fail, allowing it to continue without waiting for the fault to be fixed or wasting CPU cycles.
 
@@ -12242,7 +12242,7 @@ public enum CircuitBreakerState
 
 ---
 
-### 98. Explain eventual consistency in distributed systems.
+### Explain eventual consistency in distributed systems.
 
 **Eventual Consistency** means that if no new updates are made to a data item, eventually all accesses to that item will return the last updated value. Unlike strong consistency, there may be a temporary period where different nodes have different versions of the data.
 
@@ -12382,7 +12382,7 @@ public class EventProcessor
 
 ---
 
-### 99. What is the Saga pattern for distributed transactions?
+### What is the Saga pattern for distributed transactions?
 
 The **Saga pattern** manages data consistency across microservices in distributed transactions by breaking the transaction into a series of local transactions, each with a compensating transaction to undo changes if something fails.
 
@@ -12597,7 +12597,7 @@ public class OrderStateMachine : MassTransitStateMachine
 
 ---
 
-### 100. How do you implement service discovery?
+### How do you implement service discovery?
 
 **Service Discovery** allows services to find and communicate with each other without hard-coding network locations. Services register themselves and discover other services dynamically.
 
@@ -12849,7 +12849,7 @@ public class ServiceRegistration
 
 ---
 
-### 101. What are containers and how do they relate to microservices?
+### What are containers and how do they relate to microservices?
 
 **Containers** are lightweight, standalone packages that include application code, runtime, libraries, and dependencies needed to run the application. They provide isolation and consistency across different environments.
 
@@ -13127,7 +13127,7 @@ spec:
 
 ---
 
-### 102. Explain the strangler pattern for migrating to microservices.
+### Explain the strangler pattern for migrating to microservices.
 
 The **Strangler Pattern** (named after strangler fig trees that grow around existing trees) is an incremental approach to migrating from a monolithic application to microservices by gradually replacing specific pieces of functionality with new services.
 
@@ -13493,7 +13493,7 @@ This guide covered essential microservices concepts in .NET Core:
 
 ## Security (8 questions)
 
-### 103. What is SQL injection and how do you prevent it?
+### What is SQL injection and how do you prevent it?
 
 **SQL Injection** is a code injection attack where malicious SQL statements are inserted into application queries, allowing attackers to manipulate database operations, access unauthorized data, or even destroy data.
 
@@ -13542,7 +13542,7 @@ public class LoginModel
 
 ---
 
-### 104. Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)
+### Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)
 
 **Cross-Site Scripting (XSS)**
 
@@ -13635,7 +13635,7 @@ services.ConfigureApplicationCookie(options =>
 
 ---
 
-### 105. What are the best practices for storing passwords?
+### What are the best practices for storing passwords?
 
 **Never store passwords in plain text!** Always use cryptographic hashing with salting.
 
@@ -13740,7 +13740,7 @@ public class PasswordHasher
 
 ---
 
-### 106. How do you implement OAuth 2.0 and OpenID Connect?
+### How do you implement OAuth 2.0 and OpenID Connect?
 
 **OAuth 2.0** provides authorization, while **OpenID Connect** adds authentication on top of OAuth 2.0.
 
@@ -13855,7 +13855,7 @@ public class ApiClient
 
 ---
 
-### 107. What is the principle of least privilege?
+### What is the principle of least privilege?
 
 **Principle of Least Privilege** means granting users, processes, or systems only the minimum permissions necessary to perform their functions.
 
@@ -13978,7 +13978,7 @@ public class ApiKeyAuthorizationHandler : AuthorizationHandler
 
 ---
 
-### 108. How do you secure sensitive data in configuration files?
+### How do you secure sensitive data in configuration files?
 
 **Never store secrets in plain text!** Use secure storage mechanisms.
 
@@ -14131,7 +14131,7 @@ public class MyService
 
 ---
 
-### 109. Explain the importance of HTTPS and how to implement it
+### Explain the importance of HTTPS and how to implement it
 
 **HTTPS (HTTP Secure)** encrypts data in transit using TLS/SSL, protecting against eavesdropping, tampering, and man-in-the-middle attacks.
 
@@ -14275,7 +14275,7 @@ app.Use(async (context, next) =>
 
 ---
 
-### 110. What are the OWASP Top 10 security risks?
+### What are the OWASP Top 10 security risks?
 
 The **OWASP Top 10** represents the most critical web application security risks.
 
@@ -14673,7 +14673,7 @@ All code examples in this guide follow .NET Core best practices and are producti
 
 ## DevOps and CI/CD (5 questions)
 
-### 111. What is CI/CD and why is it important?
+### What is CI/CD and why is it important?
 
 **CI/CD** stands for **Continuous Integration/Continuous Deployment (or Delivery)**.
 
@@ -14743,7 +14743,7 @@ steps:
 
 ---
 
-### 112. Have you worked with Docker? Explain containerization.
+### Have you worked with Docker? Explain containerization.
 
 Yes, Docker is essential for modern .NET Core application deployment.
 
@@ -14863,7 +14863,7 @@ docker rm myapi-container
 
 ---
 
-### 113. What is Kubernetes and what problems does it solve?
+### What is Kubernetes and what problems does it solve?
 
 **Kubernetes (K8s)** is an open-source container orchestration platform that automates deployment, scaling, and management of containerized applications.
 
@@ -15075,7 +15075,7 @@ kubectl delete -f deployment.yaml
 
 ---
 
-### 114. Explain the concept of Infrastructure as Code.
+### Explain the concept of Infrastructure as Code.
 
 **Infrastructure as Code (IaC)** is the practice of managing and provisioning infrastructure through machine-readable configuration files rather than manual processes or interactive configuration tools.
 
@@ -15325,7 +15325,7 @@ class MyStack : Stack
 
 ---
 
-### 115. What Azure/AWS services have you worked with for .NET applications?
+### What Azure/AWS services have you worked with for .NET applications?
 
 Here's an overview of commonly used cloud services for .NET Core applications:
 
@@ -15657,7 +15657,7 @@ CI/CD: Azure DevOps / GitHub Actions
 
 ## General and Behavioral (5 questions)
 
-### 116. How do you stay updated with the latest .NET technologies?
+### How do you stay updated with the latest .NET technologies?
 
 Staying current with .NET technologies requires a multi-faceted approach:
 
@@ -15690,7 +15690,7 @@ Staying current with .NET technologies requires a multi-faceted approach:
 - Attend workshops and webinars
 - Set aside dedicated learning time each week
 
-### 117. Describe a challenging bug you've encountered and how you resolved it.
+### Describe a challenging bug you've encountered and how you resolved it.
 
 **The Problem:**
 We experienced intermittent database deadlocks in a high-traffic ASP.NET Core API that processed financial transactions. The deadlocks occurred randomly, affecting approximately 2-3% of requests during peak hours, causing transaction failures and customer complaints.
@@ -15775,7 +15775,7 @@ await transaction.CommitAsync();
 - Monitor and analyze deadlock graphs proactively
 - Implement proper retry mechanisms for transient failures
 
-### 118. How do you handle technical debt in a project?
+### How do you handle technical debt in a project?
 
 Technical debt is inevitable in software development, but it must be managed strategically:
 
@@ -15879,7 +15879,7 @@ When encountering technical debt, ask:
 3. What's the cost of fixing now vs. later?
 4. Can this be addressed incrementally?
 
-### 119. Explain your code review process and what you look for.
+### Explain your code review process and what you look for.
 
 **Code Review Process:**
 
@@ -16065,7 +16065,7 @@ public async Task GetUserAsync_WhenUserNotFound_ThrowsUserNotFoundException()
 - Mark minor suggestions as non-blocking
 - Document patterns for team learning
 
-### 120. How do you mentor junior developers on your team?
+### How do you mentor junior developers on your team?
 
 Effective mentoring is crucial for team growth and knowledge transfer. Here's my comprehensive approach:
 
