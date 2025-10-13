@@ -1,8 +1,963 @@
 # Senior .NET Developer Interview Questions
 
+## Table of Contents
+
+### [C# and .NET Fundamentals](#c-and-net-fundamentals)
+- [What is the CLR, and why is it important?](#what-is-the-clr-and-why-is-it-important)
+- [What is CIL (Common Intermediate Language)?](#what-is-cil-common-intermediate-language)
+- [What is the difference between managed and unmanaged code?](#what-is-the-difference-between-managed-and-unmanaged-code)
+- [Explain the difference between value types and reference types in C#](#explain-the-difference-between-value-types-and-reference-types-in-c)
+- [What is the difference between string and StringBuilder? When would you use each?](#what-is-the-difference-between-string-and-stringbuilder-when-would-you-use-each)
+- [Explain the concepts of boxing and unboxing with performance implications](#explain-the-concepts-of-boxing-and-unboxing-with-performance-implications)
+- [What are extension methods and when should you use them?](#what-are-extension-methods-and-when-should-you-use-them)
+- [Explain the difference between IEnumerable, ICollection, IList, and IQueryable](#explain-the-difference-between-ienumerable-icollection-ilist-and-iqueryable)
+- [What is the difference between abstract class and interface? When would you use each?](#what-is-the-difference-between-abstract-class-and-interface-when-would-you-use-each)
+- [Explain covariance and contravariance in C#](#explain-covariance-and-contravariance-in-c)
+- [What are delegates, events, and how do they differ?](#what-are-delegates-events-and-how-do-they-differ)
+- [Describe the difference between readonly and const in C#](#describe-the-difference-between-readonly-and-const-in-c)
+- [What is reflection and what are its use cases and drawbacks?](#what-is-reflection-and-what-are-its-use-cases-and-drawbacks)
+- [Explain the concept of nullable reference types introduced in C# 8.0](#explain-the-concept-of-nullable-reference-types-introduced-in-c-80)
+- [What is the difference between Finalize() and Dispose() methods?](#what-is-the-difference-between-finalize-and-dispose-methods)
+- [What are generics and what are their benefits?](#what-are-generics-and-what-are-their-benefits)
+- [Explain the concept of attributes in C# and provide examples](#explain-the-concept-of-attributes-in-c-and-provide-examples)
+- [What is the difference between `using` statement and `using` declaration?](#what-is-the-difference-between-using-statement-and-using-declaration)
+- [What is exception handling and how does it work in C#?](#what-is-exception-handling-and-how-does-it-work-in-c)
+- [What are properties and indexers in C#?](#what-are-properties-and-indexers-in-c)
+- [What are the key differences between .NET Framework, .NET Core, and .NET 5+?](#what-are-the-key-differences-between-net-framework-net-core-and-net-5)
+- [What are assemblies and namespaces in .NET?](#what-are-assemblies-and-namespaces-in-net)
+- [What are lambda expressions and how do they work in C#?](#what-are-lambda-expressions-and-how-do-they-work-in-c)
+- [What are the fundamental concepts of threading in .NET?](#what-are-the-fundamental-concepts-of-threading-in-net)
+
+### [Object-Oriented Programming](#object-oriented-programming)
+- [Explain the four pillars of OOP with real-world examples](#explain-the-four-pillars-of-oop-with-real-world-examples)
+- [What is the SOLID principle? Explain each letter with examples](#what-is-the-solid-principle-explain-each-letter-with-examples)
+- [What is the difference between method overloading and method overriding?](#what-is-the-difference-between-method-overloading-and-method-overriding)
+- [Explain the concept of polymorphism with examples](#explain-the-concept-of-polymorphism-with-examples)
+- [What are sealed classes and sealed methods?](#what-are-sealed-classes-and-sealed-methods)
+- [Describe the difference between composition and inheritance](#describe-the-difference-between-composition-and-inheritance)
+- [What is the Liskov Substitution Principle and why is it important?](#what-is-the-liskov-substitution-principle-and-why-is-it-important)
+- [Explain dependency injection and its benefits](#explain-dependency-injection-and-its-benefits)
+- [What are design patterns? Name and explain 5 commonly used patterns](#what-are-design-patterns-name-and-explain-5-commonly-used-patterns)
+- [What is the difference between shallow copy and deep copy?](#what-is-the-difference-between-shallow-copy-and-deep-copy)
+- [What is the difference between virtual, override, and new keywords in C#?](#what-is-the-difference-between-virtual-override-and-new-keywords-in-c)
+- [What are access modifiers in C# and when would you use each?](#what-are-access-modifiers-in-c-and-when-would-you-use-each)
+- [What is the difference between static and instance members?](#what-is-the-difference-between-static-and-instance-members)
+- [What are constructors and destructors in C#?](#what-are-constructors-and-destructors-in-c)
+- [What is method hiding and how does it differ from method overriding?](#what-is-method-hiding-and-how-does-it-differ-from-method-overriding)
+- [What are partial classes and partial methods in C#?](#what-are-partial-classes-and-partial-methods-in-c)
+
+### [Asynchronous Programming](#asynchronous-programming)
+- [Explain `async` and `await` keywords in C#](#explain-async-and-await-keywords-in-c)
+- [What is the difference between `Task` and `Thread`?](#what-is-the-difference-between-task-and-thread)
+- [What is `Task.Run()` vs `Task.Factory.StartNew()`?](#what-is-taskrun-vs-taskfactorystartnew)
+- [Explain what `ConfigureAwait(false)` does and when to use it](#explain-what-configureawaitfalse-does-and-when-to-use-it)
+- [What is a deadlock and how can async/await cause it?](#what-is-a-deadlock-and-how-can-asyncawait-cause-it)
+- [Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`](#explain-the-difference-between-taskwhenall-and-taskwhenany)
+- [What is `ValueTask` and when should you use it over `Task`?](#what-is-valuetask-and-when-should-you-use-it-over-task)
+- [How do you handle exceptions in async methods?](#how-do-you-handle-exceptions-in-async-methods)
+- [What is the difference between synchronous and asynchronous programming?](#what-is-the-difference-between-synchronous-and-asynchronous-programming)
+- [Explain the concept of the `SynchronizationContext`](#explain-the-concept-of-the-synchronizationcontext)
+- [What are the best practices for cancellation in async operations using `CancellationToken`?](#what-are-the-best-practices-for-cancellation-in-async-operations-using-cancellationtoken)
+- [How would you implement parallel processing in .NET?](#how-would-you-implement-parallel-processing-in-net)
+- [What is the difference between `async void` and `async Task`?](#what-is-the-difference-between-async-void-and-async-task)
+- [Explain the `IAsyncEnumerable<T>` interface and when to use it](#explain-the-iasyncenumerablet-interface-and-when-to-use-it)
+- [What is the difference between `TaskCompletionSource<T>` and regular `Task<T>`?](#what-is-the-difference-between-taskcompletionsourcet-and-regular-taskt)
+- [How do you handle timeouts in async operations?](#how-do-you-handle-timeouts-in-async-operations)
+- [What is the difference between `Task.Run()` and `Task.Factory.StartNew()`?](#what-is-the-difference-between-taskrun-and-taskfactorystartnew)
+- [Explain the concept of async streams and `IAsyncDisposable`](#explain-the-concept-of-async-streams-and-iasyncdisposable)
+- [What is the difference between `Task.FromResult()` and `Task.Run()`?](#what-is-the-difference-between-taskfromresult-and-taskrun)
+- [How do you implement async/await in a custom class or library?](#how-do-you-implement-asyncawait-in-a-custom-class-or-library)
+- [What are the performance implications of async/await?](#what-are-the-performance-implications-of-asyncawait)
+- [How do you handle async operations in constructors and static methods?](#how-do-you-handle-async-operations-in-constructors-and-static-methods)
+
+### [ASP.NET Core](#aspnet-core)
+- [Explain the middleware pipeline in ASP.NET Core](#explain-the-middleware-pipeline-in-aspnet-core)
+- [What is the difference between ASP.NET and ASP.NET Core?](#what-is-the-difference-between-aspnet-and-aspnet-core)
+- [Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)](#explain-dependency-injection-in-aspnet-core-transient-scoped-singleton)
+- [What are action filters and how do you create custom filters?](#what-are-action-filters-and-how-do-you-create-custom-filters)
+- [Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type](#explain-the-difference-between-iactionresult-actionresultt-and-returning-a-concrete-type)
+- [What is model binding and validation in ASP.NET Core?](#what-is-model-binding-and-validation-in-aspnet-core)
+- [How do you implement authentication and authorization in ASP.NET Core?](#how-do-you-implement-authentication-and-authorization-in-aspnet-core)
+- [Explain the difference between authentication and authorization](#explain-the-difference-between-authentication-and-authorization)
+- [What is JWT and how do you implement JWT authentication?](#what-is-jwt-and-how-do-you-implement-jwt-authentication)
+- [How do you handle CORS in ASP.NET Core?](#how-do-you-handle-cors-in-aspnet-core)
+- [What are the different ways to manage application configuration?](#what-are-the-different-ways-to-manage-application-configuration)
+- [Explain routing in ASP.NET Core (conventional vs attribute routing)](#explain-routing-in-aspnet-core-conventional-vs-attribute-routing)
+- [What is Razor Pages and how does it differ from MVC?](#what-is-razor-pages-and-how-does-it-differ-from-mvc)
+- [How do you implement versioning in Web APIs?](#how-do-you-implement-versioning-in-web-apis)
+- [What are health checks in ASP.NET Core?](#what-are-health-checks-in-aspnet-core)
+
+### [Entity Framework and Database](#entity-framework-and-database)
+- [What is Entity Framework Core and how does it differ from Entity Framework 6?](#what-is-entity-framework-core-and-how-does-it-differ-from-entity-framework-6)
+- [Explain Code First vs Database First approaches](#explain-code-first-vs-database-first-approaches)
+- [What is the difference between eager loading, lazy loading, and explicit loading?](#what-is-the-difference-between-eager-loading-lazy-loading-and-explicit-loading)
+- [What are migration strategies in EF Core?](#what-are-migration-strategies-in-ef-core)
+- [Explain the Unit of Work and Repository patterns](#explain-the-unit-of-work-and-repository-patterns)
+- [What is the N+1 query problem and how do you solve it?](#what-is-the-n1-query-problem-and-how-do-you-solve-it)
+- [How do you optimize Entity Framework queries?](#how-do-you-optimize-entity-framework-queries)
+- [Explain tracking vs no-tracking queries in EF Core](#explain-tracking-vs-no-tracking-queries-in-ef-core)
+- [What are owned entities and table splitting in EF Core?](#what-are-owned-entities-and-table-splitting-in-ef-core)
+- [How do you handle concurrency in Entity Framework?](#how-do-you-handle-concurrency-in-entity-framework)
+- [Explain the difference between `SaveChanges()` and `SaveChangesAsync()`](#explain-the-difference-between-savechanges-and-savechangesasync)
+- [What are shadow properties in EF Core?](#what-are-shadow-properties-in-ef-core)
+- [How do you handle database transactions in Entity Framework Core?](#how-do-you-handle-database-transactions-in-entity-framework-core)
+- [What are global query filters and how do you use them?](#what-are-global-query-filters-and-how-do-you-use-them)
+- [How do you implement database connection management and connection pooling in EF Core?](#how-do-you-implement-database-connection-management-and-connection-pooling-in-ef-core)
+
+### [Performance and Memory Management](#performance-and-memory-management)
+- [Explain garbage collection in .NET and its generations](#explain-garbage-collection-in-net-and-its-generations)
+- [What are memory leaks and how do you identify them in .NET?](#what-are-memory-leaks-and-how-do-you-identify-them-in-net)
+- [What is the difference between stack and heap memory?](#what-is-the-difference-between-stack-and-heap-memory)
+- [How would you profile and optimize a .NET application?](#how-would-you-profile-and-optimize-a-net-application)
+- [What is `Span<T>` and `Memory<T>`? When should you use them?](#what-is-spant-and-memoryt-when-should-you-use-them)
+- [Explain object pooling and when to use it](#explain-object-pooling-and-when-to-use-it)
+- [What are the best practices for string concatenation in loops?](#what-are-the-best-practices-for-string-concatenation-in-loops)
+- [How do you reduce memory allocations in performance-critical code?](#how-do-you-reduce-memory-allocations-in-performance-critical-code)
+- [What is the Large Object Heap (LOH)?](#what-is-the-large-object-heap-loh)
+- [Explain the concept of weak references](#explain-the-concept-of-weak-references)
+
+### [LINQ and Collections](#linq-and-collections)
+- [What is LINQ and what are its advantages?](#what-is-linq-and-what-are-its-advantages)
+- [Explain the difference between LINQ query syntax and method syntax](#explain-the-difference-between-linq-query-syntax-and-method-syntax)
+- [What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?](#what-is-the-difference-between-first-firstordefault-single-and-singleordefault)
+- [Explain deferred execution in LINQ](#explain-deferred-execution-in-linq)
+- [What is the difference between `Select()` and `SelectMany()`?](#what-is-the-difference-between-select-and-selectmany)
+- [How do you optimize LINQ queries?](#how-do-you-optimize-linq-queries)
+- [What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?](#what-are-the-differences-between-listt-hashsett-and-dictionarytkey-tvalue)
+- [When would you use `ConcurrentDictionary` over `Dictionary`?](#when-would-you-use-concurrentdictionary-over-dictionary)
+- [Explain `GroupBy()` and `Join()` operations in LINQ](#explain-groupby-and-join-operations-in-linq)
+- [What is the difference between `Where().Select()` and `Select().Where()`?](#what-is-the-difference-between-whereselect-and-selectwhere)
+
+### [Testing](#testing)
+- [What is unit testing and why is it important?](#what-is-unit-testing-and-why-is-it-important)
+- [Explain the AAA pattern (Arrange, Act, Assert)](#explain-the-aaa-pattern-arrange-act-assert)
+- [What is the difference between mocking, stubbing, and faking?](#what-is-the-difference-between-mocking-stubbing-and-faking)
+- [What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?](#what-testing-frameworks-have-you-used-in-net-xunit-nunit-mstest)
+- [How do you write testable code?](#how-do-you-write-testable-code)
+- [What is TDD (Test-Driven Development)?](#what-is-tdd-test-driven-development)
+- [Explain integration testing vs unit testing](#explain-integration-testing-vs-unit-testing)
+- [What is code coverage and what is a good coverage percentage?](#what-is-code-coverage-and-what-is-a-good-coverage-percentage)
+
+### [Microservices and Architecture](#microservices-and-architecture)
+- [What are microservices and what are their advantages and disadvantages?](#what-are-microservices-and-what-are-their-advantages-and-disadvantages)
+- [Explain the difference between monolithic and microservices architecture](#explain-the-difference-between-monolithic-and-microservices-architecture)
+- [What is API Gateway pattern?](#what-is-api-gateway-pattern)
+- [How do you handle inter-service communication in microservices?](#how-do-you-handle-inter-service-communication-in-microservices)
+- [What is the Circuit Breaker pattern?](#what-is-the-circuit-breaker-pattern)
+- [Explain eventual consistency in distributed systems](#explain-eventual-consistency-in-distributed-systems)
+- [What is the Saga pattern for distributed transactions?](#what-is-the-saga-pattern-for-distributed-transactions)
+- [How do you implement service discovery?](#how-do-you-implement-service-discovery)
+- [What are containers and how do they relate to microservices?](#what-are-containers-and-how-do-they-relate-to-microservices)
+- [Explain the strangler pattern for migrating to microservices](#explain-the-strangler-pattern-for-migrating-to-microservices)
+
+### [Security](#security)
+- [What is SQL injection and how do you prevent it?](#what-is-sql-injection-and-how-do-you-prevent-it)
+- [Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)](#explain-cross-site-scripting-xss-and-cross-site-request-forgery-csrf)
+- [What are the best practices for storing passwords?](#what-are-the-best-practices-for-storing-passwords)
+- [How do you implement OAuth 2.0 and OpenID Connect?](#how-do-you-implement-oauth-20-and-openid-connect)
+- [What is the principle of least privilege?](#what-is-the-principle-of-least-privilege)
+- [How do you secure sensitive data in configuration files?](#how-do-you-secure-sensitive-data-in-configuration-files)
+- [Explain the importance of HTTPS and how to implement it](#explain-the-importance-of-https-and-how-to-implement-it)
+- [What are the OWASP Top 10 security risks?](#what-are-the-owasp-top-10-security-risks)
+
+### [Domain-Driven Design and Clean Architecture](#domain-driven-design-and-clean-architecture)
+- [What is Domain-Driven Design (DDD) and what are its core principles?](#what-is-domain-driven-design-ddd-and-what-are-its-core-principles)
+- [Explain the difference between Domain, Application, Infrastructure, and Presentation layers in Clean Architecture](#explain-the-difference-between-domain-application-infrastructure-and-presentation-layers-in-clean-architecture)
+- [What are the main building blocks of DDD (Entities, Value Objects, Aggregates, Domain Services)?](#what-are-the-main-building-blocks-of-ddd-entities-value-objects-aggregates-domain-services)
+- [What is the difference between Entities and Value Objects in DDD?](#what-is-the-difference-between-entities-and-value-objects-in-ddd)
+- [Explain the concept of Aggregates in DDD and how they maintain consistency](#explain-the-concept-of-aggregates-in-ddd-and-how-they-maintain-consistency)
+- [What are Domain Services and when should you use them?](#what-are-domain-services-and-when-should-you-use-them)
+- [What are Domain Events and how do you implement them in .NET?](#what-are-domain-events-and-how-do-you-implement-them-in-net)
+- [What is the difference between Domain Models and Data Transfer Objects (DTOs)?](#what-is-the-difference-between-domain-models-and-data-transfer-objects-dtos)
+- [How do you implement the CQRS (Command Query Responsibility Segregation) pattern?](#how-do-you-implement-the-cqrs-command-query-responsibility-segregation-pattern)
+- [What is Event Sourcing and how does it relate to DDD?](#what-is-event-sourcing-and-how-does-it-relate-to-ddd)
+
+### [DevOps and CI/CD](#devops-and-cicd)
+- [What is CI/CD and why is it important?](#what-is-cicd-and-why-is-it-important)
+- [Have you worked with Docker? Explain containerization](#have-you-worked-with-docker-explain-containerization)
+- [What is Kubernetes and what problems does it solve?](#what-is-kubernetes-and-what-problems-does-it-solve)
+- [Explain the concept of Infrastructure as Code](#explain-the-concept-of-infrastructure-as-code)
+- [What Azure/AWS services have you worked with for .NET applications?](#what-azureaws-services-have-you-worked-with-for-net-applications)
+
+### [General and Behavioral](#general-and-behavioral)
+- [How do you stay updated with the latest .NET technologies?](#how-do-you-stay-updated-with-the-latest-net-technologies)
+- [Describe a challenging bug you've encountered and how you resolved it](#describe-a-challenging-bug-youve-encountered-and-how-you-resolved-it)
+- [How do you handle technical debt in a project?](#how-do-you-handle-technical-debt-in-a-project)
+- [Explain your code review process and what you look for](#explain-your-code-review-process-and-what-you-look-for)
+- [How do you mentor junior developers on your team?](#how-do-you-mentor-junior-developers-on-your-team)
+
+---
+
 ## C# and .NET Fundamentals
 
-### 1. Explain the difference between value types and reference types in C#.
+### What is the CLR, and why is it important?
+
+**Answer:**
+
+The **CLR (Common Language Runtime)** is the execution engine of the .NET platform that provides a managed execution environment for .NET applications. It's a crucial component that sits between your .NET code and the underlying operating system.
+
+**Key Components of the CLR:**
+
+1. **Just-In-Time (JIT) Compiler**
+   - Converts CIL (Common Intermediate Language) to native machine code
+   - Optimizes code for the specific platform at runtime
+   - Enables cross-platform execution
+
+2. **Garbage Collector (GC)**
+   - Automatically manages memory allocation and deallocation
+   - Prevents memory leaks and dangling pointers
+   - Performs automatic cleanup of unused objects
+
+3. **Type System**
+   - Enforces type safety and prevents type-related errors
+   - Provides metadata about types, methods, and assemblies
+   - Enables reflection and dynamic type inspection
+
+4. **Security System**
+   - Implements Code Access Security (CAS)
+   - Validates code permissions and execution rights
+   - Provides sandboxing capabilities
+
+5. **Exception Handling**
+   - Provides structured exception handling across languages
+   - Ensures consistent error handling behavior
+   - Supports stack unwinding and cleanup
+
+**Why the CLR is Important:**
+
+1. **Language Interoperability**
+   ```csharp
+   // C# code can use VB.NET assemblies and vice versa
+   using VBProject;
+   
+   public class CSharpClass
+   {
+       public void UseVBNetClass()
+       {
+           var vbClass = new VBProject.VBNetClass();
+           vbClass.DoSomething(); // Seamless interop
+       }
+   }
+   ```
+
+2. **Memory Management**
+   ```csharp
+   public class MemoryExample
+   {
+       public void DemonstrateGC()
+       {
+           // No need to manually free memory
+           var largeObject = new byte[1000000];
+           // GC automatically handles cleanup when object goes out of scope
+       }
+   }
+   ```
+
+3. **Type Safety**
+   ```csharp
+   public class TypeSafetyExample
+   {
+       public void DemonstrateTypeSafety()
+       {
+           int number = 42;
+           // string text = number; // Compile-time error - type safety enforced
+           string text = number.ToString(); // Explicit conversion required
+       }
+   }
+   ```
+
+4. **Cross-Platform Execution**
+   ```csharp
+   // Same C# code runs on Windows, Linux, macOS
+   public class CrossPlatformExample
+   {
+       public void PlatformIndependentCode()
+       {
+           Console.WriteLine($"Running on: {Environment.OSVersion}");
+           // Works on any platform with .NET runtime
+       }
+   }
+   ```
+
+5. **Performance Optimization**
+   ```csharp
+   public class PerformanceExample
+   {
+       public void JITOptimization()
+       {
+           // JIT compiler optimizes this code for the specific CPU
+           for (int i = 0; i < 1000000; i++)
+           {
+               // Hot code gets optimized during execution
+               ProcessData(i);
+           }
+       }
+   }
+   ```
+
+**CLR Execution Process:**
+
+1. **Compilation**: Source code → CIL (Common Intermediate Language)
+2. **Loading**: CLR loads assemblies and metadata
+3. **JIT Compilation**: CIL → Native machine code
+4. **Execution**: Native code runs with CLR services
+5. **Garbage Collection**: Automatic memory management
+
+**CLR Versions and Evolution:**
+
+| .NET Version | CLR Version | Key Features |
+|--------------|-------------|--------------|
+| .NET Framework 1.0 | CLR 1.0 | Initial release |
+| .NET Framework 2.0 | CLR 2.0 | Generics, partial classes |
+| .NET Framework 4.0 | CLR 4.0 | Dynamic language runtime |
+| .NET Core 1.0 | CoreCLR | Cross-platform, modular |
+| .NET 5+ | CoreCLR | Unified platform |
+
+**Benefits of CLR:**
+
+1. **Automatic Memory Management**: No manual memory allocation/deallocation
+2. **Exception Safety**: Structured exception handling
+3. **Security**: Code access security and validation
+4. **Performance**: JIT compilation and optimization
+5. **Interoperability**: Language and platform independence
+6. **Reliability**: Type safety and runtime checks
+
+**CLR vs Native Code:**
+
+```csharp
+// CLR Managed Code
+public class ManagedExample
+{
+    public void ManagedMethod()
+    {
+        // Automatic memory management
+        var list = new List<int>();
+        list.Add(1);
+        // GC handles cleanup automatically
+    }
+}
+
+// Unmanaged Code (P/Invoke)
+public class UnmanagedExample
+{
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetCurrentProcess();
+    
+    public void UnmanagedMethod()
+    {
+        // Manual memory management required
+        IntPtr handle = GetCurrentProcess();
+        // Must manually free resources
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **CLR** is the execution engine that runs .NET applications
+2. **Provides** memory management, type safety, and security
+3. **Enables** language interoperability and cross-platform execution
+4. **Optimizes** performance through JIT compilation
+5. **Essential** for the .NET ecosystem and managed code execution
+
+---
+
+### What is CIL (Common Intermediate Language)?
+
+**Answer:**
+
+**CIL (Common Intermediate Language)**, also known as **MSIL (Microsoft Intermediate Language)**, is the intermediate language that all .NET languages compile to. It's a platform-agnostic, object-oriented assembly language that serves as the bridge between high-level .NET languages and the Common Language Runtime (CLR).
+
+**Key Characteristics of CIL:**
+
+1. **Platform Independent**: CIL code can run on any platform with a .NET runtime
+2. **Language Agnostic**: All .NET languages compile to the same CIL format
+3. **Object-Oriented**: Supports classes, inheritance, polymorphism, and interfaces
+4. **Stack-Based**: Uses a stack-based execution model
+5. **Strongly Typed**: Enforces type safety at the intermediate language level
+
+**CIL Compilation Process:**
+
+```
+Source Code (C#) → CIL → Native Code (JIT)
+Source Code (VB.NET) → CIL → Native Code (JIT)
+Source Code (F#) → CIL → Native Code (JIT)
+```
+
+**Example: C# to CIL Translation**
+
+**C# Source Code:**
+```csharp
+public class Calculator
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+    
+    public static void Main()
+    {
+        var calc = new Calculator();
+        int result = calc.Add(5, 3);
+        Console.WriteLine(result);
+    }
+}
+```
+
+**Equivalent CIL Code:**
+```cil
+.class public auto ansi beforefieldinit Calculator
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance int32 Add(int32 a, int32 b) cil managed
+  {
+    .maxstack 2
+    .locals init (int32 V_0)
+    IL_0000: ldarg.1      // Load first argument (a)
+    IL_0001: ldarg.2      // Load second argument (b)
+    IL_0002: add          // Add the two values
+    IL_0003: stloc.0      // Store result in local variable
+    IL_0004: ldloc.0      // Load result
+    IL_0005: ret          // Return the result
+  }
+  
+  .method public hidebysig static void Main() cil managed
+  {
+    .entrypoint
+    .maxstack 2
+    .locals init (class Calculator V_0, int32 V_1)
+    IL_0000: newobj instance void Calculator::.ctor()
+    IL_0005: stloc.0
+    IL_0006: ldloc.0
+    IL_0007: ldc.i4.5
+    IL_0008: ldc.i4.3
+    IL_0009: callvirt instance int32 Calculator::Add(int32, int32)
+    IL_000e: stloc.1
+    IL_000f: ldloc.1
+    IL_0010: call void [mscorlib]System.Console::WriteLine(int32)
+    IL_0015: ret
+  }
+}
+```
+
+**CIL Instruction Types:**
+
+1. **Load Instructions**
+   ```cil
+   ldarg.0    // Load argument 0 (this)
+   ldarg.1    // Load argument 1
+   ldloc.0    // Load local variable 0
+   ldc.i4.5   // Load constant integer 5
+   ```
+
+2. **Store Instructions**
+   ```cil
+   stloc.0    // Store to local variable 0
+   starg.1    // Store to argument 1
+   ```
+
+3. **Arithmetic Instructions**
+   ```cil
+   add        // Addition
+   sub        // Subtraction
+   mul        // Multiplication
+   div        // Division
+   ```
+
+4. **Control Flow Instructions**
+   ```cil
+   br         // Unconditional branch
+   brtrue     // Branch if true
+   brfalse    // Branch if false
+   ret        // Return
+   ```
+
+5. **Object Instructions**
+   ```cil
+   newobj     // Create new object
+   call       // Call method
+   callvirt   // Call virtual method
+   ```
+
+**CIL Metadata:**
+
+CIL assemblies contain rich metadata that describes:
+
+```csharp
+// C# code with attributes
+[Serializable]
+public class Person
+{
+    [Required]
+    public string Name { get; set; }
+    
+    [Range(0, 120)]
+    public int Age { get; set; }
+}
+```
+
+**CIL Metadata includes:**
+- Type definitions and inheritance hierarchies
+- Method signatures and implementations
+- Field definitions and properties
+- Custom attributes and annotations
+- Assembly references and dependencies
+
+**Benefits of CIL:**
+
+1. **Language Interoperability**
+   ```csharp
+   // C# can inherit from VB.NET classes
+   public class CSharpClass : VBProject.VBNetBaseClass
+   {
+       // Seamless inheritance across languages
+   }
+   ```
+
+2. **Platform Independence**
+   ```csharp
+   // Same CIL runs on Windows, Linux, macOS
+   public class CrossPlatformClass
+   {
+       public void PlatformIndependentMethod()
+       {
+           // CIL ensures consistent behavior
+       }
+   }
+   ```
+
+3. **Optimization Opportunities**
+   ```csharp
+   public class OptimizationExample
+   {
+       public void OptimizedMethod()
+       {
+           // JIT compiler can optimize CIL based on runtime conditions
+           for (int i = 0; i < 1000000; i++)
+           {
+               // Hot code gets aggressive optimization
+           }
+       }
+   }
+   ```
+
+4. **Security and Verification**
+   ```csharp
+   public class SecurityExample
+   {
+       public void SafeMethod()
+       {
+           // CIL enforces type safety and security policies
+           object obj = new string("test");
+           // Type safety prevents dangerous operations
+       }
+   }
+   ```
+
+**CIL vs Native Code:**
+
+| Aspect | CIL | Native Code |
+|--------|-----|-------------|
+| **Platform** | Platform-independent | Platform-specific |
+| **Execution** | JIT compiled | Direct execution |
+| **Size** | Larger (intermediate) | Smaller (optimized) |
+| **Startup** | Slower (JIT overhead) | Faster (no compilation) |
+| **Optimization** | Runtime optimization | Compile-time optimization |
+
+**Tools for Working with CIL:**
+
+1. **ILDASM (IL Disassembler)**
+   ```bash
+   ildasm MyAssembly.dll
+   ```
+
+2. **ILASM (IL Assembler)**
+   ```bash
+   ilasm MyAssembly.il
+   ```
+
+3. **Reflection**
+   ```csharp
+   public class CILInspection
+   {
+       public void InspectAssembly()
+       {
+           Assembly assembly = Assembly.LoadFrom("MyAssembly.dll");
+           foreach (Type type in assembly.GetTypes())
+           {
+               Console.WriteLine($"Type: {type.Name}");
+               foreach (MethodInfo method in type.GetMethods())
+               {
+                   Console.WriteLine($"  Method: {method.Name}");
+               }
+           }
+       }
+   }
+   ```
+
+**CIL in Modern .NET:**
+
+```csharp
+// C# 9.0 features compile to CIL
+public record Person(string Name, int Age);
+
+public class ModernCILExample
+{
+    public void DemonstrateModernFeatures()
+    {
+        // Records, pattern matching, etc. all compile to CIL
+        var person = new Person("John", 30);
+        var result = person switch
+        {
+            Person("John", var age) when age > 25 => "Adult John",
+            _ => "Other person"
+        };
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **CIL** is the intermediate language all .NET languages compile to
+2. **Platform-independent** and language-agnostic
+3. **Stack-based** execution model with rich metadata
+4. **Enables** language interoperability and cross-platform execution
+5. **JIT compiled** to native code for optimal performance
+6. **Essential** for understanding .NET's execution model
+
+---
+
+### What is the difference between managed and unmanaged code?
+
+**Answer:**
+
+The distinction between **managed** and **unmanaged** code is fundamental to understanding how .NET applications work and how they interact with system resources and external libraries.
+
+**Managed Code:**
+
+Managed code is code that runs under the control of the **Common Language Runtime (CLR)**. The CLR provides automatic memory management, type safety, and other services.
+
+**Characteristics of Managed Code:**
+
+1. **Automatic Memory Management**
+   ```csharp
+   public class ManagedExample
+   {
+       public void ManagedMethod()
+       {
+           // Memory automatically allocated
+           var list = new List<int>();
+           list.Add(1);
+           list.Add(2);
+           // Memory automatically freed by Garbage Collector
+       }
+   }
+   ```
+
+2. **Type Safety**
+   ```csharp
+   public class TypeSafetyExample
+   {
+       public void SafeOperations()
+       {
+           int number = 42;
+           // string text = number; // Compile-time error
+           string text = number.ToString(); // Explicit conversion
+           
+           // Runtime type checking
+           object obj = "Hello";
+           if (obj is string str)
+           {
+               Console.WriteLine(str.ToUpper()); // Safe operation
+           }
+       }
+   }
+   ```
+
+3. **Exception Handling**
+   ```csharp
+   public class ExceptionHandlingExample
+   {
+       public void ManagedExceptionHandling()
+       {
+           try
+           {
+               int result = Divide(10, 0);
+           }
+           catch (DivideByZeroException ex)
+           {
+               // Structured exception handling
+               Console.WriteLine($"Error: {ex.Message}");
+           }
+       }
+       
+       private int Divide(int a, int b)
+       {
+           return a / b; // Throws managed exception
+       }
+   }
+   ```
+
+4. **Security**
+   ```csharp
+   public class SecurityExample
+   {
+       public void SecureOperation()
+       {
+           // Code Access Security (CAS) applies
+           // CLR validates permissions before execution
+           File.WriteAllText("test.txt", "Hello World");
+       }
+   }
+   ```
+
+**Unmanaged Code:**
+
+Unmanaged code runs directly on the operating system without the CLR's management. It's typically written in languages like C, C++, or assembly.
+
+**Characteristics of Unmanaged Code:**
+
+1. **Manual Memory Management**
+   ```c
+   // C code example
+   #include <stdlib.h>
+   
+   void unmanaged_memory_example() {
+       // Manual memory allocation
+       int* numbers = malloc(100 * sizeof(int));
+       
+       // Use the memory
+       for (int i = 0; i < 100; i++) {
+           numbers[i] = i;
+       }
+       
+       // Manual memory deallocation (must not forget!)
+       free(numbers);
+   }
+   ```
+
+2. **Direct System Access**
+   ```c
+   // C code - direct system calls
+   #include <windows.h>
+   
+   void direct_system_access() {
+       // Direct Windows API call
+       HANDLE file = CreateFile(
+           L"test.txt",
+           GENERIC_WRITE,
+           0,
+           NULL,
+           CREATE_ALWAYS,
+           FILE_ATTRIBUTE_NORMAL,
+           NULL
+       );
+       
+       if (file != INVALID_HANDLE_VALUE) {
+           // Use the file handle
+           CloseHandle(file); // Manual cleanup
+       }
+   }
+   ```
+
+3. **No Automatic Exception Handling**
+   ```c
+   // C code - manual error handling
+   int divide_numbers(int a, int b) {
+       if (b == 0) {
+           // Manual error handling - no exceptions
+           return -1; // Error code
+       }
+       return a / b;
+   }
+   ```
+
+**Interop Between Managed and Unmanaged Code:**
+
+1. **P/Invoke (Platform Invoke)**
+   ```csharp
+   public class PInvokeExample
+   {
+       // Import unmanaged Windows API
+       [DllImport("kernel32.dll", SetLastError = true)]
+       public static extern IntPtr GetCurrentProcess();
+       
+       [DllImport("user32.dll")]
+       public static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+       
+       public void CallUnmanagedCode()
+       {
+           // Call unmanaged function from managed code
+           IntPtr process = GetCurrentProcess();
+           MessageBox(IntPtr.Zero, "Hello from unmanaged code!", "Message", 0);
+       }
+   }
+   ```
+
+2. **COM Interop**
+   ```csharp
+   public class COMInteropExample
+   {
+       public void UseCOMObject()
+       {
+           // Create COM object from managed code
+           var excel = new Microsoft.Office.Interop.Excel.Application();
+           excel.Visible = true;
+           
+           // Use COM object
+           var workbook = excel.Workbooks.Add();
+           var worksheet = workbook.ActiveSheet;
+           worksheet.Cells[1, 1] = "Hello from COM!";
+           
+           // Cleanup (important for COM objects)
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+       }
+   }
+   ```
+
+3. **C++/CLI (Managed C++)**
+   ```cpp
+   // C++/CLI code - can mix managed and unmanaged
+   #include <iostream>
+   #include <msclr/marshal_cppstd.h>
+   
+   using namespace System;
+   using namespace msclr::interop;
+   
+   public ref class MixedCode
+   {
+   public:
+       void ManagedMethod()
+       {
+           Console::WriteLine("This is managed C++");
+           UnmanagedMethod(); // Call unmanaged code
+       }
+       
+   private:
+       void UnmanagedMethod()
+       {
+           std::cout << "This is unmanaged C++" << std::endl;
+       }
+   };
+   ```
+
+**Performance Comparison:**
+
+| Aspect | Managed Code | Unmanaged Code |
+|--------|--------------|----------------|
+| **Memory Management** | Automatic (GC) | Manual |
+| **Type Safety** | Enforced | Manual |
+| **Exception Handling** | Structured | Manual |
+| **Performance** | Slightly slower | Faster |
+| **Security** | CLR security | Manual |
+| **Development Speed** | Faster | Slower |
+| **Debugging** | Easier | Harder |
+
+**Memory Management Comparison:**
+
+```csharp
+// Managed Code - Automatic
+public class ManagedMemoryExample
+{
+    public void AutomaticMemoryManagement()
+    {
+        var largeArray = new byte[1000000];
+        // GC automatically handles cleanup
+        // No memory leaks (unless circular references)
+    }
+}
+
+// Unmanaged Code - Manual
+public class UnmanagedMemoryExample
+{
+    public void ManualMemoryManagement()
+    {
+        IntPtr ptr = Marshal.AllocHGlobal(1000000);
+        try
+        {
+            // Use the memory
+            Marshal.WriteByte(ptr, 0, 255);
+        }
+        finally
+        {
+            // Must manually free memory
+            Marshal.FreeHGlobal(ptr);
+        }
+    }
+}
+```
+
+**When to Use Each:**
+
+**Use Managed Code when:**
+- Building business applications
+- Rapid development is important
+- Memory safety is critical
+- Cross-platform compatibility needed
+- Team productivity is priority
+
+**Use Unmanaged Code when:**
+- Maximum performance is required
+- Direct hardware access needed
+- Interfacing with legacy systems
+- Real-time systems
+- System-level programming
+
+**Best Practices:**
+
+1. **Prefer Managed Code**
+   ```csharp
+   // Good - Use managed alternatives
+   public class BestPractices
+   {
+       public void PreferManaged()
+       {
+           // Use FileStream instead of P/Invoke
+           using (var file = new FileStream("test.txt", FileMode.Create))
+           {
+               // Managed file operations
+           }
+       }
+   }
+   ```
+
+2. **Minimize Interop**
+   ```csharp
+   // Minimize calls across managed/unmanaged boundary
+   public class InteropOptimization
+   {
+       [DllImport("native.dll")]
+       private static extern void ProcessData(IntPtr data, int count);
+       
+       public void OptimizedInterop()
+       {
+           var data = new byte[1000];
+           // Process in batches to minimize interop calls
+           for (int i = 0; i < data.Length; i += 100)
+           {
+               fixed (byte* ptr = &data[i])
+               {
+                   ProcessData((IntPtr)ptr, 100);
+               }
+           }
+       }
+   }
+   ```
+
+**Key Takeaways:**
+
+1. **Managed Code** runs under CLR control with automatic services
+2. **Unmanaged Code** runs directly on the OS without CLR management
+3. **Managed Code** provides safety, productivity, and cross-platform support
+4. **Unmanaged Code** provides maximum performance and direct system access
+5. **Interop** allows mixing both approaches when needed
+6. **Choose** based on requirements: safety vs performance, productivity vs control
+
+---
+
+### Explain the difference between value types and reference types in C#.
 
 **Answer:**
 
@@ -60,7 +1015,7 @@ Console.WriteLine(person2.Name);  // Output: "Jane"
 
 ---
 
-### 2. What is the difference between string and StringBuilder? When would you use each?
+### What is the difference between string and StringBuilder? When would you use each?
 
 **Answer:**
 
@@ -106,7 +1061,7 @@ string result = sb.ToString();
 
 ---
 
-### 3. Explain the concepts of boxing and unboxing with performance implications.
+### Explain the concepts of boxing and unboxing with performance implications.
 
 **Answer:**
 
@@ -173,7 +1128,7 @@ Print(42);  // No boxing!
 
 ---
 
-### 4. What are extension methods and when should you use them?
+### What are extension methods and when should you use them?
 
 **Answer:**
 
@@ -245,7 +1200,7 @@ var result = numbers
 
 ---
 
-### 5. Explain the difference between IEnumerable, ICollection, IList, and IQueryable.
+### Explain the difference between IEnumerable, ICollection, IList, and IQueryable.
 
 **Answer:**
 
@@ -348,7 +1303,7 @@ IQueryable users = dbContext.Users
 
 ---
 
-### 6. What is the difference between abstract class and interface? When would you use each?
+### What is the difference between abstract class and interface? When would you use each?
 
 **Answer:**
 
@@ -528,7 +1483,7 @@ public interface ILogger
 
 ---
 
-### 7. Explain covariance and contravariance in C#.
+### Explain covariance and contravariance in C#.
 
 **Answer:**
 
@@ -693,7 +1648,7 @@ public interface IValid
 
 ---
 
-### 8. What are delegates, events, and how do they differ?
+### What are delegates, events, and how do they differ?
 
 **Answer:**
 
@@ -948,7 +1903,7 @@ bool valid = isValid("test");  // true
 
 ---
 
-### 9. Describe the difference between readonly and const in C#.
+### Describe the difference between readonly and const in C#.
 
 **Answer:**
 
@@ -1127,7 +2082,7 @@ public class Settings
 
 ---
 
-### 10. What is reflection and what are its use cases and drawbacks?
+### What is reflection and what are its use cases and drawbacks?
 
 **Answer:**
 
@@ -1401,7 +2356,7 @@ if (prop != null)
 
 ---
 
-### 11. Explain the concept of nullable reference types introduced in C# 8.0.
+### Explain the concept of nullable reference types introduced in C# 8.0.
 
 **Answer:**
 
@@ -1704,7 +2659,7 @@ public class Person
 
 ---
 
-### 12. What is the difference between Finalize() and Dispose() methods?
+### What is the difference between Finalize() and Dispose() methods?
 
 **Answer:**
 
@@ -2009,12 +2964,1262 @@ public void Dispose()
 
 ---
 
+### What is exception handling and how does it work in C#?
 
-## Object-Oriented Programming (10 questions)
+**Answer:**
+
+**Exception Handling** is a mechanism in C# that allows you to handle runtime errors gracefully, preventing your application from crashing and providing meaningful error messages to users.
+
+**How Exception Handling Works:**
+- When an error occurs, an exception object is created
+- The runtime searches for an appropriate exception handler
+- If found, the handler executes and the program continues
+- If not found, the program terminates with an unhandled exception
+
+**Basic Exception Handling Structure:**
+```csharp
+try
+{
+    // Code that might throw an exception
+    int result = Divide(10, 0);
+}
+catch (DivideByZeroException ex)
+{
+    // Handle specific exception
+    Console.WriteLine($"Error: {ex.Message}");
+}
+catch (Exception ex)
+{
+    // Handle any other exception
+    Console.WriteLine($"Unexpected error: {ex.Message}");
+}
+finally
+{
+    // Always executes (cleanup code)
+    Console.WriteLine("Cleanup code here");
+}
+```
+
+**Exception Hierarchy:**
+```csharp
+System.Object
+└── System.Exception
+    ├── System.SystemException
+    │   ├── ArgumentException
+    │   ├── NullReferenceException
+    │   ├── IndexOutOfRangeException
+    │   └── DivideByZeroException
+    └── System.ApplicationException
+        └── Custom exceptions
+```
+
+**Key Differences: throw vs throw ex vs throw new**
+
+**1. `throw` (rethrow):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Log the exception
+    LogError(ex);
+    
+    // Rethrow the original exception (preserves stack trace)
+    throw;  // GOOD - keeps original stack trace
+}
+```
+
+**2. `throw ex` (lose stack trace):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Log the exception
+    LogError(ex);
+    
+    // Rethrow but lose original stack trace
+    throw ex;  // BAD - loses original stack trace
+}
+```
+
+**3. `throw new` (new exception):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Create new exception with original as inner exception
+    throw new CustomException("Something went wrong", ex);  // GOOD
+}
+```
+
+**When to Use Each:**
+- **try-catch**: Handle exceptions you can recover from
+- **try-finally**: Ensure cleanup code always runs
+- **try-catch-finally**: Handle exceptions AND ensure cleanup
+
+**Custom Exceptions:**
+```csharp
+// Custom exception class
+public class InsufficientFundsException : Exception
+{
+    public decimal CurrentBalance { get; }
+    public decimal RequiredAmount { get; }
+    
+    public InsufficientFundsException(decimal currentBalance, decimal requiredAmount)
+        : base($"Insufficient funds. Current: {currentBalance:C}, Required: {requiredAmount:C}")
+    {
+        CurrentBalance = currentBalance;
+        RequiredAmount = requiredAmount;
+    }
+    
+    public InsufficientFundsException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+}
+
+// Usage
+public void Withdraw(decimal amount)
+{
+    if (amount > Balance)
+    {
+        throw new InsufficientFundsException(Balance, amount);
+    }
+    
+    Balance -= amount;
+}
+```
+
+**Best Practices:**
+1. **Catch specific exceptions** when possible
+2. **Don't catch and ignore** exceptions silently
+3. **Use `throw`** instead of `throw ex` to preserve stack trace
+4. **Include inner exceptions** when creating new exceptions
+5. **Log exceptions** before rethrowing
+6. **Use finally blocks** for cleanup code
+7. **Don't throw exceptions** for normal program flow
+
+---
+
+### What are properties and indexers in C#?
+
+**Answer:**
+
+**Properties** are members that provide a flexible mechanism to read, write, or compute the values of private fields. They act as intermediaries between the outside world and the internal state of a class.
+
+**Basic Property Syntax:**
+```csharp
+public class Person
+{
+    private string _name;
+    private int _age;
+    
+    // Traditional property with backing field
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+    
+    // Auto-property (C# 3.0+)
+    public int Age { get; set; }
+    
+    // Read-only auto-property
+    public DateTime CreatedAt { get; } = DateTime.Now;
+    
+    // Property with validation
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            if (string.IsNullOrEmpty(value) || !value.Contains("@"))
+                throw new ArgumentException("Invalid email format");
+            _email = value;
+        }
+    }
+    private string _email;
+}
+```
+
+**Property Types:**
+
+**1. Auto-Properties:**
+```csharp
+public class Product
+{
+    // Auto-property with getter and setter
+    public string Name { get; set; }
+    
+    // Read-only auto-property
+    public int Id { get; }
+    
+    // Auto-property with initializer
+    public decimal Price { get; set; } = 0m;
+    
+    // Auto-property with different access modifiers
+    public string Description { get; private set; }
+}
+```
+
+**2. Expression-Bodied Properties (C# 6.0+):**
+```csharp
+public class Rectangle
+{
+    public double Width { get; set; }
+    public double Height { get; set; }
+    
+    // Expression-bodied property
+    public double Area => Width * Height;
+    
+    // Expression-bodied property with getter/setter
+    public double Perimeter
+    {
+        get => 2 * (Width + Height);
+        set => Width = Height = value / 4; // Square
+    }
+}
+```
+
+**3. Init-Only Properties (C# 9.0+):**
+```csharp
+public class User
+{
+    // Can only be set during object initialization
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    
+    // Computed property
+    public string FullName => $"{FirstName} {LastName}";
+}
+
+// Usage
+var user = new User
+{
+    FirstName = "John",
+    LastName = "Doe"
+    // Cannot set FirstName after initialization
+    // user.FirstName = "Jane"; // Compile error
+};
+```
+
+**Indexers:**
+Indexers allow objects to be indexed like arrays, providing a way to access elements using square bracket notation.
+
+**Basic Indexer:**
+```csharp
+public class StringCollection
+{
+    private string[] _items = new string[10];
+    
+    // Indexer
+    public string this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _items.Length)
+                throw new IndexOutOfRangeException();
+            return _items[index];
+        }
+        set
+        {
+            if (index < 0 || index >= _items.Length)
+                throw new IndexOutOfRangeException();
+            _items[index] = value;
+        }
+    }
+}
+
+// Usage
+StringCollection collection = new StringCollection();
+collection[0] = "Hello";
+collection[1] = "World";
+Console.WriteLine(collection[0]); // "Hello"
+```
+
+**Multi-dimensional Indexers:**
+```csharp
+public class Matrix
+{
+    private int[,] _matrix;
+    
+    public Matrix(int rows, int columns)
+    {
+        _matrix = new int[rows, columns];
+    }
+    
+    // Multi-dimensional indexer
+    public int this[int row, int column]
+    {
+        get => _matrix[row, column];
+        set => _matrix[row, column] = value;
+    }
+}
+
+// Usage
+Matrix matrix = new Matrix(3, 3);
+matrix[0, 0] = 1;
+matrix[1, 1] = 2;
+```
+
+**String-based Indexers:**
+```csharp
+public class Dictionary
+{
+    private Dictionary<string, string> _items = new();
+    
+    // String-based indexer
+    public string this[string key]
+    {
+        get => _items.TryGetValue(key, out string value) ? value : null;
+        set => _items[key] = value;
+    }
+}
+
+// Usage
+Dictionary dict = new Dictionary();
+dict["name"] = "John";
+dict["age"] = "30";
+Console.WriteLine(dict["name"]); // "John"
+```
+
+**Properties vs Fields:**
+```csharp
+public class Example
+{
+    // Field - direct access to memory
+    public string FieldName;
+    
+    // Property - controlled access with logic
+    private string _propertyName;
+    public string PropertyName
+    {
+        get => _propertyName;
+        set => _propertyName = value?.Trim();
+    }
+}
+```
+
+**Key Differences:**
+- **Fields**: Direct memory access, no validation, no side effects
+- **Properties**: Controlled access, validation, side effects, encapsulation
+
+**Best Practices:**
+1. Use properties for public data access
+2. Use fields only for private implementation details
+3. Use auto-properties when no validation is needed
+4. Use expression-bodied properties for simple computations
+5. Use init-only properties for immutable data
+6. Validate input in property setters
+7. Use indexers when your class represents a collection
+
+---
+
+### What are the key differences between .NET Framework, .NET Core, and .NET 5+?
+
+**Answer:**
+
+The .NET ecosystem has evolved significantly, with different versions serving different purposes and platforms.
+
+**Historical Timeline:**
+- **.NET Framework (2002)**: Original .NET platform for Windows
+- **.NET Core (2016)**: Cross-platform, open-source rewrite
+- **.NET 5+ (2020)**: Unified platform combining Framework and Core
+
+**Key Differences:**
+
+| Feature | .NET Framework | .NET Core | .NET 5+ |
+|---------|---------------|-----------|---------|
+| **Platform Support** | Windows only | Cross-platform | Cross-platform |
+| **Open Source** | No | Yes | Yes |
+| **Side-by-side** | No | Yes | Yes |
+| **Performance** | Good | Better | Best |
+| **Deployment** | Framework-dependent | Self-contained | Self-contained |
+| **Package Size** | Large | Smaller | Smallest |
+| **Docker Support** | Limited | Excellent | Excellent |
+
+**.NET Framework:**
+```csharp
+// .NET Framework - Windows only
+// Uses System.Web for web applications
+// Requires .NET Framework runtime installed
+// Larger package size
+// Limited cross-platform support
+
+// Example: ASP.NET Web Forms (Framework only)
+public partial class Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        // Framework-specific code
+    }
+}
+```
+
+**.NET Core:**
+```csharp
+// .NET Core - Cross-platform
+// Modern, lightweight, fast
+// Self-contained deployments
+// Better performance
+// Docker-friendly
+
+// Example: ASP.NET Core Web API
+[ApiController]
+[Route("api/[controller]")]
+public class WeatherController : ControllerBase
+{
+    [HttpGet]
+    public IEnumerable<WeatherForecast> Get()
+    {
+        // Core-specific code
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55)
+        });
+    }
+}
+```
+
+**.NET 5+ (Unified):**
+```csharp
+// .NET 5+ - Best of both worlds
+// Single platform for all scenarios
+// Improved performance
+// Modern language features
+// Long-term support versions
+
+// Example: Modern .NET 6+ Web API
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/", () => "Hello World!");
+app.Run();
+```
+
+**Migration Path:**
+```csharp
+// .NET Framework → .NET Core → .NET 5+
+// 1. Update project file format
+// 2. Replace Framework-specific APIs
+// 3. Update dependencies
+// 4. Test cross-platform compatibility
+
+// Old .NET Framework project file
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+</Project>
+
+// New .NET 5+ project file
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+</Project>
+```
+
+**When to Use Each:**
+
+**.NET Framework:**
+- Legacy Windows applications
+- When you need Windows-specific features
+- Existing applications that are difficult to migrate
+- When you need specific Framework-only libraries
+
+**.NET Core:**
+- New cross-platform applications
+- Microservices and containers
+- High-performance scenarios
+- Cloud-native applications
+
+**.NET 5+:**
+- All new development (recommended)
+- Modern applications
+- When you want the latest features
+- Long-term support and updates
+
+**Performance Comparison:**
+```csharp
+// Benchmark results (approximate)
+// .NET Framework: Baseline
+// .NET Core: 2-3x faster
+// .NET 5+: 3-4x faster
+// .NET 6+: 4-5x faster
+
+// Example: JSON serialization performance
+var data = new { Name = "John", Age = 30 };
+var json = JsonSerializer.Serialize(data); // Much faster in .NET 5+
+```
+
+**Package Size Comparison:**
+```
+.NET Framework: ~50MB (runtime)
+.NET Core: ~30MB (runtime)
+.NET 5+: ~25MB (runtime)
+Self-contained: ~100MB+ (includes runtime)
+```
+
+**API Differences:**
+```csharp
+// .NET Framework
+using System.Web;
+using System.Web.Mvc;
+
+// .NET Core/5+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+
+// Configuration differences
+// Framework: web.config, app.config
+// Core/5+: appsettings.json, environment variables
+```
+
+**Best Practices:**
+1. **Use .NET 5+** for all new development
+2. **Migrate gradually** from Framework to .NET 5+
+3. **Test thoroughly** when migrating
+4. **Use self-contained deployments** for containers
+5. **Leverage cross-platform benefits** when possible
+6. **Keep dependencies updated** for security and performance
+
+---
+
+### What are assemblies and namespaces in .NET?
+
+**Answer:**
+
+**Assemblies** are the fundamental unit of deployment and versioning in .NET. They contain compiled code, metadata, and resources that make up a .NET application.
+
+**Namespaces** are logical groupings of related types that help organize code and avoid naming conflicts.
+
+**Assemblies:**
+
+**What is an Assembly:**
+- A compiled unit of code (usually a .dll or .exe file)
+- Contains Intermediate Language (IL) code, metadata, and resources
+- The smallest unit of deployment in .NET
+- Has a unique identity (name, version, culture, public key)
+
+**Assembly Structure:**
+```
+MyAssembly.dll
+├── Assembly Manifest (metadata)
+├── Type Metadata
+├── IL Code
+├── Resources (images, strings, etc.)
+└── Security Information
+```
+
+**Types of Assemblies:**
+```csharp
+// 1. Executable Assembly (.exe)
+// Contains an entry point (Main method)
+// Can be run directly
+
+// 2. Library Assembly (.dll)
+// Contains reusable code
+// Cannot be run directly
+// Referenced by other assemblies
+
+// Example: Creating a library assembly
+namespace MyLibrary
+{
+    public class Calculator
+    {
+        public int Add(int a, int b) => a + b;
+        public int Multiply(int a, int b) => a * b;
+    }
+}
+
+// Compile to: MyLibrary.dll
+```
+
+**Assembly Manifest:**
+```csharp
+// Assembly information (in AssemblyInfo.cs or project file)
+[assembly: AssemblyTitle("MyApplication")]
+[assembly: AssemblyDescription("A sample application")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyCompany("MyCompany")]
+[assembly: AssemblyProduct("MyProduct")]
+[assembly: AssemblyCopyright("Copyright © 2024")]
+```
+
+**Global Assembly Cache (GAC):**
+```csharp
+// GAC is a machine-wide cache for shared assemblies
+// Only available in .NET Framework (not in .NET Core/5+)
+// Used for system assemblies and shared libraries
+
+// Installing to GAC (Framework only)
+gacutil -i MyAssembly.dll
+
+// Strong-named assemblies can be installed in GAC
+[assembly: AssemblyKeyFile("MyKey.snk")]
+```
+
+**Namespaces:**
+
+**What is a Namespace:**
+- A logical grouping of related types
+- Helps avoid naming conflicts
+- Provides a hierarchical organization
+- Similar to folders in a file system
+
+**Namespace Declaration:**
+```csharp
+// Single namespace
+namespace MyCompany.MyProject
+{
+    public class User { }
+    public class Product { }
+}
+
+// Multiple namespaces in same file
+namespace MyCompany.MyProject.Data
+{
+    public class UserRepository { }
+}
+
+namespace MyCompany.MyProject.Services
+{
+    public class UserService { }
+}
+
+// Nested namespaces
+namespace MyCompany
+{
+    namespace MyProject
+    {
+        namespace Data
+        {
+            public class UserRepository { }
+        }
+    }
+}
+```
+
+**Using Namespaces:**
+```csharp
+// Fully qualified name
+MyCompany.MyProject.User user = new MyCompany.MyProject.User();
+
+// Using directive
+using MyCompany.MyProject;
+User user = new User();
+
+// Using alias
+using Data = MyCompany.MyProject.Data;
+Data.UserRepository repo = new Data.UserRepository();
+
+// Global using (C# 10+)
+global using System;
+global using System.Collections.Generic;
+```
+
+**Assembly vs Namespace Relationship:**
+```csharp
+// One assembly can contain multiple namespaces
+// MyLibrary.dll contains:
+namespace MyCompany.Data
+{
+    public class UserRepository { }
+}
+
+namespace MyCompany.Services
+{
+    public class UserService { }
+}
+
+// Multiple assemblies can contain the same namespace
+// MyLibrary1.dll and MyLibrary2.dll both contain:
+namespace MyCompany.Common
+{
+    // Different types in each assembly
+}
+```
+
+**Assembly Loading:**
+```csharp
+// Load assembly dynamically
+Assembly assembly = Assembly.LoadFrom("MyLibrary.dll");
+Type type = assembly.GetType("MyCompany.MyClass");
+object instance = Activator.CreateInstance(type);
+
+// Get all types in assembly
+Assembly currentAssembly = Assembly.GetExecutingAssembly();
+Type[] types = currentAssembly.GetTypes();
+
+// Get assembly from type
+Assembly userAssembly = typeof(User).Assembly;
+```
+
+**Best Practices:**
+
+**Assemblies:**
+1. **Keep assemblies focused** - one responsibility per assembly
+2. **Use strong naming** for shared libraries
+3. **Version your assemblies** properly
+4. **Minimize assembly dependencies** to reduce complexity
+5. **Use assembly attributes** for metadata
+
+**Namespaces:**
+1. **Follow naming conventions** - Company.Project.Feature
+2. **Keep namespaces shallow** - avoid deep nesting
+3. **Use meaningful names** that describe the purpose
+4. **Group related types** together
+5. **Avoid namespace conflicts** with well-known libraries
+
+**Example Project Structure:**
+```
+MyProject/
+├── MyProject.Core/           (Assembly)
+│   ├── Models/              (Namespace)
+│   │   ├── User.cs
+│   │   └── Product.cs
+│   └── Interfaces/          (Namespace)
+│       └── IRepository.cs
+├── MyProject.Data/          (Assembly)
+│   └── Repositories/        (Namespace)
+│       └── UserRepository.cs
+└── MyProject.Web/           (Assembly)
+    └── Controllers/         (Namespace)
+        └── UserController.cs
+```
+
+---
+
+### What are lambda expressions and how do they work in C#?
+
+**Answer:**
+
+**Lambda Expressions** are anonymous functions that allow you to write inline code blocks that can be passed as arguments to methods or assigned to variables. They provide a concise way to represent delegates or expression trees.
+
+**Basic Lambda Syntax:**
+```csharp
+// Lambda expression syntax: (parameters) => expression
+// Simple lambda
+Func<int, int> square = x => x * x;
+int result = square(5); // 25
+
+// Lambda with multiple parameters
+Func<int, int, int> add = (x, y) => x + y;
+int sum = add(3, 4); // 7
+
+// Lambda with no parameters
+Func<string> getMessage = () => "Hello World";
+string message = getMessage(); // "Hello World"
+```
+
+**Lambda vs Anonymous Methods:**
+```csharp
+// Anonymous method (C# 2.0)
+Func<int, int> oldWay = delegate(int x) { return x * x; };
+
+// Lambda expression (C# 3.0+) - more concise
+Func<int, int> newWay = x => x * x;
+
+// Both do the same thing, but lambda is cleaner
+```
+
+**Lambda with LINQ:**
+```csharp
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+// Using lambda with LINQ methods
+var evenNumbers = numbers.Where(x => x % 2 == 0);
+var doubled = numbers.Select(x => x * 2);
+var sum = numbers.Aggregate((x, y) => x + y);
+
+// Lambda with complex expressions
+var result = numbers
+    .Where(x => x > 5)
+    .Select(x => x * x)
+    .OrderByDescending(x => x);
+```
+
+**Lambda with Events:**
+```csharp
+public class Button
+{
+    public event EventHandler Click;
+    
+    protected virtual void OnClick()
+    {
+        Click?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+// Using lambda with events
+Button button = new Button();
+button.Click += (sender, e) => Console.WriteLine("Button clicked!");
+button.Click += (sender, e) => MessageBox.Show("Hello!");
+```
+
+**Lambda with Action and Func:**
+```csharp
+// Action - no return value
+Action<string> printMessage = message => Console.WriteLine(message);
+printMessage("Hello"); // Prints "Hello"
+
+// Action with multiple parameters
+Action<string, int> printMessageWithCount = (msg, count) => 
+    Console.WriteLine($"{msg} (Count: {count})");
+
+// Func - with return value
+Func<int, int, int> multiply = (x, y) => x * y;
+int product = multiply(3, 4); // 12
+
+// Func with different return types
+Func<string, int> getLength = str => str.Length;
+int length = getLength("Hello"); // 5
+```
+
+**Lambda with Complex Logic:**
+```csharp
+// Lambda with multiple statements (use braces)
+Func<int, int> complexOperation = x =>
+{
+    int temp = x * 2;
+    if (temp > 10)
+        return temp + 5;
+    else
+        return temp - 2;
+};
+
+// Lambda with local variables
+Func<int, int> factorial = n =>
+{
+    int result = 1;
+    for (int i = 1; i <= n; i++)
+        result *= i;
+    return result;
+};
+```
+
+**Lambda with Predicates:**
+```csharp
+// Predicate<T> - returns bool
+Predicate<int> isEven = x => x % 2 == 0;
+bool result = isEven(4); // true
+
+// Using with List<T>.FindAll
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+var evenNumbers = numbers.FindAll(x => x % 2 == 0); // [2, 4, 6]
+```
+
+**Lambda with Custom Delegates:**
+```csharp
+// Custom delegate
+public delegate int MathOperation(int x, int y);
+
+// Using lambda with custom delegate
+MathOperation add = (x, y) => x + y;
+MathOperation multiply = (x, y) => x * y;
+
+int sum = add(5, 3); // 8
+int product = multiply(5, 3); // 15
+```
+
+**Lambda with Expression Trees:**
+```csharp
+using System.Linq.Expressions;
+
+// Expression tree - represents code as data
+Expression<Func<int, int, int>> expression = (x, y) => x + y;
+
+// Can be compiled to executable code
+Func<int, int, int> compiled = expression.Compile();
+int result = compiled(3, 4); // 7
+
+// Can be analyzed and modified
+BinaryExpression body = (BinaryExpression)expression.Body;
+ParameterExpression left = (ParameterExpression)body.Left;
+ParameterExpression right = (ParameterExpression)body.Right;
+```
+
+**Lambda with Closures:**
+```csharp
+// Lambda captures variables from outer scope
+int multiplier = 10;
+Func<int, int> multiplyByTen = x => x * multiplier;
+
+int result = multiplyByTen(5); // 50
+
+// Changing the captured variable affects the lambda
+multiplier = 20;
+int newResult = multiplyByTen(5); // 100
+```
+
+**Lambda with Async/Await:**
+```csharp
+// Async lambda
+Func<Task<string>> asyncLambda = async () =>
+{
+    await Task.Delay(1000);
+    return "Async result";
+};
+
+// Using async lambda
+string result = await asyncLambda();
+```
+
+**When to Use Lambda Expressions:**
+1. **LINQ operations** - Where, Select, OrderBy, etc.
+2. **Event handlers** - Simple event handling
+3. **Callback functions** - Passing behavior as parameters
+4. **Functional programming** - Map, filter, reduce operations
+5. **Short, simple operations** - One-liner functions
+
+**When NOT to Use Lambda Expressions:**
+1. **Complex logic** - Use regular methods instead
+2. **Reusable code** - Create named methods
+3. **Performance-critical code** - Regular methods might be faster
+4. **Debugging** - Harder to debug than named methods
+
+**Best Practices:**
+1. **Keep lambdas simple** - avoid complex logic
+2. **Use meaningful parameter names** when possible
+3. **Consider readability** - don't sacrifice clarity for brevity
+4. **Use parentheses** for multiple parameters: `(x, y) => x + y`
+5. **Use braces** for multiple statements: `x => { /* multiple statements */ }`
+
+---
+
+### What are the fundamental concepts of threading in .NET?
+
+**Answer:**
+
+**Threading** allows your application to perform multiple operations concurrently, improving responsiveness and utilizing multiple CPU cores effectively.
+
+**Basic Threading Concepts:**
+
+**Thread vs Process:**
+```csharp
+// Process: Complete application with its own memory space
+// Thread: Unit of execution within a process
+// A process can have multiple threads
+
+// Creating a new thread
+Thread newThread = new Thread(() =>
+{
+    Console.WriteLine("Running on background thread");
+    Thread.Sleep(2000);
+    Console.WriteLine("Background thread completed");
+});
+
+newThread.Start();
+Console.WriteLine("Main thread continues...");
+```
+
+**Thread Class:**
+```csharp
+public class ThreadExample
+{
+    public static void Main()
+    {
+        // Create and start a thread
+        Thread workerThread = new Thread(DoWork);
+        workerThread.Start();
+        
+        // Main thread continues
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"Main thread: {i}");
+            Thread.Sleep(500);
+        }
+        
+        // Wait for worker thread to complete
+        workerThread.Join();
+        Console.WriteLine("All threads completed");
+    }
+    
+    static void DoWork()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"Worker thread: {i}");
+            Thread.Sleep(300);
+        }
+    }
+}
+```
+
+**ThreadPool:**
+```csharp
+// ThreadPool manages a pool of worker threads
+// More efficient than creating new threads manually
+// Automatically manages thread lifecycle
+
+public class ThreadPoolExample
+{
+    public static void Main()
+    {
+        // Queue work to ThreadPool
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 1");
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 2");
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 3");
+        
+        Console.WriteLine("Main thread continues...");
+        Thread.Sleep(3000); // Wait for tasks to complete
+    }
+    
+    static void DoWork(object state)
+    {
+        string taskName = (string)state;
+        Console.WriteLine($"ThreadPool thread executing: {taskName}");
+        Thread.Sleep(1000);
+        Console.WriteLine($"Completed: {taskName}");
+    }
+}
+```
+
+**Race Conditions:**
+```csharp
+// Race condition example
+public class RaceConditionExample
+{
+    private static int counter = 0;
+    
+    public static void Main()
+    {
+        // Start multiple threads that modify shared data
+        Thread[] threads = new Thread[5];
+        
+        for (int i = 0; i < 5; i++)
+        {
+            threads[i] = new Thread(IncrementCounter);
+            threads[i].Start();
+        }
+        
+        // Wait for all threads
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+        
+        Console.WriteLine($"Final counter value: {counter}");
+        // Expected: 5000, Actual: varies due to race condition
+    }
+    
+    static void IncrementCounter()
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            counter++; // Race condition here!
+        }
+    }
+}
+```
+
+**Thread Synchronization:**
+
+**1. Lock Statement:**
+```csharp
+public class SynchronizedExample
+{
+    private static int counter = 0;
+    private static readonly object lockObject = new object();
+    
+    public static void Main()
+    {
+        Thread[] threads = new Thread[5];
+        
+        for (int i = 0; i < 5; i++)
+        {
+            threads[i] = new Thread(IncrementCounterSafely);
+            threads[i].Start();
+        }
+        
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+        
+        Console.WriteLine($"Final counter value: {counter}"); // Always 5000
+    }
+    
+    static void IncrementCounterSafely()
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            lock (lockObject) // Thread-safe increment
+            {
+                counter++;
+            }
+        }
+    }
+}
+```
+
+**2. Monitor Class:**
+```csharp
+public class MonitorExample
+{
+    private static readonly object lockObject = new object();
+    
+    public static void Main()
+    {
+        Thread thread1 = new Thread(DoWorkWithMonitor);
+        Thread thread2 = new Thread(DoWorkWithMonitor);
+        
+        thread1.Start();
+        thread2.Start();
+        
+        thread1.Join();
+        thread2.Join();
+    }
+    
+    static void DoWorkWithMonitor()
+    {
+        Monitor.Enter(lockObject);
+        try
+        {
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} acquired lock");
+            Thread.Sleep(2000);
+        }
+        finally
+        {
+            Monitor.Exit(lockObject);
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} released lock");
+        }
+    }
+}
+```
+
+**3. Mutex:**
+```csharp
+public class MutexExample
+{
+    private static Mutex mutex = new Mutex();
+    
+    public static void Main()
+    {
+        Thread[] threads = new Thread[3];
+        
+        for (int i = 0; i < 3; i++)
+        {
+            threads[i] = new Thread(DoWorkWithMutex);
+            threads[i].Start();
+        }
+        
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+    }
+    
+    static void DoWorkWithMutex()
+    {
+        mutex.WaitOne(); // Acquire mutex
+        try
+        {
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} in critical section");
+            Thread.Sleep(1000);
+        }
+        finally
+        {
+            mutex.ReleaseMutex(); // Release mutex
+        }
+    }
+}
+```
+
+**Thread vs Task:**
+```csharp
+// Thread - lower level, more control
+Thread thread = new Thread(() =>
+{
+    Console.WriteLine("Thread-based work");
+});
+thread.Start();
+
+// Task - higher level, better for most scenarios
+Task task = Task.Run(() =>
+{
+    Console.WriteLine("Task-based work");
+});
+
+// Task with return value
+Task<int> taskWithResult = Task.Run(() =>
+{
+    Thread.Sleep(1000);
+    return 42;
+});
+
+int result = await taskWithResult;
+Console.WriteLine($"Result: {result}");
+```
+
+**Thread Safety:**
+```csharp
+public class ThreadSafeCounter
+{
+    private int _count = 0;
+    private readonly object _lock = new object();
+    
+    public int Count
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _count;
+            }
+        }
+    }
+    
+    public void Increment()
+    {
+        lock (_lock)
+        {
+            _count++;
+        }
+    }
+    
+    public void Decrement()
+    {
+        lock (_lock)
+        {
+            _count--;
+        }
+    }
+}
+```
+
+**Best Practices:**
+1. **Use Task instead of Thread** for most scenarios
+2. **Avoid shared mutable state** when possible
+3. **Use appropriate synchronization** mechanisms
+4. **Don't lock on public objects** or types
+5. **Keep critical sections short** to avoid blocking
+6. **Use thread-safe collections** when available
+7. **Avoid Thread.Sleep** in production code
+8. **Use async/await** for I/O operations
+
+**Common Threading Issues:**
+1. **Race conditions** - multiple threads accessing shared data
+2. **Deadlocks** - threads waiting for each other indefinitely
+3. **Starvation** - some threads never get CPU time
+4. **Context switching overhead** - too many threads can hurt performance
+
+---
 
 ## Object-Oriented Programming
 
-### 16. Explain the four pillars of OOP with real-world examples.
+### Explain the four pillars of OOP with real-world examples.
 
 **Answer:**
 
@@ -2692,7 +4897,7 @@ foreach (Employee emp in employees)
 
 ---
 
-### 17. What is the SOLID principle? Explain each letter with examples.
+### What is the SOLID principle? Explain each letter with examples.
 
 **Answer:**
 
@@ -3374,7 +5579,7 @@ orderService.PlaceOrder(order);
 ---
 # C# Object-Oriented Programming Concepts
 
-### 18. What is the difference between method overloading and method overriding?
+### What is the difference between method overloading and method overriding?
 
 **Method Overloading** occurs when multiple methods in the same class have the same name but different parameters (different number, type, or order of parameters). It's a compile-time polymorphism.
 
@@ -3439,7 +5644,7 @@ myDog.MakeSound();      // Outputs: Woof!
 
 ---
 
-### 19. Explain the concept of polymorphism with examples.
+### Explain the concept of polymorphism with examples.
 
 **Polymorphism** means "many forms" and allows objects to be treated as instances of their parent class while exhibiting behavior specific to their actual class. There are two types:
 
@@ -3521,7 +5726,7 @@ foreach (Shape shape in shapes)
 
 ---
 
-### 20. What are sealed classes and sealed methods?
+### What are sealed classes and sealed methods?
 
 **Sealed Classes** are classes that cannot be inherited. They prevent other classes from deriving from them.
 
@@ -3571,7 +5776,7 @@ public class DerivedClass : MiddleClass
 
 ---
 
-### 21. Describe the difference between composition and inheritance.
+### Describe the difference between composition and inheritance.
 
 **Inheritance** ("is-a" relationship) - A class derives from another class and inherits its members.
 
@@ -3652,7 +5857,7 @@ public class Car2
 
 ---
 
-### 22. What is the Liskov Substitution Principle and why is it important?
+### What is the Liskov Substitution Principle and why is it important?
 
 The **Liskov Substitution Principle (LSP)** is one of the SOLID principles. It states that objects of a derived class should be able to replace objects of the base class without affecting the correctness of the program.
 
@@ -3735,7 +5940,7 @@ public class Square : Shape
 
 ---
 
-### 23. Explain dependency injection and its benefits.
+### Explain dependency injection and its benefits.
 
 **Dependency Injection (DI)** is a design pattern where objects receive their dependencies from external sources rather than creating them internally. It implements the Dependency Inversion Principle (one of SOLID principles).
 
@@ -3836,7 +6041,7 @@ services.AddScoped<NotificationService>();
 
 ---
 
-### 24. What are design patterns? Name and explain 5 commonly used patterns.
+### What are design patterns? Name and explain 5 commonly used patterns.
 
 **Design Patterns** are reusable solutions to common software design problems. They represent best practices and provide a template for solving specific issues in software development.
 
@@ -4142,7 +6347,7 @@ var laptop = repository.GetById(1);
 
 ---
 
-### 25. What is the difference between shallow copy and deep copy?
+### What is the difference between shallow copy and deep copy?
 
 **Shallow Copy** creates a new object but copies only the reference of nested objects. Changes to nested objects affect both the original and copied object.
 
@@ -4267,9 +6472,1827 @@ public class PersonSerializable
 | Implementation | Simple (MemberwiseClone) | Complex (manual or serialization) |
 ---
 
-## Asynchronous Programming (12 questions)
+### What is the difference between virtual, override, and new keywords in C#?
 
-### 26. Explain `async` and `await` keywords in C#.
+**Answer:**
+
+These three keywords control how methods behave in inheritance hierarchies and are fundamental to understanding polymorphism in C#.
+
+**1. `virtual` Keyword:**
+- Marks a method in the base class as **overridable**
+- Allows derived classes to provide their own implementation
+- Enables **runtime polymorphism**
+
+**2. `override` Keyword:**
+- Used in derived classes to **replace** the virtual method implementation
+- Provides **runtime polymorphism** - the correct method is called based on the actual object type
+- Must override a virtual, abstract, or override method
+
+**3. `new` Keyword:**
+- Used for **method hiding** (not overriding)
+- Creates a new method that **hides** the base class method
+- Provides **compile-time polymorphism** - method called depends on reference type, not object type
+
+**Example:**
+
+```csharp
+public class Animal
+{
+    // Virtual method - can be overridden
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+    
+    // Regular method - can be hidden with 'new'
+    public void Move()
+    {
+        Console.WriteLine("Animal moves");
+    }
+}
+
+public class Dog : Animal
+{
+    // Override - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Dog barks: Woof!");
+    }
+    
+    // Method hiding with 'new' - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Dog runs on four legs");
+    }
+}
+
+public class Cat : Animal
+{
+    // Override - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Cat meows: Meow!");
+    }
+    
+    // Method hiding with 'new' - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Cat walks gracefully");
+    }
+}
+
+// Demonstration of the differences
+public class PolymorphismDemo
+{
+    public static void DemonstratePolymorphism()
+    {
+        // Runtime Polymorphism (override)
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+        
+        // Calls the overridden method based on actual object type
+        animal1.MakeSound(); // Output: "Dog barks: Woof!"
+        animal2.MakeSound(); // Output: "Cat meows: Meow!"
+        
+        // Compile-time Polymorphism (new)
+        // Calls the method based on reference type, not object type
+        animal1.Move(); // Output: "Animal moves" (base class method)
+        animal2.Move(); // Output: "Animal moves" (base class method)
+        
+        // To call the hidden method, need to cast to derived type
+        ((Dog)animal1).Move(); // Output: "Dog runs on four legs"
+        ((Cat)animal2).Move(); // Output: "Cat walks gracefully"
+        
+        // Direct instantiation calls the correct method
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        
+        dog.MakeSound(); // Output: "Dog barks: Woof!"
+        dog.Move();      // Output: "Dog runs on four legs"
+        
+        cat.MakeSound(); // Output: "Cat meows: Meow!"
+        cat.Move();      // Output: "Cat walks gracefully"
+    }
+}
+```
+
+**Advanced Example with Method Chaining:**
+
+```csharp
+public class Vehicle
+{
+    public virtual void Start()
+    {
+        Console.WriteLine("Vehicle started");
+    }
+    
+    public virtual void Stop()
+    {
+        Console.WriteLine("Vehicle stopped");
+    }
+    
+    // Virtual method that can be overridden
+    public virtual void DisplayInfo()
+    {
+        Console.WriteLine("This is a vehicle");
+    }
+}
+
+public class Car : Vehicle
+{
+    public override void Start()
+    {
+        Console.WriteLine("Car engine started");
+        base.Start(); // Call base implementation
+    }
+    
+    public override void Stop()
+    {
+        Console.WriteLine("Car engine stopped");
+        base.Stop(); // Call base implementation
+    }
+    
+    // Override with additional functionality
+    public override void DisplayInfo()
+    {
+        base.DisplayInfo(); // Call base method
+        Console.WriteLine("It has 4 wheels");
+    }
+}
+
+public class ElectricCar : Car
+{
+    public override void Start()
+    {
+        Console.WriteLine("Electric car booting up...");
+        // Don't call base.Start() - we want different behavior
+        Console.WriteLine("Electric car ready");
+    }
+    
+    // Hide the Stop method with new implementation
+    public new void Stop()
+    {
+        Console.WriteLine("Electric car shutting down");
+        // This doesn't call the base Stop method
+    }
+}
+
+// Usage
+Vehicle vehicle = new ElectricCar();
+vehicle.Start(); // Calls ElectricCar.Start() - runtime polymorphism
+vehicle.Stop();  // Calls Vehicle.Stop() - compile-time polymorphism (hiding)
+
+ElectricCar electricCar = new ElectricCar();
+electricCar.Stop(); // Calls ElectricCar.Stop() - the hidden method
+```
+
+**Key Differences Summary:**
+
+| Aspect | `virtual` | `override` | `new` |
+|--------|-----------|------------|-------|
+| **Purpose** | Makes method overridable | Replaces virtual method | Hides base method |
+| **Polymorphism** | Enables runtime | Runtime polymorphism | Compile-time binding |
+| **Method Resolution** | Based on object type | Based on object type | Based on reference type |
+| **Base Method Call** | Can call with `base.` | Can call with `base.` | Cannot call base method |
+| **When to Use** | Base class design | Derived class implementation | Method hiding scenarios |
+
+**Best Practices:**
+- Use `virtual` in base classes when you want derived classes to customize behavior
+- Use `override` when you want true polymorphism and method replacement
+- Use `new` sparingly - only when you need to hide a method and don't want polymorphism
+- Prefer `override` over `new` for better object-oriented design
+- Always call `base.MethodName()` in overrides when you want to extend, not replace, functionality
+
+---
+
+### What are access modifiers in C# and when would you use each?
+
+**Answer:**
+
+Access modifiers control the visibility and accessibility of classes, methods, properties, and other members in C#. They are fundamental to encapsulation and object-oriented design.
+
+**Available Access Modifiers:**
+
+**1. `public` - Most Permissive**
+- Accessible from anywhere
+- No restrictions on access
+
+**2. `private` - Most Restrictive**
+- Only accessible within the same class
+- Default for class members
+
+**3. `protected` - Family Access**
+- Accessible within the same class and derived classes
+- Not accessible from outside the inheritance hierarchy
+
+**4. `internal` - Assembly Access**
+- Accessible within the same assembly (project)
+- Default for classes and interfaces
+
+**5. `protected internal` - Family or Assembly Access**
+- Accessible within the same assembly OR derived classes (even in different assemblies)
+
+**6. `private protected` - Family and Assembly Access (C# 7.2+)**
+- Accessible within the same class, derived classes, AND same assembly
+
+**Example:**
+
+```csharp
+// Assembly: MyLibrary.dll
+namespace MyLibrary
+{
+    // Internal class - only accessible within this assembly
+    internal class InternalHelper
+    {
+        public void DoWork() { }
+    }
+    
+    // Public class - accessible from other assemblies
+    public class BankAccount
+    {
+        // Private field - only accessible within this class
+        private decimal balance;
+        private string accountNumber;
+        
+        // Protected field - accessible in derived classes
+        protected DateTime lastTransactionDate;
+        
+        // Internal field - accessible within this assembly
+        internal string internalNotes;
+        
+        // Protected internal - accessible in derived classes OR same assembly
+        protected internal string specialNotes;
+        
+        // Private protected - accessible in derived classes AND same assembly
+        private protected string confidentialNotes;
+        
+        // Public constructor
+        public BankAccount(string accountNumber, decimal initialBalance)
+        {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+            lastTransactionDate = DateTime.Now;
+        }
+        
+        // Public property - accessible from anywhere
+        public decimal Balance
+        {
+            get { return balance; }
+            private set // Private setter - only this class can modify
+            {
+                if (value < 0)
+                    throw new ArgumentException("Balance cannot be negative");
+                balance = value;
+            }
+        }
+        
+        // Public method - accessible from anywhere
+        public void Deposit(decimal amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            
+            Balance += amount;
+            lastTransactionDate = DateTime.Now;
+            LogTransaction("Deposit", amount);
+        }
+        
+        // Protected method - accessible in derived classes
+        protected virtual void LogTransaction(string type, decimal amount)
+        {
+            Console.WriteLine($"{type}: {amount:C} on {lastTransactionDate}");
+        }
+        
+        // Internal method - accessible within this assembly
+        internal void InternalAudit()
+        {
+            Console.WriteLine($"Internal audit for account {accountNumber}");
+        }
+        
+        // Private method - only accessible within this class
+        private void ValidateAccount()
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+                throw new InvalidOperationException("Invalid account number");
+        }
+    }
+    
+    // Derived class in the same assembly
+    public class SavingsAccount : BankAccount
+    {
+        private decimal interestRate;
+        
+        public SavingsAccount(string accountNumber, decimal initialBalance, decimal interestRate)
+            : base(accountNumber, initialBalance)
+        {
+            this.interestRate = interestRate;
+        }
+        
+        // Can access protected members
+        public void ApplyInterest()
+        {
+            decimal interest = Balance * interestRate;
+            Balance += interest; // Can access protected setter through property
+            lastTransactionDate = DateTime.Now; // Can access protected field
+            LogTransaction("Interest", interest); // Can access protected method
+        }
+        
+        // Can access protected internal members
+        public void UpdateSpecialNotes(string notes)
+        {
+            specialNotes = notes; // Accessible
+        }
+        
+        // Can access private protected members
+        public void UpdateConfidentialNotes(string notes)
+        {
+            confidentialNotes = notes; // Accessible (same assembly + derived)
+        }
+        
+        // Override protected method
+        protected override void LogTransaction(string type, decimal amount)
+        {
+            base.LogTransaction(type, amount);
+            Console.WriteLine($"Interest Rate: {interestRate:P}");
+        }
+    }
+}
+
+// Assembly: MyApplication.exe (references MyLibrary.dll)
+namespace MyApplication
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            var account = new BankAccount("123456", 1000);
+            
+            // Public members - accessible
+            account.Deposit(500);
+            Console.WriteLine($"Balance: {account.Balance}");
+            
+            // Internal members - NOT accessible (different assembly)
+            // account.InternalAudit(); // Compilation error
+            
+            // Protected members - NOT accessible (not derived class)
+            // account.lastTransactionDate = DateTime.Now; // Compilation error
+            
+            // Private members - NOT accessible
+            // account.balance = 2000; // Compilation error
+            
+            var savingsAccount = new SavingsAccount("789012", 2000, 0.05m);
+            savingsAccount.ApplyInterest();
+            savingsAccount.UpdateSpecialNotes("VIP Customer");
+        }
+    }
+    
+    // Derived class in different assembly
+    public class CheckingAccount : BankAccount
+    {
+        public CheckingAccount(string accountNumber, decimal initialBalance)
+            : base(accountNumber, initialBalance)
+        {
+        }
+        
+        // Can access protected members
+        public void ProcessCheck(decimal amount)
+        {
+            Balance -= amount; // Can access protected setter
+            lastTransactionDate = DateTime.Now; // Can access protected field
+        }
+        
+        // Can access protected internal members
+        public void UpdateSpecialNotes(string notes)
+        {
+            specialNotes = notes; // Accessible (derived class)
+        }
+        
+        // CANNOT access private protected members (different assembly)
+        // public void UpdateConfidentialNotes(string notes)
+        // {
+        //     confidentialNotes = notes; // Compilation error
+        // }
+    }
+}
+```
+
+**Access Modifier Guidelines:**
+
+**When to use `public`:**
+- API surface that external code needs to use
+- Properties that represent the object's state
+- Methods that provide core functionality
+
+**When to use `private`:**
+- Implementation details that should be hidden
+- Helper methods used only within the class
+- Fields that should only be modified through properties
+
+**When to use `protected`:**
+- Members that derived classes need to access
+- Virtual methods that can be overridden
+- Fields that derived classes need to modify
+
+**When to use `internal`:**
+- Classes that are implementation details of your library
+- Methods that should only be used within your assembly
+- Testing utilities that shouldn't be exposed publicly
+
+**When to use `protected internal`:**
+- Members that derived classes OR assembly code needs
+- Rarely used - consider if you really need this level of access
+
+**When to use `private protected`:**
+- Members that only derived classes in the same assembly should access
+- Very specific use case - rarely needed
+
+**Default Access Levels:**
+- **Class members**: `private`
+- **Classes and interfaces**: `internal`
+- **Namespaces**: Always `public` (cannot be modified)
+
+**Best Practices:**
+- Start with the most restrictive access level (`private`)
+- Only increase visibility when necessary
+- Use properties instead of public fields
+- Prefer `protected` over `protected internal` when possible
+- Document public APIs thoroughly
+- Use `internal` for testing utilities
+
+---
+
+### What is the difference between static and instance members?
+
+**Answer:**
+
+**Static members** belong to the class itself, while **instance members** belong to individual objects (instances) of the class. This fundamental difference affects memory allocation, access patterns, and usage scenarios.
+
+**Key Differences:**
+
+| Aspect | Static Members | Instance Members |
+|--------|----------------|------------------|
+| **Memory** | One copy per class | One copy per instance |
+| **Access** | Accessed via class name | Accessed via object reference |
+| **Lifecycle** | Created when class is first used | Created when object is instantiated |
+| **Context** | No access to instance data | Can access both instance and static data |
+| **Thread Safety** | Shared across all instances | Each instance has its own copy |
+
+**Example:**
+
+```csharp
+public class Counter
+{
+    // Static field - shared across all instances
+    private static int totalCount = 0;
+    
+    // Instance field - each object has its own copy
+    private int instanceCount = 0;
+    
+    // Static property - accessed via class name
+    public static int TotalCount
+    {
+        get { return totalCount; }
+        private set { totalCount = value; }
+    }
+    
+    // Instance property - accessed via object reference
+    public int InstanceCount
+    {
+        get { return instanceCount; }
+        private set { instanceCount = value; }
+    }
+    
+    // Static constructor - called once when class is first used
+    static Counter()
+    {
+        Console.WriteLine("Static constructor called - Counter class initialized");
+        TotalCount = 0;
+    }
+    
+    // Instance constructor - called for each new object
+    public Counter()
+    {
+        Console.WriteLine("Instance constructor called - new Counter created");
+        InstanceCount = 0;
+    }
+    
+    // Static method - can only access static members
+    public static void ResetTotalCount()
+    {
+        TotalCount = 0;
+        Console.WriteLine("Total count reset to 0");
+    }
+    
+    // Instance method - can access both static and instance members
+    public void Increment()
+    {
+        InstanceCount++;
+        TotalCount++; // Can access static members from instance methods
+        Console.WriteLine($"Instance count: {InstanceCount}, Total count: {TotalCount}");
+    }
+    
+    // Static method that creates and returns instances
+    public static Counter CreateCounter()
+    {
+        return new Counter();
+    }
+    
+    // Instance method that uses static members
+    public void DisplayStats()
+    {
+        Console.WriteLine($"This counter: {InstanceCount}");
+        Console.WriteLine($"All counters total: {TotalCount}");
+    }
+}
+
+// Usage demonstration
+public class StaticVsInstanceDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Static vs Instance Members Demo ===");
+        
+        // Access static members via class name
+        Console.WriteLine($"Initial total count: {Counter.TotalCount}");
+        Counter.ResetTotalCount();
+        
+        // Create instances
+        Counter counter1 = new Counter();
+        Counter counter2 = new Counter();
+        Counter counter3 = new Counter();
+        
+        // Use instance methods
+        counter1.Increment(); // Instance: 1, Total: 1
+        counter1.Increment(); // Instance: 2, Total: 2
+        
+        counter2.Increment(); // Instance: 1, Total: 3
+        counter2.Increment(); // Instance: 2, Total: 4
+        counter2.Increment(); // Instance: 3, Total: 5
+        
+        counter3.Increment(); // Instance: 1, Total: 6
+        
+        // Display stats for each instance
+        counter1.DisplayStats();
+        counter2.DisplayStats();
+        counter3.DisplayStats();
+        
+        // Static count is shared across all instances
+        Console.WriteLine($"Final total count: {Counter.TotalCount}");
+    }
+}
+```
+
+**Advanced Example - Utility Classes:**
+
+```csharp
+// Static utility class - cannot be instantiated
+public static class MathUtils
+{
+    // Static constants
+    public const double PI = 3.14159265359;
+    public const double E = 2.71828182846;
+    
+    // Static readonly field
+    private static readonly Random random = new Random();
+    
+    // Static methods - no instance needed
+    public static double CalculateCircleArea(double radius)
+    {
+        return PI * radius * radius;
+    }
+    
+    public static double CalculateHypotenuse(double a, double b)
+    {
+        return Math.Sqrt(a * a + b * b);
+    }
+    
+    public static int GetRandomNumber(int min, int max)
+    {
+        return random.Next(min, max + 1);
+    }
+    
+    // Static method with generic type
+    public static T Max<T>(T a, T b) where T : IComparable<T>
+    {
+        return a.CompareTo(b) > 0 ? a : b;
+    }
+}
+
+// Instance class with both static and instance members
+public class BankAccount
+{
+    // Static field - shared across all accounts
+    private static int nextAccountNumber = 1000;
+    
+    // Static property
+    public static int NextAccountNumber => nextAccountNumber;
+    
+    // Instance fields
+    private int accountNumber;
+    private decimal balance;
+    private string accountHolder;
+    
+    // Static method to generate account numbers
+    public static int GenerateAccountNumber()
+    {
+        return ++nextAccountNumber;
+    }
+    
+    // Instance constructor
+    public BankAccount(string accountHolder, decimal initialBalance)
+    {
+        this.accountNumber = GenerateAccountNumber(); // Uses static method
+        this.accountHolder = accountHolder;
+        this.balance = initialBalance;
+    }
+    
+    // Instance methods
+    public void Deposit(decimal amount)
+    {
+        balance += amount;
+    }
+    
+    public void Withdraw(decimal amount)
+    {
+        if (balance >= amount)
+            balance -= amount;
+        else
+            throw new InvalidOperationException("Insufficient funds");
+    }
+    
+    // Instance method that uses static members
+    public void DisplayAccountInfo()
+    {
+        Console.WriteLine($"Account #{accountNumber}");
+        Console.WriteLine($"Holder: {accountHolder}");
+        Console.WriteLine($"Balance: {balance:C}");
+        Console.WriteLine($"Next account number will be: {NextAccountNumber}");
+    }
+}
+
+// Usage
+public class Program
+{
+    public static void Main()
+    {
+        // Use static utility methods
+        double area = MathUtils.CalculateCircleArea(5.0);
+        double hypotenuse = MathUtils.CalculateHypotenuse(3.0, 4.0);
+        int randomNum = MathUtils.GetRandomNumber(1, 100);
+        
+        Console.WriteLine($"Circle area: {area:F2}");
+        Console.WriteLine($"Hypotenuse: {hypotenuse:F2}");
+        Console.WriteLine($"Random number: {randomNum}");
+        
+        // Create bank accounts
+        var account1 = new BankAccount("John Doe", 1000);
+        var account2 = new BankAccount("Jane Smith", 2000);
+        
+        account1.DisplayAccountInfo();
+        account2.DisplayAccountInfo();
+        
+        // Static members are shared
+        Console.WriteLine($"Next account number: {BankAccount.NextAccountNumber}");
+    }
+}
+```
+
+**When to Use Static Members:**
+
+**Use static for:**
+- Utility methods that don't need instance data
+- Constants and configuration values
+- Factory methods
+- Extension methods
+- Mathematical operations
+- Caching mechanisms
+- Logging utilities
+
+**Use instance members for:**
+- Data that varies per object
+- Methods that operate on object state
+- Properties that represent object characteristics
+- Methods that need access to instance fields
+
+**Important Considerations:**
+
+**Static Members:**
+- Cannot access instance members directly
+- Are shared across all instances (thread safety concerns)
+- Cannot be overridden (but can be hidden with `new`)
+- Cannot implement interfaces (except for static interface members in C# 8+)
+
+**Instance Members:**
+- Can access both static and instance members
+- Each instance has its own copy
+- Can be virtual and overridden
+- Can implement interface members
+
+**Best Practices:**
+- Use static for stateless operations
+- Use instance for stateful operations
+- Be careful with static mutable data (thread safety)
+- Prefer instance members for testability
+- Use static constructors for one-time initialization
+- Consider using static classes for utility functions
+
+---
+
+### What are constructors and destructors in C#?
+
+**Answer:**
+
+**Constructors** are special methods that initialize objects when they are created, while **destructors** (finalizers) are special methods that clean up resources when objects are destroyed by the garbage collector.
+
+**Constructor Types:**
+
+**1. Default Constructor**
+- Parameterless constructor
+- Automatically provided if no constructors are defined
+- Initializes fields to default values
+
+**2. Parameterized Constructor**
+- Takes parameters to initialize the object
+- Allows custom initialization
+
+**3. Copy Constructor**
+- Creates a new object by copying another object
+- Useful for creating deep copies
+
+**4. Static Constructor**
+- Initializes static members
+- Called once before the class is first used
+
+**Example:**
+
+```csharp
+public class Person
+{
+    // Fields
+    private string name;
+    private int age;
+    private DateTime birthDate;
+    private static int totalPersons = 0;
+    
+    // Static constructor - called once when class is first used
+    static Person()
+    {
+        Console.WriteLine("Person class initialized");
+        totalPersons = 0;
+    }
+    
+    // Default constructor
+    public Person()
+    {
+        Console.WriteLine("Default constructor called");
+        name = "Unknown";
+        age = 0;
+        birthDate = DateTime.MinValue;
+        totalPersons++;
+    }
+    
+    // Parameterized constructor
+    public Person(string name, int age)
+    {
+        Console.WriteLine($"Parameterized constructor called for {name}");
+        this.name = name;
+        this.age = age;
+        this.birthDate = DateTime.Now.AddYears(-age);
+        totalPersons++;
+    }
+    
+    // Copy constructor
+    public Person(Person other)
+    {
+        Console.WriteLine($"Copy constructor called for {other.name}");
+        this.name = other.name;
+        this.age = other.age;
+        this.birthDate = other.birthDate;
+        totalPersons++;
+    }
+    
+    // Constructor chaining using 'this'
+    public Person(string name) : this(name, 0)
+    {
+        Console.WriteLine("Constructor chaining - calling parameterized constructor");
+    }
+    
+    // Properties
+    public string Name
+    {
+        get => name;
+        set => name = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public int Age
+    {
+        get => age;
+        set => age = value >= 0 ? value : throw new ArgumentException("Age cannot be negative");
+    }
+    
+    public static int TotalPersons => totalPersons;
+    
+    // Methods
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Name: {name}, Age: {age}, Born: {birthDate:yyyy-MM-dd}");
+    }
+    
+    // Destructor (Finalizer) - called by garbage collector
+    ~Person()
+    {
+        Console.WriteLine($"Destructor called for {name}");
+        totalPersons--;
+    }
+}
+
+// Advanced example with resource management
+public class FileManager : IDisposable
+{
+    private string fileName;
+    private FileStream fileStream;
+    private bool disposed = false;
+    
+    // Constructor with file validation
+    public FileManager(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+            throw new ArgumentException("File name cannot be null or empty");
+        
+        this.fileName = fileName;
+        Console.WriteLine($"FileManager created for: {fileName}");
+    }
+    
+    // Method to open file
+    public void OpenFile()
+    {
+        if (fileStream != null)
+            throw new InvalidOperationException("File is already open");
+        
+        try
+        {
+            fileStream = File.Open(fileName, FileMode.OpenOrCreate);
+            Console.WriteLine($"File opened: {fileName}");
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to open file: {ex.Message}");
+        }
+    }
+    
+    // Method to write data
+    public void WriteData(string data)
+    {
+        if (fileStream == null)
+            throw new InvalidOperationException("File is not open");
+        
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Flush();
+        Console.WriteLine($"Data written to {fileName}");
+    }
+    
+    // Destructor - backup cleanup (not guaranteed to be called)
+    ~FileManager()
+    {
+        Console.WriteLine($"Destructor called for {fileName}");
+        Dispose(false);
+    }
+    
+    // IDisposable implementation for proper resource cleanup
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this); // Prevents destructor from being called
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                // Dispose managed resources
+                fileStream?.Dispose();
+                Console.WriteLine($"File closed: {fileName}");
+            }
+            
+            // Dispose unmanaged resources (if any)
+            disposed = true;
+        }
+    }
+}
+
+// Constructor inheritance example
+public class Animal
+{
+    protected string species;
+    protected int age;
+    
+    // Base class constructor
+    public Animal(string species, int age)
+    {
+        this.species = species;
+        this.age = age;
+        Console.WriteLine($"Animal constructor: {species}, {age} years old");
+    }
+    
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+}
+
+public class Dog : Animal
+{
+    private string breed;
+    
+    // Derived class constructor - must call base constructor
+    public Dog(string breed, int age) : base("Canine", age)
+    {
+        this.breed = breed;
+        Console.WriteLine($"Dog constructor: {breed} breed");
+    }
+    
+    // Constructor with default breed
+    public Dog(int age) : this("Mixed", age)
+    {
+        Console.WriteLine("Dog constructor with default breed");
+    }
+    
+    public override void MakeSound()
+    {
+        Console.WriteLine($"{breed} dog barks: Woof!");
+    }
+    
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Species: {species}, Breed: {breed}, Age: {age}");
+    }
+}
+
+// Usage demonstration
+public class ConstructorDestructorDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Constructor and Destructor Demo ===");
+        
+        // Default constructor
+        var person1 = new Person();
+        person1.DisplayInfo();
+        
+        // Parameterized constructor
+        var person2 = new Person("John Doe", 30);
+        person2.DisplayInfo();
+        
+        // Constructor chaining
+        var person3 = new Person("Jane Smith");
+        person3.DisplayInfo();
+        
+        // Copy constructor
+        var person4 = new Person(person2);
+        person4.DisplayInfo();
+        
+        // Constructor inheritance
+        var dog = new Dog("Golden Retriever", 3);
+        dog.DisplayInfo();
+        dog.MakeSound();
+        
+        // Resource management with using statement
+        using (var fileManager = new FileManager("test.txt"))
+        {
+            fileManager.OpenFile();
+            fileManager.WriteData("Hello, World!");
+        } // Dispose() is called automatically
+        
+        Console.WriteLine($"Total persons created: {Person.TotalPersons}");
+        
+        // Force garbage collection to see destructors
+        person1 = null;
+        person2 = null;
+        person3 = null;
+        person4 = null;
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+    }
+}
+```
+
+**Constructor Best Practices:**
+
+**1. Constructor Chaining:**
+```csharp
+public class Employee
+{
+    private string name;
+    private int id;
+    private string department;
+    
+    // Chain constructors to avoid code duplication
+    public Employee(string name) : this(name, 0, "Unknown")
+    {
+    }
+    
+    public Employee(string name, int id) : this(name, id, "Unknown")
+    {
+    }
+    
+    public Employee(string name, int id, string department)
+    {
+        this.name = name;
+        this.id = id;
+        this.department = department;
+    }
+}
+```
+
+**2. Validation in Constructors:**
+```csharp
+public class BankAccount
+{
+    private string accountNumber;
+    private decimal balance;
+    
+    public BankAccount(string accountNumber, decimal initialBalance)
+    {
+        // Validate parameters
+        if (string.IsNullOrWhiteSpace(accountNumber))
+            throw new ArgumentException("Account number cannot be null or empty");
+        
+        if (initialBalance < 0)
+            throw new ArgumentException("Initial balance cannot be negative");
+        
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+}
+```
+
+**Destructor Guidelines:**
+
+**When to use destructors:**
+- Clean up unmanaged resources as a safety net
+- Log object destruction for debugging
+- Update static counters or statistics
+
+**When NOT to use destructors:**
+- Don't rely on them for critical cleanup
+- Don't perform time-consuming operations
+- Don't access other managed objects (they might be finalized)
+
+**Best Practices:**
+- Implement `IDisposable` for proper resource management
+- Use `using` statements for automatic disposal
+- Call `GC.SuppressFinalize(this)` in `Dispose()`
+- Keep destructors simple and fast
+- Use constructor chaining to avoid code duplication
+- Validate parameters in constructors
+- Make constructors fail fast with clear error messages
+
+---
+
+### What is method hiding and how does it differ from method overriding?
+
+**Answer:**
+
+**Method hiding** uses the `new` keyword to hide a base class method, while **method overriding** uses the `override` keyword to replace a virtual method. The key difference is in **when** the method resolution occurs and **how** polymorphism behaves.
+
+**Key Differences:**
+
+| Aspect | Method Hiding (`new`) | Method Overriding (`override`) |
+|--------|----------------------|-------------------------------|
+| **Resolution** | Compile-time | Runtime |
+| **Polymorphism** | Based on reference type | Based on object type |
+| **Base Method** | Cannot call base method | Can call base method with `base.` |
+| **Virtual Required** | No (can hide any method) | Yes (must be virtual/abstract/override) |
+| **Method Signature** | Must match exactly | Must match exactly |
+
+**Example:**
+
+```csharp
+public class Animal
+{
+    // Virtual method - can be overridden
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+    
+    // Regular method - can be hidden
+    public void Move()
+    {
+        Console.WriteLine("Animal moves");
+    }
+    
+    // Virtual method for demonstration
+    public virtual void Sleep()
+    {
+        Console.WriteLine("Animal sleeps");
+    }
+}
+
+public class Dog : Animal
+{
+    // Method Overriding - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Dog barks: Woof!");
+    }
+    
+    // Method Hiding - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Dog runs on four legs");
+    }
+    
+    // Method Hiding with new keyword (explicit)
+    public new void Sleep()
+    {
+        Console.WriteLine("Dog sleeps in a dog bed");
+    }
+}
+
+public class Cat : Animal
+{
+    // Method Overriding
+    public override void MakeSound()
+    {
+        Console.WriteLine("Cat meows: Meow!");
+    }
+    
+    // Method Hiding
+    public new void Move()
+    {
+        Console.WriteLine("Cat walks gracefully");
+    }
+    
+    // Method Hiding
+    public new void Sleep()
+    {
+        Console.WriteLine("Cat sleeps on a windowsill");
+    }
+}
+
+// Demonstration of the differences
+public class MethodHidingVsOverridingDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Method Hiding vs Overriding Demo ===");
+        
+        // Create objects
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+        
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        
+        Console.WriteLine("\n--- Runtime Polymorphism (Override) ---");
+        // Method resolution based on ACTUAL object type
+        animal1.MakeSound(); // Calls Dog.MakeSound() - runtime polymorphism
+        animal2.MakeSound(); // Calls Cat.MakeSound() - runtime polymorphism
+        
+        Console.WriteLine("\n--- Compile-time Polymorphism (Hiding) ---");
+        // Method resolution based on REFERENCE type
+        animal1.Move(); // Calls Animal.Move() - compile-time polymorphism
+        animal2.Move(); // Calls Animal.Move() - compile-time polymorphism
+        
+        animal1.Sleep(); // Calls Animal.Sleep() - compile-time polymorphism
+        animal2.Sleep(); // Calls Animal.Sleep() - compile-time polymorphism
+        
+        Console.WriteLine("\n--- Direct Object Access ---");
+        // When accessing directly, the hidden method is called
+        dog.Move();  // Calls Dog.Move()
+        cat.Move();  // Calls Cat.Move()
+        
+        dog.Sleep(); // Calls Dog.Sleep()
+        cat.Sleep(); // Calls Cat.Sleep()
+        
+        Console.WriteLine("\n--- Casting to Access Hidden Methods ---");
+        // To call the hidden method through base reference, cast to derived type
+        ((Dog)animal1).Move();  // Calls Dog.Move()
+        ((Cat)animal2).Move();  // Calls Cat.Move()
+    }
+}
+```
+
+**Advanced Example with Method Chaining:**
+
+```csharp
+public class Vehicle
+{
+    public virtual void Start()
+    {
+        Console.WriteLine("Vehicle started");
+    }
+    
+    public virtual void Stop()
+    {
+        Console.WriteLine("Vehicle stopped");
+    }
+    
+    // Regular method that can be hidden
+    public void DisplayInfo()
+    {
+        Console.WriteLine("This is a vehicle");
+    }
+    
+    // Virtual method for overriding
+    public virtual void Maintenance()
+    {
+        Console.WriteLine("Performing general vehicle maintenance");
+    }
+}
+
+public class Car : Vehicle
+{
+    // Override - can call base method
+    public override void Start()
+    {
+        Console.WriteLine("Car engine started");
+        base.Start(); // Can call base implementation
+    }
+    
+    // Override - can call base method
+    public override void Stop()
+    {
+        Console.WriteLine("Car engine stopped");
+        base.Stop(); // Can call base implementation
+    }
+    
+    // Method hiding - cannot call base method directly
+    public new void DisplayInfo()
+    {
+        Console.WriteLine("This is a car with 4 wheels");
+        // Cannot call base.DisplayInfo() directly
+        // Would need to cast: ((Vehicle)this).DisplayInfo();
+    }
+    
+    // Method hiding with new keyword
+    public new void Maintenance()
+    {
+        Console.WriteLine("Performing car-specific maintenance");
+        Console.WriteLine("- Checking oil");
+        Console.WriteLine("- Checking tires");
+        // Cannot call base.Maintenance() directly
+    }
+}
+
+public class ElectricCar : Car
+{
+    // Override the overridden method
+    public override void Start()
+    {
+        Console.WriteLine("Electric car booting up...");
+        base.Start(); // Calls Car.Start()
+    }
+    
+    // Hide the overridden method (not recommended)
+    public new void Stop()
+    {
+        Console.WriteLine("Electric car shutting down");
+        // This hides Car.Stop(), not Vehicle.Stop()
+    }
+    
+    // Override the hidden method
+    public override void Maintenance()
+    {
+        Console.WriteLine("Performing electric car maintenance");
+        Console.WriteLine("- Checking battery");
+        Console.WriteLine("- Checking electric systems");
+        base.Maintenance(); // Calls Car.Maintenance()
+    }
+}
+
+// Usage demonstration
+public class AdvancedDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Advanced Method Hiding vs Overriding ===");
+        
+        Vehicle vehicle = new ElectricCar();
+        
+        Console.WriteLine("\n--- Through Vehicle Reference ---");
+        vehicle.Start();        // Calls ElectricCar.Start() (override chain)
+        vehicle.Stop();         // Calls Car.Stop() (override)
+        vehicle.DisplayInfo();  // Calls Vehicle.DisplayInfo() (hiding)
+        vehicle.Maintenance();  // Calls Car.Maintenance() (override)
+        
+        Console.WriteLine("\n--- Through Car Reference ---");
+        Car car = new ElectricCar();
+        car.Start();        // Calls ElectricCar.Start()
+        car.Stop();         // Calls Car.Stop()
+        car.DisplayInfo();  // Calls Car.DisplayInfo() (hiding)
+        car.Maintenance();  // Calls Car.Maintenance()
+        
+        Console.WriteLine("\n--- Through ElectricCar Reference ---");
+        ElectricCar electricCar = new ElectricCar();
+        electricCar.Start();        // Calls ElectricCar.Start()
+        electricCar.Stop();         // Calls ElectricCar.Stop() (hiding)
+        electricCar.DisplayInfo();  // Calls Car.DisplayInfo() (hiding)
+        electricCar.Maintenance();  // Calls ElectricCar.Maintenance()
+    }
+}
+```
+
+**When to Use Method Hiding:**
+
+**Use `new` (method hiding) when:**
+- You want to provide a completely different implementation
+- The base method is not virtual and you can't override it
+- You want compile-time method resolution
+- You're implementing a different interface or behavior
+
+**Use `override` (method overriding) when:**
+- You want true polymorphism
+- You want to extend or modify base behavior
+- You want runtime method resolution
+- You're following the Liskov Substitution Principle
+
+**Best Practices:**
+
+**1. Prefer Override over Hiding:**
+```csharp
+// Good: Use override for polymorphism
+public class BaseClass
+{
+    public virtual void Method() { }
+}
+
+public class DerivedClass : BaseClass
+{
+    public override void Method() // Preferred
+    {
+        base.Method(); // Can call base implementation
+    }
+}
+
+// Avoid: Method hiding unless necessary
+public class DerivedClass2 : BaseClass
+{
+    public new void Method() // Avoid unless you have a good reason
+    {
+        // Cannot call base.Method() directly
+    }
+}
+```
+
+**2. Be Explicit with `new` Keyword:**
+```csharp
+public class DerivedClass : BaseClass
+{
+    // Explicitly use 'new' to show intent
+    public new void Method()
+    {
+        // Implementation
+    }
+}
+```
+
+**3. Document the Intent:**
+```csharp
+public class DerivedClass : BaseClass
+{
+    /// <summary>
+    /// Hides the base class method with a different implementation.
+    /// This method provides car-specific behavior and does not call the base method.
+    /// </summary>
+    public new void Method()
+    {
+        // Implementation
+    }
+}
+```
+
+**Common Pitfalls:**
+
+1. **Accidental Hiding:** Forgetting to use `override` when you meant to override
+2. **Confusing Behavior:** Method hiding can be confusing because it breaks polymorphism
+3. **Cannot Call Base:** Hidden methods cannot call the base method directly
+4. **Compile-time Resolution:** Method hiding uses compile-time resolution, which can be unexpected
+
+**Summary:**
+- Use `override` for true polymorphism and when you want to extend base behavior
+- Use `new` only when you need to hide a method and provide completely different behavior
+- Always be explicit about your intent
+- Prefer `override` over `new` in most scenarios
+- Document why you're using method hiding
+
+---
+
+### What are partial classes and partial methods in C#?
+
+**Answer:**
+
+**Partial classes** allow you to split a single class definition across multiple files, while **partial methods** allow you to declare a method in one part and optionally implement it in another part. This is particularly useful for code generation, designer files, and organizing large classes.
+
+**Partial Classes:**
+
+**Benefits:**
+- Split large classes across multiple files
+- Separate generated code from hand-written code
+- Organize related functionality
+- Enable multiple developers to work on the same class
+
+**Example:**
+
+```csharp
+// File: Person.cs
+public partial class Person
+{
+    private string firstName;
+    private string lastName;
+    
+    public Person(string firstName, string lastName)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    
+    public string GetFullName()
+    {
+        return $"{firstName} {lastName}";
+    }
+}
+
+// File: Person.Properties.cs
+public partial class Person
+{
+    public string FirstName
+    {
+        get => firstName;
+        set => firstName = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public string LastName
+    {
+        get => lastName;
+        set => lastName = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public int Age { get; set; }
+    public string Email { get; set; }
+}
+
+// File: Person.Methods.cs
+public partial class Person
+{
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Name: {GetFullName()}");
+        Console.WriteLine($"Age: {Age}");
+        Console.WriteLine($"Email: {Email}");
+    }
+    
+    public bool IsAdult()
+    {
+        return Age >= 18;
+    }
+    
+    public void SendEmail(string subject, string body)
+    {
+        if (string.IsNullOrEmpty(Email))
+            throw new InvalidOperationException("Email address is not set");
+        
+        Console.WriteLine($"Sending email to {Email}");
+        Console.WriteLine($"Subject: {subject}");
+        Console.WriteLine($"Body: {body}");
+    }
+}
+
+// File: Person.Validation.cs
+public partial class Person
+{
+    public bool Validate()
+    {
+        return !string.IsNullOrEmpty(firstName) &&
+               !string.IsNullOrEmpty(lastName) &&
+               Age >= 0 &&
+               IsValidEmail(Email);
+    }
+    
+    private bool IsValidEmail(string email)
+    {
+        return !string.IsNullOrEmpty(email) && email.Contains("@");
+    }
+}
+```
+
+**Advanced Example - Code Generation Scenario:**
+
+```csharp
+// File: User.cs (Hand-written code)
+public partial class User
+{
+    private int id;
+    private string username;
+    private string email;
+    
+    public User(string username, string email)
+    {
+        this.username = username;
+        this.email = email;
+    }
+    
+    // Hand-written business logic
+    public bool IsActive()
+    {
+        return !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(email);
+    }
+    
+    public void UpdateProfile(string newEmail)
+    {
+        if (IsValidEmail(newEmail))
+        {
+            email = newEmail;
+            OnProfileUpdated(); // Partial method call
+        }
+    }
+    
+    // Partial method declaration - implemented in generated code
+    partial void OnProfileUpdated();
+    
+    // Partial method for validation - implemented in generated code
+    partial void ValidateUser();
+    
+    private bool IsValidEmail(string email)
+    {
+        return !string.IsNullOrEmpty(email) && email.Contains("@");
+    }
+}
+
+// File: User.Generated.cs (Generated code - e.g., from Entity Framework)
+public partial class User
+{
+    // Generated properties
+    public int Id
+    {
+        get => id;
+        set => id = value;
+    }
+    
+    public string Username
+    {
+        get => username;
+        set => username = value;
+    }
+    
+    public string Email
+    {
+        get => email;
+        set => email = value;
+    }
+    
+    // Generated methods
+    public override string ToString()
+    {
+        return $"User: {username} ({email})";
+    }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj is User other)
+            return id == other.id;
+        return false;
+    }
+    
+    public override int GetHashCode()
+    {
+        return id.GetHashCode();
+    }
+    
+    // Partial method implementations
+    partial void OnProfileUpdated()
+    {
+        Console.WriteLine($"Profile updated for user: {username}");
+        // Could trigger events, update database, etc.
+    }
+    
+    partial void ValidateUser()
+    {
+        if (string.IsNullOrEmpty(username))
+            throw new InvalidOperationException("Username is required");
+        
+        if (string.IsNullOrEmpty(email))
+            throw new InvalidOperationException("Email is required");
+    }
+}
+```
+
+**Partial Methods:**
+
+**Characteristics:**
+- Must be declared with `partial` keyword
+- Must return `void`
+- Cannot have access modifiers (implicitly `private`)
+- Cannot be `virtual`, `override`, `sealed`, or `extern`
+- Can have `ref` and `out` parameters
+- If not implemented, the compiler removes the method call
+
+**Example:**
+
+```csharp
+// File: DataProcessor.cs
+public partial class DataProcessor
+{
+    private List<string> data;
+    
+    public DataProcessor()
+    {
+        data = new List<string>();
+    }
+    
+    public void ProcessData()
+    {
+        Console.WriteLine("Starting data processing...");
+        
+        // Partial method calls - will be removed if not implemented
+        OnProcessingStarted();
+        
+        foreach (var item in data)
+        {
+            ProcessItem(item);
+            OnItemProcessed(item);
+        }
+        
+        OnProcessingCompleted();
+        Console.WriteLine("Data processing completed.");
+    }
+    
+    private void ProcessItem(string item)
+    {
+        // Process the item
+        Console.WriteLine($"Processing: {item}");
+    }
+    
+    // Partial method declarations
+    partial void OnProcessingStarted();
+    partial void OnItemProcessed(string item);
+    partial void OnProcessingCompleted();
+    partial void OnError(string error);
+}
+
+// File: DataProcessor.Logging.cs
+public partial class DataProcessor
+{
+    // Implement some partial methods
+    partial void OnProcessingStarted()
+    {
+        Console.WriteLine("LOG: Processing started at " + DateTime.Now);
+    }
+    
+    partial void OnItemProcessed(string item)
+    {
+        Console.WriteLine($"LOG: Processed item: {item}");
+    }
+    
+    partial void OnProcessingCompleted()
+    {
+        Console.WriteLine("LOG: Processing completed at " + DateTime.Now);
+    }
+    
+    // OnError is not implemented, so calls to it will be removed by compiler
+}
+
+// File: DataProcessor.Monitoring.cs
+public partial class DataProcessor
+{
+    private int processedCount = 0;
+    
+    // Override the implementation from Logging.cs
+    partial void OnItemProcessed(string item)
+    {
+        processedCount++;
+        Console.WriteLine($"MONITOR: Item {processedCount} processed: {item}");
+    }
+    
+    partial void OnProcessingCompleted()
+    {
+        Console.WriteLine($"MONITOR: Total items processed: {processedCount}");
+    }
+}
+```
+
+**Real-world Example - Entity Framework:**
+
+```csharp
+// File: Customer.cs (Hand-written)
+public partial class Customer
+{
+    public Customer()
+    {
+        Orders = new HashSet<Order>();
+    }
+    
+    // Hand-written business logic
+    public bool IsVIP()
+    {
+        return Orders.Count > 10 || TotalSpent > 10000;
+    }
+    
+    public void AddOrder(Order order)
+    {
+        Orders.Add(order);
+        OnOrderAdded(order);
+    }
+    
+    // Partial methods for extensibility
+    partial void OnOrderAdded(Order order);
+    partial void OnCustomerUpdated();
+}
+
+// File: Customer.Designer.cs (Generated by EF)
+public partial class Customer
+{
+    public int CustomerId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public decimal TotalSpent { get; set; }
+    
+    public virtual ICollection<Order> Orders { get; set; }
+    
+    // Generated partial method implementations
+    partial void OnOrderAdded(Order order)
+    {
+        // Could update TotalSpent, send notifications, etc.
+        TotalSpent += order.TotalAmount;
+    }
+    
+    partial void OnCustomerUpdated()
+    {
+        // Could log changes, update audit trail, etc.
+        Console.WriteLine($"Customer {CustomerId} was updated");
+    }
+}
+```
+
+**Usage and Best Practices:**
+
+```csharp
+public class PartialClassDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Partial Classes and Methods Demo ===");
+        
+        // Create and use partial class
+        var person = new Person("John", "Doe");
+        person.Age = 30;
+        person.Email = "john.doe@example.com";
+        person.DisplayInfo();
+        
+        // Use partial methods
+        var processor = new DataProcessor();
+        processor.ProcessData();
+        
+        // Entity Framework example
+        var customer = new Customer();
+        customer.FirstName = "Jane";
+        customer.LastName = "Smith";
+        customer.Email = "jane.smith@example.com";
+        
+        var order = new Order { TotalAmount = 150.00m };
+        customer.AddOrder(order); // Triggers partial method
+        
+        Console.WriteLine($"Customer is VIP: {customer.IsVIP()}");
+    }
+}
+```
+
+**Best Practices:**
+
+**For Partial Classes:**
+- Use for code generation scenarios
+- Organize large classes logically
+- Keep related functionality together
+- Use consistent naming conventions
+- Document the purpose of each partial class
+
+**For Partial Methods:**
+- Use for optional extensibility points
+- Keep method signatures simple
+- Don't rely on partial methods for critical functionality
+- Use for logging, validation, and notification scenarios
+- Consider using events instead for complex scenarios
+
+**When to Use:**
+- **Partial Classes:** Code generation, large classes, multiple developers
+- **Partial Methods:** Optional extensibility, code generation hooks, lightweight events
+
+**When NOT to Use:**
+- Don't use partial classes just to organize small classes
+- Don't use partial methods for complex logic
+- Don't rely on partial methods for critical functionality
+
+---
+
+## Asynchronous Programming
+
+### Explain `async` and `await` keywords in C#.
 
 **`async`** is a modifier that marks a method as asynchronous, indicating it can contain asynchronous operations.
 
@@ -4377,7 +8400,7 @@ var weatherData = await weatherService.GetWeatherForMultipleCitiesAsync(cities);
 
 ---
 
-### 27. What is the difference between `Task` and `Thread`?
+### What is the difference between `Task` and `Thread`?
 
 **Thread** is a lower-level construct that represents an actual OS thread. It's part of the threading infrastructure.
 
@@ -4537,7 +8560,7 @@ public class AsyncPatternExample
 
 ---
 
-### 28. What is `Task.Run()` vs `Task.Factory.StartNew()`?
+### What is `Task.Run()` vs `Task.Factory.StartNew()`?
 
 **`Task.Run()`** is the simpler, modern method for starting a task. It's the recommended approach for most scenarios.
 
@@ -4727,7 +8750,7 @@ public class CustomTaskScheduler : TaskScheduler
 
 ---
 
-### 29. Explain what `ConfigureAwait(false)` does and when to use it.
+### Explain what `ConfigureAwait(false)` does and when to use it.
 
 **`ConfigureAwait(false)`** tells the awaited task not to capture and resume on the original synchronization context. This improves performance and avoids potential deadlocks in library code.
 
@@ -4945,7 +8968,7 @@ public class BestPracticesExample
 
 ---
 
-### 30. What is a deadlock and how can async/await cause it?
+### What is a deadlock and how can async/await cause it?
 
 A **deadlock** occurs when two or more operations are waiting for each other to complete, causing the application to freeze indefinitely.
 
@@ -5246,7 +9269,7 @@ public class DeadlockDetection
 5. **Be careful with Task.WaitAll()** - Same issues as `.Result`
 
 ---
-### 31. Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`
+### Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`
 
 **Task.WhenAll()** waits for all tasks in a collection to complete before continuing. It returns a task that completes when all input tasks have completed.
 
@@ -5293,7 +9316,7 @@ var result = await dataTask;
 
 ---
 
-### 32. What is `ValueTask` and when should you use it over `Task`?
+### What is `ValueTask` and when should you use it over `Task`?
 
 **ValueTask** is a value type (struct) that represents an asynchronous operation, introduced to reduce heap allocations in high-performance scenarios.
 
@@ -5359,7 +9382,7 @@ public Task FetchDataAsync()
 
 ---
 
-### 33. How do you handle exceptions in async methods?
+### How do you handle exceptions in async methods?
 
 Exception handling in async methods uses try-catch blocks, but with important considerations for how exceptions are propagated.
 
@@ -5487,7 +9510,7 @@ public async Task ProcessAsync()
 
 ---
 
-### 34. What is the difference between synchronous and asynchronous programming?
+### What is the difference between synchronous and asynchronous programming?
 
 **Synchronous Programming:**
 
@@ -5583,7 +9606,7 @@ public async Task GetWebPageAsync(string url)
 
 ---
 
-### 35. Explain the concept of the `SynchronizationContext`
+### Explain the concept of the `SynchronizationContext`
 
 **SynchronizationContext** is an abstraction that represents a scheduling context where code can be executed. It determines which thread executes continuation code after an await.
 
@@ -5710,7 +9733,7 @@ public async Task Index()
 
 ---
 
-### 36. What are the best practices for cancellation in async operations using `CancellationToken`?
+### What are the best practices for cancellation in async operations using `CancellationToken`?
 
 **CancellationToken** provides a cooperative cancellation mechanism for async operations. Here are the best practices:
 
@@ -5953,7 +9976,7 @@ public class DataService
 
 ---
 
-### 37. How would you implement parallel processing in .NET?
+### How would you implement parallel processing in .NET?
 
 .NET provides several approaches for parallel processing depending on your scenario:
 
@@ -6243,9 +10266,1448 @@ public async Task ProcessPipelineAsync(List items)
    - Measure and optimize based on actual workload
 ---
 
-## ASP.NET Core (15 questions)
+### What is the difference between `Task.FromResult()` and `Task.Run()`?
 
-### 1. Explain the middleware pipeline in ASP.NET Core
+**Answer:**
+
+**`Task.FromResult()`** creates a completed task with a result value, while **`Task.Run()`** queues work to run on the ThreadPool. The key difference is that `Task.FromResult()` is synchronous and immediate, while `Task.Run()` is asynchronous and offloads work to a background thread.
+
+**Key Differences:**
+
+| Aspect | `Task.FromResult()` | `Task.Run()` |
+|--------|-------------------|--------------|
+| **Execution** | Synchronous, immediate | Asynchronous, queued |
+| **Thread** | Runs on current thread | Runs on ThreadPool thread |
+| **Use Case** | Already computed values | CPU-bound work |
+| **Performance** | No overhead | Thread switching overhead |
+| **When to Use** | Converting sync to async API | Offloading CPU work |
+
+**Example:**
+
+```csharp
+public class TaskCreationComparison
+{
+    // Task.FromResult() - for already computed values
+    public async Task<string> GetCachedDataAsync(string key)
+    {
+        // Simulate cache lookup (synchronous operation)
+        string cachedValue = GetFromCache(key);
+        
+        if (cachedValue != null)
+        {
+            // Already have the value - use Task.FromResult()
+            return await Task.FromResult(cachedValue);
+        }
+        
+        // Need to fetch from database (async operation)
+        return await FetchFromDatabaseAsync(key);
+    }
+    
+    // Task.Run() - for CPU-bound work
+    public async Task<int> CalculatePrimeCountAsync(int maxNumber)
+    {
+        // CPU-intensive work - offload to ThreadPool
+        return await Task.Run(() =>
+        {
+            int count = 0;
+            for (int i = 2; i <= maxNumber; i++)
+            {
+                if (IsPrime(i))
+                    count++;
+            }
+            return count;
+        });
+    }
+    
+    // WRONG: Using Task.Run() for already computed values
+    public async Task<string> GetCachedDataWrongAsync(string key)
+    {
+        string cachedValue = GetFromCache(key);
+        
+        if (cachedValue != null)
+        {
+            // BAD: Unnecessary thread switching overhead
+            return await Task.Run(() => cachedValue);
+        }
+        
+        return await FetchFromDatabaseAsync(key);
+    }
+    
+    // WRONG: Using Task.FromResult() for CPU-bound work
+    public async Task<int> CalculatePrimeCountWrongAsync(int maxNumber)
+    {
+        // BAD: Blocks the current thread
+        int count = 0;
+        for (int i = 2; i <= maxNumber; i++)
+        {
+            if (IsPrime(i))
+                count++;
+        }
+        
+        return await Task.FromResult(count);
+    }
+    
+    private string GetFromCache(string key)
+    {
+        // Simulate cache lookup
+        return key == "cached" ? "cached_value" : null;
+    }
+    
+    private async Task<string> FetchFromDatabaseAsync(string key)
+    {
+        await Task.Delay(1000); // Simulate database call
+        return $"database_value_for_{key}";
+    }
+    
+    private bool IsPrime(int number)
+    {
+        if (number < 2) return false;
+        for (int i = 2; i * i <= number; i++)
+        {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+}
+```
+
+**Advanced Examples:**
+
+```csharp
+public class AdvancedTaskCreation
+{
+    // Task.FromResult() for configuration values
+    public async Task<AppSettings> GetAppSettingsAsync()
+    {
+        // Configuration is already loaded - no need for async
+        var settings = LoadConfiguration();
+        return await Task.FromResult(settings);
+    }
+    
+    // Task.FromResult() for constants
+    public async Task<string> GetApiVersionAsync()
+    {
+        return await Task.FromResult("v1.0");
+    }
+    
+    // Task.FromResult() for simple calculations
+    public async Task<decimal> CalculateTaxAsync(decimal amount, decimal rate)
+    {
+        decimal tax = amount * rate;
+        return await Task.FromResult(tax);
+    }
+    
+    // Task.Run() for file processing
+    public async Task<string> ProcessLargeFileAsync(string filePath)
+    {
+        return await Task.Run(() =>
+        {
+            // CPU-intensive file processing
+            var lines = File.ReadAllLines(filePath);
+            var processedLines = lines
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .Select(line => line.ToUpper())
+                .OrderBy(line => line)
+                .ToArray();
+            
+            return string.Join("\n", processedLines);
+        });
+    }
+    
+    // Task.Run() for image processing
+    public async Task<byte[]> ResizeImageAsync(byte[] imageData, int width, int height)
+    {
+        return await Task.Run(() =>
+        {
+            // CPU-intensive image processing
+            using (var originalImage = Image.FromStream(new MemoryStream(imageData)))
+            using (var resizedImage = new Bitmap(originalImage, width, height))
+            using (var stream = new MemoryStream())
+            {
+                resizedImage.Save(stream, ImageFormat.Jpeg);
+                return stream.ToArray();
+            }
+        });
+    }
+    
+    private AppSettings LoadConfiguration()
+    {
+        // Simulate configuration loading
+        return new AppSettings { DatabaseConnection = "Server=localhost", ApiKey = "secret" };
+    }
+}
+
+public class AppSettings
+{
+    public string DatabaseConnection { get; set; }
+    public string ApiKey { get; set; }
+}
+```
+
+**Performance Comparison:**
+
+```csharp
+public class PerformanceComparison
+{
+    public async Task ComparePerformance()
+    {
+        const int iterations = 10000;
+        
+        // Task.FromResult() - very fast
+        var stopwatch = Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            await Task.FromResult(i);
+        }
+        stopwatch.Stop();
+        Console.WriteLine($"Task.FromResult(): {stopwatch.ElapsedMilliseconds}ms");
+        
+        // Task.Run() - slower due to thread switching
+        stopwatch.Restart();
+        for (int i = 0; i < iterations; i++)
+        {
+            await Task.Run(() => i);
+        }
+        stopwatch.Stop();
+        Console.WriteLine($"Task.Run(): {stopwatch.ElapsedMilliseconds}ms");
+    }
+}
+```
+
+**Best Practices:**
+
+**Use `Task.FromResult()` when:**
+- You already have the computed value
+- Converting synchronous APIs to async
+- Returning constants or configuration values
+- Simple calculations that don't block
+
+**Use `Task.Run()` when:**
+- Performing CPU-intensive work
+- Processing large files or data
+- Image/video processing
+- Mathematical calculations
+- Any work that could block the UI thread
+
+**Avoid `Task.Run()` when:**
+- You already have the result
+- The work is already asynchronous
+- You're just wrapping synchronous I/O operations
+- The operation is very fast
+
+**Common Anti-patterns:**
+
+```csharp
+// BAD: Unnecessary Task.Run()
+public async Task<string> GetUserNameAsync(int userId)
+{
+    var user = await GetUserFromDatabaseAsync(userId);
+    return await Task.Run(() => user.Name); // Unnecessary!
+}
+
+// GOOD: Use Task.FromResult() or just return directly
+public async Task<string> GetUserNameAsync(int userId)
+{
+    var user = await GetUserFromDatabaseAsync(userId);
+    return user.Name; // Simple return
+}
+
+// BAD: Blocking with Task.FromResult()
+public async Task<string> ProcessDataAsync(string data)
+{
+    var result = ExpensiveProcessing(data); // Blocks current thread
+    return await Task.FromResult(result);
+}
+
+// GOOD: Use Task.Run() for CPU work
+public async Task<string> ProcessDataAsync(string data)
+{
+    return await Task.Run(() => ExpensiveProcessing(data));
+}
+```
+
+**Summary:**
+- `Task.FromResult()`: For already computed values, no thread switching
+- `Task.Run()`: For CPU-bound work that needs to run on background thread
+- Choose based on whether you need to offload work or just return a value
+- Performance matters: avoid unnecessary thread switching
+
+---
+
+### How do you implement async/await in a custom class or library?
+
+**Answer:**
+
+Implementing async/await in custom classes requires following specific patterns to ensure proper async behavior, exception handling, and resource management. The key is to implement the async pattern correctly and provide both sync and async versions when appropriate.
+
+**Basic Async Implementation:**
+
+```csharp
+public class DataService
+{
+    private readonly HttpClient httpClient;
+    
+    public DataService(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+    
+    // Async method with proper naming convention
+    public async Task<string> GetDataAsync(string url, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Use ConfigureAwait(false) in library code
+            var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return content;
+        }
+        catch (HttpRequestException ex)
+        {
+            // Wrap in more specific exception
+            throw new DataServiceException($"Failed to retrieve data from {url}", ex);
+        }
+    }
+    
+    // Async method with return value
+    public async Task<T> GetDataAsync<T>(string url, CancellationToken cancellationToken = default)
+    {
+        var json = await GetDataAsync(url, cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<T>(json);
+    }
+    
+    // Async method with multiple operations
+    public async Task<ProcessedData> ProcessDataAsync(string input, CancellationToken cancellationToken = default)
+    {
+        // Validate input
+        if (string.IsNullOrEmpty(input))
+            throw new ArgumentException("Input cannot be null or empty", nameof(input));
+        
+        // Step 1: Fetch data
+        var rawData = await GetDataAsync("https://api.example.com/data", cancellationToken).ConfigureAwait(false);
+        
+        // Step 2: Process data (CPU-bound work)
+        var processedData = await Task.Run(() => ProcessRawData(rawData), cancellationToken).ConfigureAwait(false);
+        
+        // Step 3: Save result
+        await SaveDataAsync(processedData, cancellationToken).ConfigureAwait(false);
+        
+        return processedData;
+    }
+    
+    private ProcessedData ProcessRawData(string rawData)
+    {
+        // CPU-intensive processing
+        Thread.Sleep(1000); // Simulate processing
+        return new ProcessedData { Content = rawData.ToUpper(), ProcessedAt = DateTime.UtcNow };
+    }
+    
+    private async Task SaveDataAsync(ProcessedData data, CancellationToken cancellationToken)
+    {
+        // Simulate saving to database
+        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+    }
+}
+
+public class ProcessedData
+{
+    public string Content { get; set; }
+    public DateTime ProcessedAt { get; set; }
+}
+
+public class DataServiceException : Exception
+{
+    public DataServiceException(string message) : base(message) { }
+    public DataServiceException(string message, Exception innerException) : base(message, innerException) { }
+}
+```
+
+**Advanced Async Patterns:**
+
+```csharp
+public class FileProcessor
+{
+    private readonly SemaphoreSlim semaphore;
+    private readonly ILogger logger;
+    
+    public FileProcessor(int maxConcurrency = 4, ILogger logger = null)
+    {
+        this.semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+        this.logger = logger;
+    }
+    
+    // Async method with concurrency control
+    public async Task<ProcessingResult> ProcessFileAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        
+        try
+        {
+            logger?.LogInformation($"Starting to process file: {filePath}");
+            
+            // Validate file exists
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"File not found: {filePath}");
+            
+            // Read file asynchronously
+            var content = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
+            
+            // Process content (CPU-bound)
+            var processedContent = await Task.Run(() => ProcessContent(content), cancellationToken).ConfigureAwait(false);
+            
+            // Write result asynchronously
+            var outputPath = GetOutputPath(filePath);
+            await File.WriteAllTextAsync(outputPath, processedContent, cancellationToken).ConfigureAwait(false);
+            
+            logger?.LogInformation($"Successfully processed file: {filePath}");
+            
+            return new ProcessingResult
+            {
+                InputPath = filePath,
+                OutputPath = outputPath,
+                ProcessedAt = DateTime.UtcNow,
+                Success = true
+            };
+        }
+        catch (OperationCanceledException)
+        {
+            logger?.LogWarning($"Processing cancelled for file: {filePath}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex, $"Error processing file: {filePath}");
+            return new ProcessingResult
+            {
+                InputPath = filePath,
+                ProcessedAt = DateTime.UtcNow,
+                Success = false,
+                Error = ex.Message
+            };
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }
+    
+    // Batch processing with progress reporting
+    public async Task<BatchProcessingResult> ProcessFilesAsync(
+        IEnumerable<string> filePaths, 
+        IProgress<ProcessingProgress> progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        var tasks = filePaths.Select(async filePath =>
+        {
+            var result = await ProcessFileAsync(filePath, cancellationToken).ConfigureAwait(false);
+            progress?.Report(new ProcessingProgress { FilePath = filePath, Completed = true });
+            return result;
+        });
+        
+        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
+        
+        return new BatchProcessingResult
+        {
+            TotalFiles = results.Length,
+            SuccessfulFiles = results.Count(r => r.Success),
+            FailedFiles = results.Count(r => !r.Success),
+            Results = results
+        };
+    }
+    
+    private string ProcessContent(string content)
+    {
+        // Simulate CPU-intensive processing
+        Thread.Sleep(500);
+        return content.ToUpper();
+    }
+    
+    private string GetOutputPath(string inputPath)
+    {
+        return Path.ChangeExtension(inputPath, ".processed");
+    }
+    
+    public void Dispose()
+    {
+        semaphore?.Dispose();
+    }
+}
+
+public class ProcessingResult
+{
+    public string InputPath { get; set; }
+    public string OutputPath { get; set; }
+    public DateTime ProcessedAt { get; set; }
+    public bool Success { get; set; }
+    public string Error { get; set; }
+}
+
+public class BatchProcessingResult
+{
+    public int TotalFiles { get; set; }
+    public int SuccessfulFiles { get; set; }
+    public int FailedFiles { get; set; }
+    public ProcessingResult[] Results { get; set; }
+}
+
+public class ProcessingProgress
+{
+    public string FilePath { get; set; }
+    public bool Completed { get; set; }
+}
+```
+
+**Async Stream Implementation:**
+
+```csharp
+public class DataStreamer
+{
+    private readonly HttpClient httpClient;
+    
+    public DataStreamer(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+    
+    // Async enumerable for streaming data
+    public async IAsyncEnumerable<DataItem> StreamDataAsync(
+        string endpoint,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.GetAsync(endpoint, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+            .ConfigureAwait(false);
+        
+        response.EnsureSuccessStatusCode();
+        
+        using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        using var reader = new StreamReader(stream);
+        
+        string line;
+        while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                var item = ParseDataItem(line);
+                yield return item;
+            }
+        }
+    }
+    
+    // Async method with timeout
+    public async Task<string> GetDataWithTimeoutAsync(string url, TimeSpan timeout)
+    {
+        using var cts = new CancellationTokenSource(timeout);
+        
+        try
+        {
+            var response = await httpClient.GetAsync(url, cts.Token).ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cts.Token.IsCancellationRequested)
+        {
+            throw new TimeoutException($"Request timed out after {timeout.TotalSeconds} seconds");
+        }
+    }
+    
+    private DataItem ParseDataItem(string line)
+    {
+        // Simple parsing logic
+        var parts = line.Split(',');
+        return new DataItem
+        {
+            Id = parts[0],
+            Value = parts[1],
+            Timestamp = DateTime.Parse(parts[2])
+        };
+    }
+}
+
+public class DataItem
+{
+    public string Id { get; set; }
+    public string Value { get; set; }
+    public DateTime Timestamp { get; set; }
+}
+```
+
+**Async Factory Pattern:**
+
+```csharp
+public class DatabaseConnection
+{
+    private readonly string connectionString;
+    
+    private DatabaseConnection(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    // Async factory method
+    public static async Task<DatabaseConnection> CreateAsync(string connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+            throw new ArgumentException("Connection string cannot be null or empty", nameof(connectionString));
+        
+        var connection = new DatabaseConnection(connectionString);
+        
+        // Test the connection asynchronously
+        await connection.TestConnectionAsync().ConfigureAwait(false);
+        
+        return connection;
+    }
+    
+    private async Task TestConnectionAsync()
+    {
+        // Simulate connection test
+        await Task.Delay(100).ConfigureAwait(false);
+        
+        // In real implementation, you would test the actual database connection
+        if (connectionString.Contains("invalid"))
+            throw new InvalidOperationException("Invalid connection string");
+    }
+    
+    public async Task<T> QueryAsync<T>(string sql, CancellationToken cancellationToken = default)
+    {
+        // Simulate database query
+        await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        
+        // Return mock data
+        return default(T);
+    }
+}
+```
+
+**Best Practices for Async Implementation:**
+
+1. **Naming Convention:**
+   - Always suffix async methods with `Async`
+   - Use descriptive names that indicate the operation
+
+2. **Return Types:**
+   - Use `Task` for void operations
+   - Use `Task<T>` for operations that return values
+   - Use `IAsyncEnumerable<T>` for streaming data
+
+3. **Cancellation Support:**
+   - Always accept `CancellationToken` parameters
+   - Pass cancellation tokens to all async operations
+   - Check `cancellationToken.IsCancellationRequested` in loops
+
+4. **Exception Handling:**
+   - Let exceptions bubble up naturally
+   - Wrap low-level exceptions in domain-specific exceptions
+   - Use `ConfigureAwait(false)` in library code
+
+5. **Resource Management:**
+   - Use `using` statements for disposable resources
+   - Implement `IAsyncDisposable` when needed
+   - Clean up resources in finally blocks
+
+6. **Performance:**
+   - Use `ConfigureAwait(false)` in library code
+   - Avoid blocking async methods with `.Result` or `.Wait()`
+   - Use `Task.Run()` only for CPU-bound work
+
+---
+
+### What are the performance implications of async/await?
+
+**Answer:**
+
+Async/await has both benefits and performance costs. Understanding these implications is crucial for making informed decisions about when to use async programming and how to optimize it.
+
+**Performance Benefits:**
+
+1. **Better Resource Utilization**
+2. **Improved Scalability**
+3. **Non-blocking I/O Operations**
+4. **Better User Experience**
+
+**Performance Costs:**
+
+1. **Memory Allocation Overhead**
+2. **State Machine Generation**
+3. **Context Switching**
+4. **Exception Handling Overhead**
+
+**Example:**
+
+```csharp
+public class PerformanceAnalysis
+{
+    private readonly HttpClient httpClient = new HttpClient();
+    
+    // Synchronous version - blocks thread
+    public string GetDataSync(string url)
+    {
+        var response = httpClient.GetStringAsync(url).Result; // BAD: Blocking
+        return response;
+    }
+    
+    // Asynchronous version - better resource utilization
+    public async Task<string> GetDataAsync(string url)
+    {
+        var response = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+        return response;
+    }
+    
+    // Performance comparison
+    public async Task ComparePerformance()
+    {
+        const int iterations = 1000;
+        var urls = Enumerable.Range(1, iterations)
+            .Select(i => $"https://api.example.com/data/{i}")
+            .ToArray();
+        
+        // Synchronous approach - sequential, blocking
+        var stopwatch = Stopwatch.StartNew();
+        var syncResults = new List<string>();
+        
+        foreach (var url in urls.Take(10)) // Limit to 10 for demo
+        {
+            syncResults.Add(GetDataSync(url));
+        }
+        
+        stopwatch.Stop();
+        Console.WriteLine($"Synchronous: {stopwatch.ElapsedMilliseconds}ms for 10 requests");
+        
+        // Asynchronous approach - concurrent, non-blocking
+        stopwatch.Restart();
+        var asyncTasks = urls.Take(10).Select(GetDataAsync);
+        var asyncResults = await Task.WhenAll(asyncTasks);
+        
+        stopwatch.Stop();
+        Console.WriteLine($"Asynchronous: {stopwatch.ElapsedMilliseconds}ms for 10 requests");
+    }
+}
+```
+
+**Memory Allocation Analysis:**
+
+```csharp
+public class MemoryAllocationAnalysis
+{
+    // High allocation - creates new Task for each operation
+    public async Task<string> HighAllocationAsync(string input)
+    {
+        // Each await creates a state machine
+        var step1 = await ProcessStep1Async(input).ConfigureAwait(false);
+        var step2 = await ProcessStep2Async(step1).ConfigureAwait(false);
+        var step3 = await ProcessStep3Async(step2).ConfigureAwait(false);
+        
+        return step3;
+    }
+    
+    // Lower allocation - fewer await points
+    public async Task<string> LowerAllocationAsync(string input)
+    {
+        // Batch operations to reduce state machine overhead
+        var (step1, step2, step3) = await ProcessAllStepsAsync(input).ConfigureAwait(false);
+        
+        return step3;
+    }
+    
+    // Optimized - minimal allocation
+    public Task<string> OptimizedAsync(string input)
+    {
+        // For simple operations, consider if async is needed
+        if (IsCached(input))
+        {
+            return Task.FromResult(GetCachedValue(input));
+        }
+        
+        return ProcessAsync(input);
+    }
+    
+    private async Task<string> ProcessStep1Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+    
+    private async Task<string> ProcessStep2Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input + "_processed";
+    }
+    
+    private async Task<string> ProcessStep3Async(string input)
+    {
+        await Task.Delay(10).ConfigureAwait(false);
+        return input + "_final";
+    }
+    
+    private async Task<(string, string, string)> ProcessAllStepsAsync(string input)
+    {
+        await Task.Delay(30).ConfigureAwait(false); // Simulate all work
+        return (input.ToUpper(), input.ToUpper() + "_processed", input.ToUpper() + "_processed_final");
+    }
+    
+    private bool IsCached(string input) => input.Length < 5;
+    private string GetCachedValue(string input) => input.ToUpper();
+    private async Task<string> ProcessAsync(string input)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+}
+```
+
+**When Async Hurts Performance:**
+
+```csharp
+public class AsyncPerformancePitfalls
+{
+    // BAD: Unnecessary async for simple operations
+    public async Task<int> BadAsync(int a, int b)
+    {
+        // This creates unnecessary overhead
+        return await Task.FromResult(a + b).ConfigureAwait(false);
+    }
+    
+    // GOOD: Simple synchronous operation
+    public int GoodSync(int a, int b)
+    {
+        return a + b;
+    }
+    
+    // BAD: Using Task.Run() for I/O operations
+    public async Task<string> BadTaskRunAsync(string url)
+    {
+        // Task.Run() is for CPU-bound work, not I/O
+        return await Task.Run(async () =>
+        {
+            var client = new HttpClient();
+            return await client.GetStringAsync(url);
+        }).ConfigureAwait(false);
+    }
+    
+    // GOOD: Direct async I/O
+    public async Task<string> GoodAsync(string url)
+    {
+        var client = new HttpClient();
+        return await client.GetStringAsync(url).ConfigureAwait(false);
+    }
+    
+    // BAD: Blocking async methods
+    public string BadBlockingAsync(string url)
+    {
+        // This defeats the purpose of async
+        return GetDataAsync(url).Result; // Can cause deadlocks
+    }
+    
+    // BAD: Fire-and-forget without proper error handling
+    public void BadFireAndForget(string url)
+    {
+        // Exceptions will be lost
+        _ = GetDataAsync(url);
+    }
+    
+    // GOOD: Proper fire-and-forget with error handling
+    public void GoodFireAndForget(string url)
+    {
+        _ = GetDataAsync(url).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Log the exception
+                Console.WriteLine($"Error: {task.Exception?.GetBaseException().Message}");
+            }
+        }, TaskContinuationOptions.OnlyOnFaulted);
+    }
+    
+    private async Task<string> GetDataAsync(string url)
+    {
+        var client = new HttpClient();
+        return await client.GetStringAsync(url).ConfigureAwait(false);
+    }
+}
+```
+
+**Performance Optimization Techniques:**
+
+```csharp
+public class AsyncOptimization
+{
+    private readonly HttpClient httpClient = new HttpClient();
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(10, 10); // Limit concurrency
+    
+    // Optimized: Limit concurrent operations
+    public async Task<string[]> GetDataWithConcurrencyLimitAsync(string[] urls)
+    {
+        var tasks = urls.Select(async url =>
+        {
+            await semaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                return await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+        
+        return await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+    
+    // Optimized: Use ValueTask for hot paths
+    public async ValueTask<string> GetCachedDataAsync(string key)
+    {
+        if (TryGetFromCache(key, out string cachedValue))
+        {
+            return cachedValue; // No allocation
+        }
+        
+        var value = await FetchFromDatabaseAsync(key).ConfigureAwait(false);
+        CacheValue(key, value);
+        return value;
+    }
+    
+    // Optimized: Batch operations
+    public async Task<Dictionary<string, string>> GetMultipleDataAsync(string[] keys)
+    {
+        // Single database call instead of multiple
+        return await FetchMultipleFromDatabaseAsync(keys).ConfigureAwait(false);
+    }
+    
+    // Optimized: Use ConfigureAwait(false) in library code
+    public async Task<string> LibraryMethodAsync(string input)
+    {
+        var result = await ProcessInputAsync(input).ConfigureAwait(false);
+        return await TransformResultAsync(result).ConfigureAwait(false);
+    }
+    
+    private bool TryGetFromCache(string key, out string value)
+    {
+        // Simulate cache lookup
+        value = key == "cached" ? "cached_value" : null;
+        return value != null;
+    }
+    
+    private void CacheValue(string key, string value)
+    {
+        // Simulate caching
+    }
+    
+    private async Task<string> FetchFromDatabaseAsync(string key)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return $"database_value_for_{key}";
+    }
+    
+    private async Task<Dictionary<string, string>> FetchMultipleFromDatabaseAsync(string[] keys)
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return keys.ToDictionary(k => k, k => $"database_value_for_{k}");
+    }
+    
+    private async Task<string> ProcessInputAsync(string input)
+    {
+        await Task.Delay(50).ConfigureAwait(false);
+        return input.ToUpper();
+    }
+    
+    private async Task<string> TransformResultAsync(string input)
+    {
+        await Task.Delay(50).ConfigureAwait(false);
+        return input + "_transformed";
+    }
+}
+```
+
+**Performance Measurement:**
+
+```csharp
+public class AsyncPerformanceMeasurement
+{
+    public async Task MeasureAsyncPerformance()
+    {
+        const int iterations = 10000;
+        
+        // Measure memory allocation
+        var initialMemory = GC.GetTotalMemory(true);
+        
+        // Test 1: Simple async method
+        var stopwatch = Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            await SimpleAsyncMethod().ConfigureAwait(false);
+        }
+        stopwatch.Stop();
+        
+        var finalMemory = GC.GetTotalMemory(false);
+        var allocatedMemory = finalMemory - initialMemory;
+        
+        Console.WriteLine($"Simple async method:");
+        Console.WriteLine($"  Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine($"  Memory allocated: {allocatedMemory / 1024.0:F2} KB");
+        Console.WriteLine($"  Memory per call: {allocatedMemory / (double)iterations:F2} bytes");
+        
+        // Test 2: Synchronous equivalent
+        initialMemory = GC.GetTotalMemory(true);
+        stopwatch.Restart();
+        
+        for (int i = 0; i < iterations; i++)
+        {
+            SimpleSyncMethod();
+        }
+        stopwatch.Stop();
+        
+        finalMemory = GC.GetTotalMemory(false);
+        allocatedMemory = finalMemory - initialMemory;
+        
+        Console.WriteLine($"\nSynchronous method:");
+        Console.WriteLine($"  Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine($"  Memory allocated: {allocatedMemory / 1024.0:F2} KB");
+        Console.WriteLine($"  Memory per call: {allocatedMemory / (double)iterations:F2} bytes");
+    }
+    
+    private async Task<int> SimpleAsyncMethod()
+    {
+        await Task.Delay(1).ConfigureAwait(false);
+        return 42;
+    }
+    
+    private int SimpleSyncMethod()
+    {
+        Thread.Sleep(1);
+        return 42;
+    }
+}
+```
+
+**Best Practices for Performance:**
+
+1. **Use async only when beneficial:**
+   - I/O operations (network, file, database)
+   - Operations that can benefit from concurrency
+   - Operations that might block the UI thread
+
+2. **Avoid async for:**
+   - Simple calculations
+   - Already computed values
+   - CPU-bound work (use Task.Run() instead)
+
+3. **Optimize hot paths:**
+   - Use `ValueTask` for frequently called methods
+   - Cache results when possible
+   - Batch operations when feasible
+
+4. **Monitor performance:**
+   - Profile memory allocation
+   - Measure execution time
+   - Use performance counters
+
+5. **Use proper patterns:**
+   - `ConfigureAwait(false)` in library code
+   - Limit concurrency with `SemaphoreSlim`
+   - Handle exceptions properly
+
+**Summary:**
+- Async/await has overhead but provides scalability benefits
+- Use async for I/O operations, not CPU-bound work
+- Monitor memory allocation and execution time
+- Optimize hot paths with `ValueTask` and caching
+- Use proper async patterns to avoid performance pitfalls
+
+---
+
+### How do you handle async operations in constructors and static methods?
+
+**Answer:**
+
+Constructors cannot be async, and static methods have specific considerations for async operations. This limitation requires alternative patterns and approaches to handle asynchronous initialization and operations.
+
+**Constructor Limitations and Solutions:**
+
+```csharp
+public class DatabaseService
+{
+    private readonly string connectionString;
+    private Task<IDbConnection> connectionTask;
+    
+    // Constructor cannot be async
+    public DatabaseService(string connectionString)
+    {
+        this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        
+        // Start async initialization but don't await
+        this.connectionTask = InitializeConnectionAsync();
+    }
+    
+    // Async initialization method
+    private async Task<IDbConnection> InitializeConnectionAsync()
+    {
+        var connection = new SqlConnection(connectionString);
+        await connection.OpenAsync().ConfigureAwait(false);
+        return connection;
+    }
+    
+    // Public method to get the connection when needed
+    public async Task<IDbConnection> GetConnectionAsync()
+    {
+        return await connectionTask.ConfigureAwait(false);
+    }
+    
+    // Example usage
+    public async Task<User> GetUserAsync(int userId)
+    {
+        var connection = await GetConnectionAsync().ConfigureAwait(false);
+        // Use connection for database operations
+        return new User { Id = userId, Name = "John Doe" };
+    }
+}
+
+public interface IDbConnection
+{
+    Task OpenAsync();
+    void Close();
+}
+
+public class SqlConnection : IDbConnection
+{
+    private readonly string connectionString;
+    
+    public SqlConnection(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    public async Task OpenAsync()
+    {
+        await Task.Delay(100).ConfigureAwait(false); // Simulate connection
+    }
+    
+    public void Close()
+    {
+        // Close connection
+    }
+}
+
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+```
+
+**Factory Pattern for Async Initialization:**
+
+```csharp
+public class FileProcessor
+{
+    private readonly string filePath;
+    private readonly Stream fileStream;
+    
+    // Private constructor
+    private FileProcessor(string filePath, Stream fileStream)
+    {
+        this.filePath = filePath;
+        this.fileStream = fileStream;
+    }
+    
+    // Async factory method
+    public static async Task<FileProcessor> CreateAsync(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+        
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException($"File not found: {filePath}");
+        
+        // Perform async initialization
+        var fileStream = await OpenFileAsync(filePath).ConfigureAwait(false);
+        
+        return new FileProcessor(filePath, fileStream);
+    }
+    
+    private static async Task<Stream> OpenFileAsync(string filePath)
+    {
+        // Simulate async file opening
+        await Task.Delay(100).ConfigureAwait(false);
+        return File.OpenRead(filePath);
+    }
+    
+    public async Task<string> ReadContentAsync()
+    {
+        using var reader = new StreamReader(fileStream);
+        return await reader.ReadToEndAsync().ConfigureAwait(false);
+    }
+    
+    public void Dispose()
+    {
+        fileStream?.Dispose();
+    }
+}
+
+// Usage
+public class FileProcessorExample
+{
+    public static async Task ProcessFileExample()
+    {
+        // Use factory method for async initialization
+        using var processor = await FileProcessor.CreateAsync("data.txt");
+        var content = await processor.ReadContentAsync();
+        Console.WriteLine(content);
+    }
+}
+```
+
+**Static Async Methods:**
+
+```csharp
+public static class UtilityService
+{
+    // Static async methods are allowed
+    public static async Task<string> GetConfigurationAsync(string key)
+    {
+        // Simulate async configuration loading
+        await Task.Delay(100).ConfigureAwait(false);
+        return $"config_value_for_{key}";
+    }
+    
+    public static async Task<T> DeserializeJsonAsync<T>(string json)
+    {
+        await Task.Delay(50).ConfigureAwait(false); // Simulate processing
+        return JsonSerializer.Deserialize<T>(json);
+    }
+    
+    // Static async method with caching
+    private static readonly ConcurrentDictionary<string, Task<string>> cache = new();
+    
+    public static async Task<string> GetCachedDataAsync(string key)
+    {
+        return await cache.GetOrAdd(key, async k =>
+        {
+            await Task.Delay(200).ConfigureAwait(false); // Simulate expensive operation
+            return $"expensive_data_for_{k}";
+        }).ConfigureAwait(false);
+    }
+    
+    // Static async method with error handling
+    public static async Task<bool> TryGetDataAsync(string url, out string data)
+    {
+        data = null;
+        
+        try
+        {
+            using var client = new HttpClient();
+            data = await client.GetStringAsync(url).ConfigureAwait(false);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+}
+
+// Usage of static async methods
+public class StaticAsyncExample
+{
+    public static async Task UseStaticAsyncMethods()
+    {
+        // Direct usage
+        var config = await UtilityService.GetConfigurationAsync("database");
+        Console.WriteLine(config);
+        
+        // With caching
+        var data1 = await UtilityService.GetCachedDataAsync("key1");
+        var data2 = await UtilityService.GetCachedDataAsync("key1"); // Uses cache
+        
+        // With error handling
+        if (await UtilityService.TryGetDataAsync("https://api.example.com/data", out string result))
+        {
+            Console.WriteLine(result);
+        }
+        else
+        {
+            Console.WriteLine("Failed to get data");
+        }
+    }
+}
+```
+
+**Lazy Initialization Pattern:**
+
+```csharp
+public class LazyAsyncService
+{
+    private readonly Lazy<Task<ExpensiveResource>> lazyResource;
+    
+    public LazyAsyncService()
+    {
+        // Lazy initialization of async resource
+        lazyResource = new Lazy<Task<ExpensiveResource>>(async () =>
+        {
+            await Task.Delay(1000).ConfigureAwait(false); // Simulate expensive initialization
+            return new ExpensiveResource();
+        });
+    }
+    
+    public async Task<string> DoWorkAsync()
+    {
+        // Resource is initialized only when first accessed
+        var resource = await lazyResource.Value.ConfigureAwait(false);
+        return await resource.ProcessAsync().ConfigureAwait(false);
+    }
+}
+
+public class ExpensiveResource
+{
+    public async Task<string> ProcessAsync()
+    {
+        await Task.Delay(100).ConfigureAwait(false);
+        return "Processed by expensive resource";
+    }
+}
+```
+
+**Async Initialization with IAsyncDisposable:**
+
+```csharp
+public class AsyncInitializedService : IAsyncDisposable
+{
+    private readonly string connectionString;
+    private IDbConnection connection;
+    private bool isInitialized = false;
+    
+    public AsyncInitializedService(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+    
+    // Async initialization method
+    public async Task InitializeAsync()
+    {
+        if (isInitialized)
+            return;
+        
+        connection = new SqlConnection(connectionString);
+        await connection.OpenAsync().ConfigureAwait(false);
+        isInitialized = true;
+    }
+    
+    // Ensure initialization before use
+    private async Task EnsureInitializedAsync()
+    {
+        if (!isInitialized)
+        {
+            await InitializeAsync().ConfigureAwait(false);
+        }
+    }
+    
+    public async Task<User> GetUserAsync(int userId)
+    {
+        await EnsureInitializedAsync().ConfigureAwait(false);
+        
+        // Use the initialized connection
+        return new User { Id = userId, Name = "John Doe" };
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (connection != null)
+        {
+            connection.Close();
+            connection = null;
+        }
+        isInitialized = false;
+        await Task.CompletedTask.ConfigureAwait(false);
+    }
+}
+
+// Usage with using statement
+public class AsyncDisposableExample
+{
+    public static async Task UseAsyncDisposable()
+    {
+        await using var service = new AsyncInitializedService("connection_string");
+        await service.InitializeAsync();
+        
+        var user = await service.GetUserAsync(1);
+        Console.WriteLine(user.Name);
+    } // DisposeAsync is called automatically
+}
+```
+
+**Static Constructor with Async Initialization:**
+
+```csharp
+public static class StaticAsyncInitializer
+{
+    private static readonly Task initializationTask;
+    private static bool isInitialized = false;
+    
+    // Static constructor - cannot be async
+    static StaticAsyncInitializer()
+    {
+        initializationTask = InitializeAsync();
+    }
+    
+    private static async Task InitializeAsync()
+    {
+        // Perform async initialization
+        await Task.Delay(1000).ConfigureAwait(false);
+        isInitialized = true;
+    }
+    
+    // Public method to ensure initialization
+    public static async Task EnsureInitializedAsync()
+    {
+        await initializationTask.ConfigureAwait(false);
+    }
+    
+    public static async Task<string> GetDataAsync()
+    {
+        await EnsureInitializedAsync().ConfigureAwait(false);
+        return "Data from initialized service";
+    }
+}
+```
+
+**Best Practices:**
+
+1. **For Constructors:**
+   - Use factory methods for async initialization
+   - Start async operations but don't await them
+   - Provide methods to access async results
+   - Use lazy initialization when appropriate
+
+2. **For Static Methods:**
+   - Static async methods are perfectly fine
+   - Use caching for expensive operations
+   - Handle errors appropriately
+   - Consider thread safety
+
+3. **Alternative Patterns:**
+   - Factory pattern for async object creation
+   - Lazy initialization for expensive resources
+   - IAsyncDisposable for async cleanup
+   - Static async methods for utility functions
+
+4. **Common Pitfalls to Avoid:**
+   - Don't use `.Result` or `.Wait()` in constructors
+   - Don't make constructors async (it's not allowed)
+   - Don't forget to handle exceptions in async initialization
+   - Don't block on async operations in constructors
+
+**Summary:**
+- Constructors cannot be async - use factory methods or lazy initialization
+- Static async methods are allowed and useful for utility functions
+- Use proper patterns like factory methods, lazy initialization, and IAsyncDisposable
+- Always handle exceptions and ensure proper resource cleanup
+
+---
+
+## ASP.NET Core
+
+### Explain the middleware pipeline in ASP.NET Core
 
 The middleware pipeline in ASP.NET Core is a series of components that handle HTTP requests and responses. Each middleware component can:
 
@@ -6294,7 +11756,7 @@ public void Configure(IApplicationBuilder app)
 6. Authorization
 7. Endpoints
 
-### 2. What is the difference between ASP.NET and ASP.NET Core?
+### What is the difference between ASP.NET and ASP.NET Core?
 
 | Feature | ASP.NET | ASP.NET Core |
 |---------|---------|--------------|
@@ -6317,7 +11779,7 @@ public void Configure(IApplicationBuilder app)
 - Unified programming model for web UI and web APIs
 - Can run on multiple platforms
 
-### 3. Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)
+### Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)
 
 Dependency Injection (DI) is a built-in design pattern in ASP.NET Core that achieves Inversion of Control (IoC) between classes and their dependencies. Services are registered with specific lifetimes.
 
@@ -6378,7 +11840,7 @@ var app = builder.Build();
 - Singleton services must be thread-safe
 - Scoped is the most commonly used lifetime for business logic
 
-### 4. What are action filters and how do you create custom filters?
+### What are action filters and how do you create custom filters?
 
 Action filters are attributes that add extra processing logic before or after specific stages in the request processing pipeline. They allow cross-cutting concerns like logging, caching, authorization, and exception handling.
 
@@ -6470,7 +11932,7 @@ builder.Services.AddControllers(options =>
 });
 ```
 
-### 5. Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type
+### Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type
 
 These are different return types for controller actions in ASP.NET Core, each with specific use cases.
 
@@ -6563,7 +12025,7 @@ public User GetUser(int id)
 
 **Best practice:** Use `ActionResult<T>` for modern ASP.NET Core Web APIs as it provides the best balance of flexibility and type safety.
 
-### 6. What is model binding and validation in ASP.NET Core?
+### What is model binding and validation in ASP.NET Core?
 
 Model binding is the process of mapping HTTP request data to action method parameters. Validation ensures that the bound data meets specified constraints before processing.
 
@@ -6726,7 +12188,7 @@ builder.Services.AddControllers()
 - Custom validation can be created via attributes or FluentValidation library
 
 ---
-### 44. How do you implement authentication and authorization in ASP.NET Core?
+### How do you implement authentication and authorization in ASP.NET Core?
 
 Authentication and authorization in ASP.NET Core are implemented through middleware and services:
 
@@ -6786,7 +12248,7 @@ public class SecureController : ControllerBase
 }
 ```
 
-### 45. Explain the difference between authentication and authorization.
+### Explain the difference between authentication and authorization.
 
 **Authentication** is the process of verifying WHO the user is (identity verification).
 - Confirms user identity through credentials (username/password, tokens, biometrics)
@@ -6811,7 +12273,7 @@ User Login → Authentication (verify credentials) → User Authenticated
 Access Admin Panel → Authorization (check role) → Access Granted/Denied
 ```
 
-### 46. What is JWT and how do you implement JWT authentication?
+### What is JWT and how do you implement JWT authentication?
 
 **JWT (JSON Web Token)** is a compact, URL-safe token format for securely transmitting information between parties as a JSON object. It consists of three parts: Header, Payload, and Signature.
 
@@ -6894,7 +12356,7 @@ public IActionResult Login([FromBody] LoginModel model)
 }
 ```
 
-### 47. How do you handle CORS in ASP.NET Core?
+### How do you handle CORS in ASP.NET Core?
 
 **CORS (Cross-Origin Resource Sharing)** allows you to control which domains can access your API.
 
@@ -6965,7 +12427,7 @@ policy.WithOrigins("https://myapp.com")
       .WithHeaders("Content-Type", "Authorization");
 ```
 
-### 48. What are the different ways to manage application configuration?
+### What are the different ways to manage application configuration?
 
 ASP.NET Core provides multiple ways to manage configuration:
 
@@ -7056,7 +12518,7 @@ public class HomeController : Controller
 4. appsettings.{Environment}.json
 5. appsettings.json
 
-### 49. Explain routing in ASP.NET Core (conventional vs attribute routing).
+### Explain routing in ASP.NET Core (conventional vs attribute routing).
 
 **Conventional Routing** defines routes in a central location using patterns.
 
@@ -7151,7 +12613,7 @@ public class CustomersController : ControllerBase
 | Visibility | Global patterns | Local to action |
 | Maintenance | Single location | Scattered across controllers |
 
-### 50. What is Razor Pages and how does it differ from MVC?
+### What is Razor Pages and how does it differ from MVC?
 
 **Razor Pages** is a page-based programming model that makes building web UI easier and more productive.
 
@@ -7256,7 +12718,7 @@ public class HomeController : Controller
 - **Razor Pages**: Simple pages, forms, CRUD operations, page-focused scenarios
 - **MVC**: Complex applications, RESTful APIs, when you need more control over routing
 
-### 51. How do you implement versioning in Web APIs?
+### How do you implement versioning in Web APIs?
 
 API versioning allows you to maintain multiple versions of your API simultaneously.
 
@@ -7375,7 +12837,7 @@ builder.Services.AddApiVersioning(options =>
 });
 ```
 
-### 52. What are health checks in ASP.NET Core?
+### What are health checks in ASP.NET Core?
 
 **Health Checks** allow you to monitor the health and availability of your application and its dependencies.
 
@@ -7534,9 +12996,9 @@ app.MapHealthChecksUI();
 ```
 ---
 
-## Entity Framework and Database (12 questions)
+## Entity Framework and Database
 
-### 53. What is Entity Framework Core and how does it differ from Entity Framework 6?
+### What is Entity Framework Core and how does it differ from Entity Framework 6?
 
 **Entity Framework Core (EF Core)** is a lightweight, extensible, open-source, and cross-platform version of Entity Framework, Microsoft's Object-Relational Mapper (ORM) for .NET.
 
@@ -7561,7 +13023,7 @@ app.MapHealthChecksUI();
 - Entity splitting
 - Some inheritance strategies
 
-### 54. Explain Code First vs Database First approaches.
+### Explain Code First vs Database First approaches.
 
 **Code First Approach:**
 - Define your domain model classes first
@@ -7601,7 +13063,7 @@ dotnet ef dbcontext scaffold "ConnectionString" Microsoft.EntityFrameworkCore.Sq
 - **Code First**: New projects, agile development, domain-driven design
 - **Database First**: Legacy databases, DBA-controlled schemas, multiple applications sharing one database
 
-### 55. What is the difference between eager loading, lazy loading, and explicit loading?
+### What is the difference between eager loading, lazy loading, and explicit loading?
 
 **1. Eager Loading**
 Load related data as part of the initial query using `Include()`.
@@ -7674,7 +13136,7 @@ context.Entry(order)
 | Lazy | Load only what's needed | N+1 problem, requires open connection | Exploratory operations |
 | Explicit | Fine-grained control | More code, manual management | Conditional loading |
 
-### 56. What are migration strategies in EF Core?
+### What are migration strategies in EF Core?
 
 **Migrations** track changes to your data model and update the database schema.
 
@@ -7775,7 +13237,7 @@ protected override void Up(MigrationBuilder migrationBuilder)
 - Never modify applied migrations
 - Keep migration history in source control
 
-### 57. Explain the Unit of Work and Repository patterns.
+### Explain the Unit of Work and Repository patterns.
 
 **Repository Pattern**
 Abstracts data access logic and provides a collection-like interface for accessing domain objects.
@@ -7939,7 +13401,7 @@ public class ProductService
 
 **Note:** DbContext already implements Unit of Work pattern, so this is often considered over-engineering for simple applications.
 
-### 58. What is the N+1 query problem and how do you solve it?
+### What is the N+1 query problem and how do you solve it?
 
 **N+1 Query Problem** occurs when you execute 1 query to fetch N records, then N additional queries to fetch related data for each record.
 
@@ -8029,7 +13491,7 @@ optionsBuilder
     .LogTo(Console.WriteLine, LogLevel.Information);
 ```
 
-### 59. How do you optimize Entity Framework queries?
+### How do you optimize Entity Framework queries?
 
 **1. Use AsNoTracking() for Read-Only Queries**
 ```csharp
@@ -8148,7 +13610,7 @@ var count = context.Products
     .Count(p => p.Price > 100);
 ```
 
-### 60. Explain tracking vs no-tracking queries in EF Core.
+### Explain tracking vs no-tracking queries in EF Core.
 
 **Tracking Queries (Default)**
 EF Core keeps track of entity changes in the change tracker for `SaveChanges()`.
@@ -8261,7 +13723,7 @@ context.Entry(product).State = EntityState.Modified;
 context.Entry(product).Property(p => p.Price).IsModified = true;
 ```
 
-### 61. What are owned entities and table splitting in EF Core?
+### What are owned entities and table splitting in EF Core?
 
 **Owned Entities**
 Owned types are value objects that belong to another entity and share its lifetime.
@@ -8425,7 +13887,7 @@ var customersInNewYork = context.Customers
 | Querying | Part of owner | Can query independently |
 | Use Case | Value objects | Logical separation |
 
-### 62. How do you handle concurrency in Entity Framework?
+### How do you handle concurrency in Entity Framework?
 
 **Concurrency Control** prevents data conflicts when multiple users update the same record simultaneously.
 
@@ -8617,7 +14079,7 @@ modelBuilder.Entity()
 - Consider pessimistic locking (database locks) for critical sections
 - Log concurrency conflicts for monitoring
 ---
-### 63. Explain the difference between `SaveChanges()` and `SaveChangesAsync()`.
+### Explain the difference between `SaveChanges()` and `SaveChangesAsync()`.
 
 **SaveChanges()** - Synchronous
 Blocks the current thread until database operations complete.
@@ -8780,7 +14242,7 @@ using (var transaction = await context.Database.BeginTransactionAsync())
 }
 ```
 
-### 64. What are shadow properties in EF Core?
+### What are shadow properties in EF Core?
 
 **Shadow Properties** are properties that exist in the EF Core model but not in the .NET entity class. They only exist in the database and change tracker.
 
@@ -9076,9 +14538,1143 @@ Entity Framework Core provides a powerful and flexible ORM solution for .NET app
 Master these concepts to build efficient, maintainable, and scalable applications with Entity Framework Core!
 ---
 
-## Performance and Memory Management (10 questions)
+### How do you handle database transactions in Entity Framework Core?
 
-### 65. Explain garbage collection in .NET and its generations.
+**Answer:**
+
+Database transactions in Entity Framework Core ensure data consistency by grouping multiple operations into a single unit of work. If any operation fails, all changes are rolled back.
+
+**1. Automatic Transactions (Default Behavior)**
+
+EF Core automatically creates a transaction for each `SaveChanges()` call:
+
+```csharp
+public class OrderService
+{
+    private readonly AppDbContext _context;
+
+    public OrderService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    // Single SaveChanges() = single transaction
+    public async Task CreateOrderAsync(Order order)
+    {
+        _context.Orders.Add(order);
+        _context.OrderItems.AddRange(order.OrderItems);
+        
+        // This creates and commits a transaction automatically
+        await _context.SaveChangesAsync();
+    }
+}
+```
+
+**2. Manual Transaction Management**
+
+Use `BeginTransaction()` for explicit transaction control:
+
+```csharp
+public async Task TransferMoneyAsync(int fromAccountId, int toAccountId, decimal amount)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        // Withdraw from source account
+        var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+        if (fromAccount.Balance < amount)
+            throw new InsufficientFundsException();
+        
+        fromAccount.Balance -= amount;
+        
+        // Deposit to target account
+        var toAccount = await _context.Accounts.FindAsync(toAccountId);
+        toAccount.Balance += amount;
+        
+        // Create transaction record
+        _context.Transactions.Add(new Transaction
+        {
+            FromAccountId = fromAccountId,
+            ToAccountId = toAccountId,
+            Amount = amount,
+            Timestamp = DateTime.UtcNow
+        });
+        
+        // Save all changes
+        await _context.SaveChangesAsync();
+        
+        // Commit transaction
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        // Rollback happens automatically when transaction is disposed
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**3. Transaction with Isolation Levels**
+
+Control transaction isolation for different consistency requirements:
+
+```csharp
+public async Task ProcessOrderWithLockAsync(int orderId)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync(
+        IsolationLevel.ReadCommitted);
+    
+    try
+    {
+        // Lock the order row for update
+        var order = await _context.Orders
+            .FromSqlRaw("SELECT * FROM Orders WITH (UPDLOCK) WHERE Id = {0}", orderId)
+            .FirstOrDefaultAsync();
+        
+        if (order.Status != OrderStatus.Pending)
+            throw new InvalidOperationException("Order already processed");
+        
+        order.Status = OrderStatus.Processing;
+        order.ProcessedAt = DateTime.UtcNow;
+        
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**4. Distributed Transactions (Multiple Contexts)**
+
+Handle transactions across multiple database contexts:
+
+```csharp
+public async Task ProcessOrderAcrossDatabasesAsync(Order order)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        // Save to main database
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        
+        // Save to audit database
+        using var auditContext = new AuditDbContext();
+        auditContext.Database.UseTransaction(transaction.GetDbTransaction());
+        
+        auditContext.AuditLogs.Add(new AuditLog
+        {
+            EntityType = "Order",
+            EntityId = order.Id,
+            Action = "Created",
+            Timestamp = DateTime.UtcNow
+        });
+        
+        await auditContext.SaveChangesAsync();
+        
+        await transaction.CommitAsync();
+    }
+    catch
+    {
+        await transaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**5. Transaction Scope (System.Transactions)**
+
+Use `TransactionScope` for distributed transactions:
+
+```csharp
+public async Task ProcessOrderWithTransactionScopeAsync(Order order)
+{
+    using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+    
+    try
+    {
+        // Multiple operations that can span different databases
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
+        
+        // Call external service
+        await _paymentService.ProcessPaymentAsync(order.PaymentInfo);
+        
+        // Send notification
+        await _notificationService.SendOrderConfirmationAsync(order);
+        
+        scope.Complete(); // Commit all operations
+    }
+    catch
+    {
+        // Automatic rollback when scope is disposed
+        throw;
+    }
+}
+```
+
+**6. Nested Transactions**
+
+Handle nested transaction scenarios:
+
+```csharp
+public async Task ProcessBulkOrdersAsync(List<Order> orders)
+{
+    using var outerTransaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        foreach (var order in orders)
+        {
+            // Each order processing is a nested transaction
+            await ProcessSingleOrderAsync(order);
+        }
+        
+        await outerTransaction.CommitAsync();
+    }
+    catch
+    {
+        await outerTransaction.RollbackAsync();
+        throw;
+    }
+}
+
+private async Task ProcessSingleOrderAsync(Order order)
+{
+    using var innerTransaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        
+        // Additional processing
+        await UpdateInventoryAsync(order.OrderItems);
+        
+        await innerTransaction.CommitAsync();
+    }
+    catch
+    {
+        await innerTransaction.RollbackAsync();
+        throw;
+    }
+}
+```
+
+**7. Transaction Best Practices**
+
+```csharp
+public class TransactionBestPractices
+{
+    private readonly AppDbContext _context;
+
+    // ✅ Good: Use using statements for automatic disposal
+    public async Task GoodTransactionAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            // Your operations here
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    // ❌ Bad: Manual transaction management without proper cleanup
+    public async Task BadTransactionAsync()
+    {
+        var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+        // Missing: transaction.Dispose() - can cause connection leaks
+    }
+
+    // ✅ Good: Appropriate isolation level
+    public async Task ReadCommittedTransactionAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync(
+            IsolationLevel.ReadCommitted);
+        
+        // Operations that need to see committed data
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+
+    // ✅ Good: Handle transaction timeouts
+    public async Task TransactionWithTimeoutAsync()
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        transaction.GetDbTransaction().CommandTimeout = 30; // 30 seconds
+        
+        try
+        {
+            // Long-running operations
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (SqlException ex) when (ex.Number == -2) // Timeout
+        {
+            await transaction.RollbackAsync();
+            throw new TimeoutException("Transaction timed out", ex);
+        }
+    }
+}
+```
+
+**8. Transaction Monitoring and Logging**
+
+```csharp
+public class TransactionMonitoring
+{
+    private readonly ILogger<TransactionMonitoring> _logger;
+
+    public async Task MonitoredTransactionAsync()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        
+        try
+        {
+            _logger.LogInformation("Transaction started: {TransactionId}", 
+                transaction.TransactionId);
+            
+            // Your operations
+            await _context.SaveChangesAsync();
+            
+            await transaction.CommitAsync();
+            
+            stopwatch.Stop();
+            _logger.LogInformation("Transaction committed successfully in {Duration}ms", 
+                stopwatch.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            
+            stopwatch.Stop();
+            _logger.LogError(ex, "Transaction rolled back after {Duration}ms", 
+                stopwatch.ElapsedMilliseconds);
+            
+            throw;
+        }
+    }
+}
+```
+
+**Key Points:**
+
+1. **Automatic Transactions**: Each `SaveChanges()` creates a transaction automatically
+2. **Manual Control**: Use `BeginTransaction()` for explicit transaction management
+3. **Isolation Levels**: Control data consistency with different isolation levels
+4. **Distributed Transactions**: Handle transactions across multiple databases
+5. **Error Handling**: Always rollback on exceptions
+6. **Resource Management**: Use `using` statements for automatic cleanup
+7. **Performance**: Keep transactions short to avoid blocking
+8. **Monitoring**: Log transaction duration and outcomes
+
+**Best Practices:**
+
+- Keep transactions as short as possible
+- Use appropriate isolation levels
+- Always handle exceptions and rollback
+- Use `using` statements for automatic disposal
+- Monitor transaction performance
+- Avoid long-running operations in transactions
+- Consider using `TransactionScope` for distributed scenarios
+
+---
+
+### What are global query filters and how do you use them?
+
+**Answer:**
+
+Global query filters in Entity Framework Core allow you to automatically apply filtering logic to all queries for specific entity types. They're particularly useful for implementing soft deletes, multi-tenancy, and row-level security.
+
+**1. Basic Global Query Filter**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Category> Categories { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Global filter for soft deletes
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => !p.IsDeleted);
+        
+        modelBuilder.Entity<Category>()
+            .HasQueryFilter(c => !c.IsDeleted);
+    }
+}
+
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+}
+
+// Usage - filter is automatically applied
+var products = await context.Products.ToListAsync();
+// SQL: SELECT * FROM Products WHERE IsDeleted = 0
+```
+
+**2. Multi-Tenancy with Global Filters**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    private readonly ITenantService _tenantService;
+
+    public AppDbContext(DbContextOptions<AppDbContext> options, ITenantService tenantService)
+        : base(options)
+    {
+        _tenantService = tenantService;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Multi-tenant filter
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.TenantId == _tenantService.GetCurrentTenantId());
+        
+        modelBuilder.Entity<Order>()
+            .HasQueryFilter(o => o.TenantId == _tenantService.GetCurrentTenantId());
+    }
+}
+
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int TenantId { get; set; }
+}
+
+public interface ITenantService
+{
+    int GetCurrentTenantId();
+}
+
+// Usage - automatically filters by tenant
+var products = await context.Products.ToListAsync();
+// SQL: SELECT * FROM Products WHERE TenantId = @currentTenantId
+```
+
+**3. Complex Filter Conditions**
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    // Complex filter with multiple conditions
+    modelBuilder.Entity<Product>()
+        .HasQueryFilter(p => 
+            !p.IsDeleted && 
+            p.IsActive && 
+            p.PublishedAt <= DateTime.UtcNow);
+    
+    // Filter based on user permissions
+    modelBuilder.Entity<Document>()
+        .HasQueryFilter(d => 
+            d.IsPublic || 
+            d.OwnerId == _userService.GetCurrentUserId() ||
+            d.SharedWith.Contains(_userService.GetCurrentUserId()));
+}
+```
+
+**4. Ignoring Global Filters**
+
+Sometimes you need to bypass global filters:
+
+```csharp
+public class ProductService
+{
+    private readonly AppDbContext _context;
+
+    // Normal query - filter is applied
+    public async Task<List<Product>> GetActiveProductsAsync()
+    {
+        return await _context.Products.ToListAsync();
+        // SQL: SELECT * FROM Products WHERE IsDeleted = 0
+    }
+
+    // Ignore global filter - get all products including deleted
+    public async Task<List<Product>> GetAllProductsIncludingDeletedAsync()
+    {
+        return await _context.Products
+            .IgnoreQueryFilters()
+            .ToListAsync();
+        // SQL: SELECT * FROM Products (no WHERE clause)
+    }
+
+    // Ignore specific filter for admin operations
+    public async Task<List<Product>> GetProductsForAdminAsync()
+    {
+        return await _context.Products
+            .IgnoreQueryFilters()
+            .Where(p => p.IsDeleted)
+            .ToListAsync();
+    }
+}
+```
+
+**5. Dynamic Global Filters**
+
+Create filters that can be modified at runtime:
+
+```csharp
+public class AppDbContext : DbContext
+{
+    private readonly ICurrentUserService _userService;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Dynamic filter based on current user
+        modelBuilder.Entity<Document>()
+            .HasQueryFilter(d => 
+                d.IsPublic || 
+                d.OwnerId == _userService.GetCurrentUserId());
+    }
+}
+
+public interface ICurrentUserService
+{
+    int? GetCurrentUserId();
+}
+
+// Usage with different users
+public class DocumentService
+{
+    private readonly AppDbContext _context;
+    private readonly ICurrentUserService _userService;
+
+    public async Task<List<Document>> GetUserDocumentsAsync()
+    {
+        // Filter automatically applies based on current user
+        return await _context.Documents.ToListAsync();
+    }
+}
+```
+
+**6. Global Filters with Navigation Properties**
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    // Filter on related entities
+    modelBuilder.Entity<Order>()
+        .HasQueryFilter(o => 
+            !o.IsDeleted && 
+            o.Customer.IsActive);
+    
+    // Filter with multiple levels
+    modelBuilder.Entity<OrderItem>()
+        .HasQueryFilter(oi => 
+            !oi.Order.IsDeleted && 
+            !oi.Product.IsDeleted);
+}
+
+public class Order
+{
+    public int Id { get; set; }
+    public bool IsDeleted { get; set; }
+    public int CustomerId { get; set; }
+    public Customer Customer { get; set; }
+    public List<OrderItem> OrderItems { get; set; }
+}
+
+public class OrderItem
+{
+    public int Id { get; set; }
+    public int OrderId { get; set; }
+    public Order Order { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
+}
+```
+
+**7. Performance Considerations**
+
+```csharp
+public class OptimizedGlobalFilters
+{
+    // ✅ Good: Simple, indexed conditions
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.IsActive); // Simple boolean check
+    }
+
+    // ❌ Avoid: Complex calculations in filters
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => 
+                p.CreatedAt.AddDays(30) > DateTime.UtcNow); // Complex calculation
+    }
+
+    // ✅ Better: Pre-calculate values
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+        
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.CreatedAt > thirtyDaysAgo);
+    }
+}
+```
+
+**8. Testing with Global Filters**
+
+```csharp
+public class ProductServiceTests
+{
+    [Test]
+    public async Task GetProducts_ShouldExcludeDeletedProducts()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        using var context = new AppDbContext(options);
+        
+        // Add test data
+        context.Products.AddRange(new[]
+        {
+            new Product { Id = 1, Name = "Active Product", IsDeleted = false },
+            new Product { Id = 2, Name = "Deleted Product", IsDeleted = true }
+        });
+        await context.SaveChangesAsync();
+
+        // Act
+        var products = await context.Products.ToListAsync();
+
+        // Assert
+        Assert.That(products.Count, Is.EqualTo(1));
+        Assert.That(products[0].Name, Is.EqualTo("Active Product"));
+    }
+
+    [Test]
+    public async Task GetAllProducts_WithIgnoreQueryFilters_ShouldReturnAll()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        using var context = new AppDbContext(options);
+        
+        context.Products.AddRange(new[]
+        {
+            new Product { Id = 1, Name = "Active Product", IsDeleted = false },
+            new Product { Id = 2, Name = "Deleted Product", IsDeleted = true }
+        });
+        await context.SaveChangesAsync();
+
+        // Act
+        var products = await context.Products
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        // Assert
+        Assert.That(products.Count, Is.EqualTo(2));
+    }
+}
+```
+
+**9. Advanced Global Filter Patterns**
+
+```csharp
+public class AdvancedGlobalFilters
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Time-based filtering
+        modelBuilder.Entity<Event>()
+            .HasQueryFilter(e => e.StartDate > DateTime.UtcNow);
+        
+        // Status-based filtering
+        modelBuilder.Entity<Job>()
+            .HasQueryFilter(j => j.Status != JobStatus.Cancelled);
+        
+        // Permission-based filtering
+        modelBuilder.Entity<File>()
+            .HasQueryFilter(f => 
+                f.IsPublic || 
+                f.OwnerId == _userService.GetCurrentUserId() ||
+                f.Permissions.Any(p => p.UserId == _userService.GetCurrentUserId()));
+        
+        // Hierarchical filtering
+        modelBuilder.Entity<Comment>()
+            .HasQueryFilter(c => 
+                !c.IsDeleted && 
+                !c.Post.IsDeleted && 
+                c.Post.IsPublished);
+    }
+}
+```
+
+**Key Benefits:**
+
+1. **Automatic Filtering**: No need to remember to add filters to every query
+2. **Consistency**: Ensures all queries follow the same filtering rules
+3. **Security**: Implements row-level security automatically
+4. **Multi-tenancy**: Easy implementation of tenant isolation
+5. **Soft Deletes**: Automatic exclusion of deleted records
+
+**Best Practices:**
+
+- Keep filters simple and performant
+- Use indexed columns in filter conditions
+- Test with `IgnoreQueryFilters()` when needed
+- Consider performance impact on complex filters
+- Use for security and data isolation, not business logic
+- Document global filters for team understanding
+
+---
+
+### How do you implement database connection management and connection pooling in EF Core?
+
+**Answer:**
+
+Database connection management and pooling in EF Core are crucial for performance and scalability. EF Core uses ADO.NET connection pooling by default, but you can configure and optimize it for your specific needs.
+
+**1. Basic Connection String Configuration**
+
+```csharp
+// appsettings.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=MyApp;Trusted_Connection=true;TrustServerCertificate=true;",
+    "ProductionConnection": "Server=prod-server;Database=MyApp;User Id=appuser;Password=securepassword;TrustServerCertificate=true;"
+  }
+}
+
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+```
+
+**2. Connection Pooling Configuration**
+
+```csharp
+// Connection string with pooling settings
+var connectionString = "Server=localhost;Database=MyApp;Trusted_Connection=true;" +
+    "Min Pool Size=5;" +           // Minimum connections in pool
+    "Max Pool Size=100;" +         // Maximum connections in pool
+    "Connection Lifetime=300;" +   // Connection lifetime in seconds
+    "Connection Timeout=30;" +     // Connection timeout
+    "Command Timeout=60;" +        // Command timeout
+    "Pooling=true;";               // Enable pooling (default: true)
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+```
+
+**3. Advanced Connection Configuration**
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.CommandTimeout(60);
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            });
+        }
+    }
+}
+```
+
+**4. Multiple Database Contexts with Different Pools**
+
+```csharp
+// Program.cs
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<AuditDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuditConnection")));
+
+builder.Services.AddDbContext<ReportingDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ReportingConnection")));
+
+// Usage in services
+public class OrderService
+{
+    private readonly AppDbContext _context;
+    private readonly AuditDbContext _auditContext;
+
+    public OrderService(AppDbContext context, AuditDbContext auditContext)
+    {
+        _context = context;
+        _auditContext = auditContext;
+    }
+}
+```
+
+**5. Connection Pool Monitoring**
+
+```csharp
+public class ConnectionPoolMonitor
+{
+    private readonly ILogger<ConnectionPoolMonitor> _logger;
+    private readonly AppDbContext _context;
+
+    public ConnectionPoolMonitor(ILogger<ConnectionPoolMonitor> logger, AppDbContext context)
+    {
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task MonitorConnectionPoolAsync()
+    {
+        try
+        {
+            // Get connection pool statistics
+            var connection = _context.Database.GetDbConnection();
+            
+            if (connection is SqlConnection sqlConnection)
+            {
+                _logger.LogInformation("Connection Pool Statistics:");
+                _logger.LogInformation("Connection String: {ConnectionString}", 
+                    sqlConnection.ConnectionString);
+                _logger.LogInformation("Connection State: {State}", 
+                    sqlConnection.State);
+                _logger.LogInformation("Server Version: {Version}", 
+                    sqlConnection.ServerVersion);
+            }
+
+            // Test connection
+            await _context.Database.OpenConnectionAsync();
+            _logger.LogInformation("Database connection successful");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database connection failed");
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+    }
+}
+```
+
+**6. Custom Connection Factory**
+
+```csharp
+public class CustomConnectionFactory : IDbConnectionFactory
+{
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<CustomConnectionFactory> _logger;
+
+    public CustomConnectionFactory(IConfiguration configuration, ILogger<CustomConnectionFactory> logger)
+    {
+        _configuration = configuration;
+        _logger = logger;
+    }
+
+    public DbConnection CreateConnection(string connectionString)
+    {
+        var connection = new SqlConnection(connectionString);
+        
+        // Add connection event handlers
+        connection.StateChange += OnConnectionStateChange;
+        connection.InfoMessage += OnConnectionInfoMessage;
+        
+        return connection;
+    }
+
+    private void OnConnectionStateChange(object sender, StateChangeEventArgs e)
+    {
+        _logger.LogInformation("Connection state changed from {OriginalState} to {CurrentState}",
+            e.OriginalState, e.CurrentState);
+    }
+
+    private void OnConnectionInfoMessage(object sender, SqlInfoMessageEventArgs e)
+    {
+        _logger.LogInformation("SQL Info: {Message}", e.Message);
+    }
+}
+
+// Register custom connection factory
+builder.Services.AddSingleton<IDbConnectionFactory, CustomConnectionFactory>();
+```
+
+**7. Connection Resilience and Retry Policies**
+
+```csharp
+// Program.cs
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        // Retry policy for transient failures
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+        
+        // Connection timeout
+        sqlOptions.CommandTimeout(60);
+    });
+});
+
+// Custom retry policy
+public class ResilientDbContext : AppDbContext
+{
+    public ResilientDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var retryPolicy = Policy
+            .Handle<SqlException>(ex => IsTransientError(ex))
+            .WaitAndRetryAsync(
+                retryCount: 3,
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                onRetry: (outcome, timespan, retryCount, context) =>
+                {
+                    Console.WriteLine($"Retry {retryCount} after {timespan} seconds");
+                });
+
+        return await retryPolicy.ExecuteAsync(async () =>
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        });
+    }
+
+    private static bool IsTransientError(SqlException ex)
+    {
+        // SQL Server transient error numbers
+        var transientErrors = new[] { 2, 53, 121, 1205, 1222, 8645, 8651 };
+        return transientErrors.Contains(ex.Number);
+    }
+}
+```
+
+**8. Connection Pool Optimization**
+
+```csharp
+public class ConnectionPoolOptimizer
+{
+    private readonly IConfiguration _configuration;
+
+    public ConnectionPoolOptimizer(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public string GetOptimizedConnectionString(string baseConnectionString)
+    {
+        var builder = new SqlConnectionStringBuilder(baseConnectionString);
+        
+        // Optimize for high-throughput scenarios
+        builder.MinPoolSize = 10;           // Keep more connections ready
+        builder.MaxPoolSize = 200;          // Allow more concurrent connections
+        builder.ConnectionLifetime = 600;   // 10 minutes connection lifetime
+        builder.ConnectionTimeout = 15;     // Faster connection timeout
+        builder.CommandTimeout = 30;        // Reasonable command timeout
+        
+        // Enable connection pooling
+        builder.Pooling = true;
+        
+        // Enable multiple active result sets
+        builder.MultipleActiveResultSets = true;
+        
+        // Optimize for read-heavy workloads
+        builder.ApplicationIntent = ApplicationIntent.ReadOnly;
+        
+        return builder.ConnectionString;
+    }
+
+    public string GetOptimizedConnectionStringForWrites(string baseConnectionString)
+    {
+        var builder = new SqlConnectionStringBuilder(baseConnectionString);
+        
+        // Optimize for write-heavy scenarios
+        builder.MinPoolSize = 5;            // Fewer connections for writes
+        builder.MaxPoolSize = 50;           // Limit concurrent writes
+        builder.ConnectionLifetime = 300;   // Shorter connection lifetime
+        builder.ConnectionTimeout = 30;     // Longer connection timeout for writes
+        builder.CommandTimeout = 60;        // Longer command timeout for writes
+        
+        // Enable connection pooling
+        builder.Pooling = true;
+        
+        // Optimize for write workloads
+        builder.ApplicationIntent = ApplicationIntent.ReadWrite;
+        
+        return builder.ConnectionString;
+    }
+}
+```
+
+**9. Environment-Specific Connection Management**
+
+```csharp
+// Program.cs
+public static void ConfigureDatabase(WebApplicationBuilder builder)
+{
+    var environment = builder.Environment.EnvironmentName;
+    
+    switch (environment)
+    {
+        case "Development":
+            ConfigureDevelopmentDatabase(builder);
+            break;
+        case "Staging":
+            ConfigureStagingDatabase(builder);
+            break;
+        case "Production":
+            ConfigureProductionDatabase(builder);
+            break;
+    }
+}
+
+private static void ConfigureDevelopmentDatabase(WebApplicationBuilder builder)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
+        options.LogTo(Console.WriteLine, LogLevel.Information);
+    });
+}
+
+private static void ConfigureProductionDatabase(WebApplicationBuilder builder)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("ProductionConnection");
+        
+        options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(30));
+            sqlOptions.CommandTimeout(60);
+        });
+        
+        // Disable sensitive data logging in production
+        options.EnableSensitiveDataLogging(false);
+        options.EnableDetailedErrors(false);
+    });
+}
+```
+
+**10. Connection Health Checks**
+
+```csharp
+public class DatabaseHealthCheck : IHealthCheck
+{
+    private readonly AppDbContext _context;
+
+    public DatabaseHealthCheck(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context, 
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Test database connection
+            await _context.Database.OpenConnectionAsync(cancellationToken);
+            
+            // Test simple query
+            await _context.Database.ExecuteSqlRawAsync("SELECT 1", cancellationToken);
+            
+            // Get connection pool info
+            var connection = _context.Database.GetDbConnection();
+            var connectionState = connection.State;
+            
+            return HealthCheckResult.Healthy($"Database is healthy. Connection state: {connectionState}");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Database connection failed", ex);
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+    }
+}
+
+// Register health check
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database");
+```
+
+**Key Points:**
+
+1. **Default Pooling**: EF Core uses ADO.NET connection pooling by default
+2. **Connection String**: Configure pool size, timeouts, and lifetime
+3. **Multiple Contexts**: Each context can have its own connection pool
+4. **Resilience**: Implement retry policies for transient failures
+5. **Monitoring**: Track connection pool health and performance
+6. **Environment-Specific**: Different configurations for different environments
+7. **Resource Management**: Proper disposal and connection lifecycle management
+
+**Best Practices:**
+
+- Configure appropriate pool sizes based on your workload
+- Use connection timeouts to prevent hanging connections
+- Implement retry policies for transient failures
+- Monitor connection pool health and performance
+- Use different connection strings for read vs write operations
+- Test connection resilience under load
+- Implement proper error handling and logging
+- Use health checks to monitor database connectivity
+
+---
+
+## Performance and Memory Management
+
+### Explain garbage collection in .NET and its generations.
 
 **Garbage Collection (GC)** is .NET's automatic memory management system that reclaims memory occupied by unused objects.
 
@@ -9344,7 +15940,7 @@ public class CacheManager
 - Pool objects for frequently allocated types
 - Monitor GC metrics in production
 
-### 66. What are memory leaks and how do you identify them in .NET?
+### What are memory leaks and how do you identify them in .NET?
 
 A **memory leak** in .NET occurs when objects that are no longer needed remain referenced, preventing garbage collection.
 
@@ -9730,7 +16326,7 @@ public class LeakDetector
 
 ## Memory Management
 
-### 67. What is the difference between stack and heap memory?
+### What is the difference between stack and heap memory?
 
 **Stack Memory:**
 - Used for static memory allocation
@@ -9778,7 +16374,7 @@ public void Example()
 
 ---
 
-### 68. How would you profile and optimize a .NET application?
+### How would you profile and optimize a .NET application?
 
 **Profiling Tools:**
 
@@ -9885,7 +16481,7 @@ public async Task GetDataAsync()
 
 ---
 
-### 69. What is `Span<T>` and `Memory<T>`? When should you use them?
+### What is `Span<T>` and `Memory<T>`? When should you use them?
 
 **Span<T>:**
 
@@ -10007,7 +16603,7 @@ public void SplitData(ReadOnlySpan data, Span ranges)
 
 ---
 
-### 70. Explain object pooling and when to use it.
+### Explain object pooling and when to use it.
 
 **Object Pooling** is a design pattern that reuses objects instead of creating and destroying them repeatedly, reducing garbage collection pressure and improving performance.
 
@@ -10218,7 +16814,7 @@ public class ImageProcessor
 - Thread pool
 
 ---
-### 71. What are the best practices for string concatenation in loops?
+### What are the best practices for string concatenation in loops?
 
 String concatenation in loops can severely impact performance because strings are immutable in C#. Each concatenation creates a new string object, leading to excessive memory allocations and garbage collection pressure.
 
@@ -10271,7 +16867,7 @@ string result = $"{firstName} {lastName}";
 
 ---
 
-### 72. How do you reduce memory allocations in performance-critical code?
+### How do you reduce memory allocations in performance-critical code?
 
 Reducing memory allocations minimizes garbage collection overhead and improves performance in hot paths.
 
@@ -10352,7 +16948,7 @@ public ValueTask GetCachedValueAsync(string key)
 
 ---
 
-### 73. What is the Large Object Heap (LOH)?
+### What is the Large Object Heap (LOH)?
 
 The Large Object Heap is a special region of the managed heap designed for objects larger than 85,000 bytes (approximately 85 KB).
 
@@ -10422,7 +17018,7 @@ long lohSize = GC.GetGCMemoryInfo().HeapSizeBytes;
 
 ---
 
-### 74. Explain the concept of weak references
+### Explain the concept of weak references
 
 Weak references allow you to maintain a reference to an object while still permitting the garbage collector to reclaim it if memory is needed.
 
@@ -10528,9 +17124,9 @@ else
 - Building object pools with automatic cleanup
 ---
 
-## LINQ and Collections (10 questions)
+## LINQ and Collections
 
-### 75. What is LINQ and what are its advantages?
+### What is LINQ and what are its advantages?
 
 **LINQ (Language Integrated Query)** is a powerful feature in C# that provides a unified syntax for querying different data sources including collections, databases, XML, and more.
 
@@ -10558,7 +17154,7 @@ foreach (int num in numbers)
 var evenNumbers = numbers.Where(n => n % 2 == 0);
 ```
 
-### 76. Explain the difference between LINQ query syntax and method syntax.
+### Explain the difference between LINQ query syntax and method syntax.
 
 **Query Syntax** (Comprehension Syntax):
 - SQL-like syntax using keywords like `from`, `where`, `select`
@@ -10593,7 +17189,7 @@ var methodResult = students
 - You can mix both syntaxes in a single query
 - Method syntax is more commonly used in practice
 
-### 77. What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?
+### What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?
 
 These methods retrieve elements from a collection but differ in their expectations and error handling:
 
@@ -10639,7 +17235,7 @@ var empty = new List();
 var result = empty.FirstOrDefault(); // returns 0
 ```
 
-### 78. Explain deferred execution in LINQ.
+### Explain deferred execution in LINQ.
 
 **Deferred Execution** means LINQ queries are not executed when they are defined, but only when the results are actually enumerated.
 
@@ -10688,7 +17284,7 @@ numbers.Add(8); // This won't affect immediateResult
 - `Skip()`, `Take()`, `GroupBy()`
 - `Join()`, `SelectMany()`
 
-### 79. What is the difference between `Select()` and `SelectMany()`?
+### What is the difference between `Select()` and `SelectMany()`?
 
 **`Select()`**
 - Projects each element into a new form (1-to-1 transformation)
@@ -10749,7 +17345,7 @@ var allWords = sentences.SelectMany(s => s.Split(' '));
 // Result: ["Hello", "world", "LINQ", "is", "powerful"]
 ```
 
-### 80. How do you optimize LINQ queries?
+### How do you optimize LINQ queries?
 
 **Optimization Techniques:**
 
@@ -10840,7 +17436,7 @@ var compiledQuery = EF.CompileQuery(
 );
 ```
 
-### 81. What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?
+### What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?
 
 **`List<T>`**
 - **Structure**: Dynamic array (ordered collection)
@@ -10911,7 +17507,7 @@ bool hasValue = dict.ContainsValue("Two"); // O(n)
 | Add/Remove | O(1) end, O(n) middle | O(1) | O(1) |
 | Memory | Less | More | Most |
 
-### 82. When would you use `ConcurrentDictionary` over `Dictionary`?
+### When would you use `ConcurrentDictionary` over `Dictionary`?
 
 **Use `ConcurrentDictionary<TKey, TValue>` when:**
 
@@ -11001,7 +17597,7 @@ Parallel.ForEach(documents, doc =>
 private static ConcurrentDictionary _sessions = new();
 ```
 
-### 83. Explain `GroupBy()` and `Join()` operations in LINQ.
+### Explain `GroupBy()` and `Join()` operations in LINQ.
 
 **`GroupBy()`**
 - Groups elements by a specified key
@@ -11136,7 +17732,7 @@ var leftJoin = from student in students
                };
 ```
 
-### 84. What is the difference between `Where().Select()` and `Select().Where()`?
+### What is the difference between `Where().Select()` and `Select().Where()`?
 
 Both produce the same final result, but they differ in **performance and efficiency**.
 
@@ -11241,9 +17837,9 @@ var result = items
 ```
 ---
 
-## Testing (8 questions)
+## Testing
 
-### 85. What is unit testing and why is it important?
+### What is unit testing and why is it important?
 
 **Unit testing** is the practice of testing individual units or components of code in isolation, typically at the function or method level. A unit test verifies that a specific piece of code behaves as expected under various conditions.
 
@@ -11257,7 +17853,7 @@ var result = items
 - **Faster Development**: Though initial setup takes time, it speeds up long-term development
 - **Quality Assurance**: Provides confidence that code works correctly
 
-### 86. Explain the AAA pattern (Arrange, Act, Assert)
+### Explain the AAA pattern (Arrange, Act, Assert)
 
 The **AAA pattern** is a common structure for organizing unit tests, making them clear and consistent:
 
@@ -11291,7 +17887,7 @@ public void Withdraw_WithSufficientFunds_DecreasesBalance()
 }
 ```
 
-### 87. What is the difference between mocking, stubbing, and faking?
+### What is the difference between mocking, stubbing, and faking?
 
 These are different types of test doubles used to isolate code during testing:
 
@@ -11336,7 +17932,7 @@ public class FakeUserRepository : IUserRepository
 
 **Key Difference**: Stubs provide data, mocks verify behavior, fakes are simplified implementations.
 
-### 88. What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?
+### What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?
 
 **xUnit.net** (Modern, Recommended):
 - Most modern and actively maintained
@@ -11418,7 +18014,7 @@ public class CalculatorTests
 
 **Personal Preference**: xUnit for new projects due to modern design and .NET team support.
 
-### 89. How do you write testable code?
+### How do you write testable code?
 
 **Principles for testable code:**
 
@@ -11483,7 +18079,7 @@ public class OrderService
 - Program to interfaces, not implementations
 - Enables mocking and substitution
 
-### 90. What is TDD (Test-Driven Development)?
+### What is TDD (Test-Driven Development)?
 
 **Test-Driven Development** is a software development approach where tests are written before the actual code. It follows a cycle called **Red-Green-Refactor**:
 
@@ -11554,7 +18150,7 @@ public void Deposit(decimal amount)
 - Requires discipline
 - Not suitable for all scenarios (e.g., UI, exploratory work)
 
-### 91. Explain integration testing vs unit testing
+### Explain integration testing vs unit testing
 
 **Unit Testing**:
 - Tests individual components in isolation
@@ -11620,7 +18216,7 @@ public async Task CreateOrder_ValidData_SavesToDatabase()
 - 20% Integration Tests (middle)
 - 10% E2E/UI Tests (top)
 
-### 92. What is code coverage and what is a good coverage percentage?
+### What is code coverage and what is a good coverage percentage?
 
 **Code Coverage** is a metric that measures the percentage of code executed during automated tests. It shows which parts of your codebase are tested and which aren't.
 
@@ -11713,9 +18309,9 @@ public void Add_TwoNumbers_ReturnsCorrectSum()
 
 ---
 
-## Microservices and Architecture (10 questions)
+## Microservices and Architecture
 
-### 93. What are microservices and what are their advantages and disadvantages?
+### What are microservices and what are their advantages and disadvantages?
 
 **Microservices** are an architectural style where an application is built as a collection of small, independent services that communicate over network protocols. Each service is self-contained, focuses on a specific business capability, and can be deployed independently.
 
@@ -11758,7 +18354,7 @@ public class ProductService
 
 ---
 
-### 94. Explain the difference between monolithic and microservices architecture.
+### Explain the difference between monolithic and microservices architecture.
 
 **Monolithic Architecture:**
 - Single, unified codebase and deployment unit
@@ -11826,7 +18422,7 @@ public class OrderServiceStartup
 
 ---
 
-### 95. What is API Gateway pattern?
+### What is API Gateway pattern?
 
 The **API Gateway pattern** provides a single entry point for all clients to access microservices. It acts as a reverse proxy, routing requests to appropriate microservices and aggregating responses.
 
@@ -11935,7 +18531,7 @@ public class ApiGatewayController : ControllerBase
 
 ---
 
-### 96. How do you handle inter-service communication in microservices?
+### How do you handle inter-service communication in microservices?
 
 Inter-service communication can be **synchronous** or **asynchronous**.
 
@@ -12117,7 +18713,7 @@ public class ServiceBusConsumer : BackgroundService
 
 ---
 
-### 97. What is the Circuit Breaker pattern?
+### What is the Circuit Breaker pattern?
 
 The **Circuit Breaker pattern** prevents an application from repeatedly trying to execute an operation that's likely to fail, allowing it to continue without waiting for the fault to be fixed or wasting CPU cycles.
 
@@ -12242,7 +18838,7 @@ public enum CircuitBreakerState
 
 ---
 
-### 98. Explain eventual consistency in distributed systems.
+### Explain eventual consistency in distributed systems.
 
 **Eventual Consistency** means that if no new updates are made to a data item, eventually all accesses to that item will return the last updated value. Unlike strong consistency, there may be a temporary period where different nodes have different versions of the data.
 
@@ -12382,7 +18978,7 @@ public class EventProcessor
 
 ---
 
-### 99. What is the Saga pattern for distributed transactions?
+### What is the Saga pattern for distributed transactions?
 
 The **Saga pattern** manages data consistency across microservices in distributed transactions by breaking the transaction into a series of local transactions, each with a compensating transaction to undo changes if something fails.
 
@@ -12597,7 +19193,7 @@ public class OrderStateMachine : MassTransitStateMachine
 
 ---
 
-### 100. How do you implement service discovery?
+### How do you implement service discovery?
 
 **Service Discovery** allows services to find and communicate with each other without hard-coding network locations. Services register themselves and discover other services dynamically.
 
@@ -12849,7 +19445,7 @@ public class ServiceRegistration
 
 ---
 
-### 101. What are containers and how do they relate to microservices?
+### What are containers and how do they relate to microservices?
 
 **Containers** are lightweight, standalone packages that include application code, runtime, libraries, and dependencies needed to run the application. They provide isolation and consistency across different environments.
 
@@ -13127,7 +19723,7 @@ spec:
 
 ---
 
-### 102. Explain the strangler pattern for migrating to microservices.
+### Explain the strangler pattern for migrating to microservices.
 
 The **Strangler Pattern** (named after strangler fig trees that grow around existing trees) is an incremental approach to migrating from a monolithic application to microservices by gradually replacing specific pieces of functionality with new services.
 
@@ -13491,9 +20087,9 @@ This guide covered essential microservices concepts in .NET Core:
 
 ---
 
-## Security (8 questions)
+## Security
 
-### 103. What is SQL injection and how do you prevent it?
+### What is SQL injection and how do you prevent it?
 
 **SQL Injection** is a code injection attack where malicious SQL statements are inserted into application queries, allowing attackers to manipulate database operations, access unauthorized data, or even destroy data.
 
@@ -13542,7 +20138,7 @@ public class LoginModel
 
 ---
 
-### 104. Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)
+### Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)
 
 **Cross-Site Scripting (XSS)**
 
@@ -13635,7 +20231,7 @@ services.ConfigureApplicationCookie(options =>
 
 ---
 
-### 105. What are the best practices for storing passwords?
+### What are the best practices for storing passwords?
 
 **Never store passwords in plain text!** Always use cryptographic hashing with salting.
 
@@ -13740,7 +20336,7 @@ public class PasswordHasher
 
 ---
 
-### 106. How do you implement OAuth 2.0 and OpenID Connect?
+### How do you implement OAuth 2.0 and OpenID Connect?
 
 **OAuth 2.0** provides authorization, while **OpenID Connect** adds authentication on top of OAuth 2.0.
 
@@ -13855,7 +20451,7 @@ public class ApiClient
 
 ---
 
-### 107. What is the principle of least privilege?
+### What is the principle of least privilege?
 
 **Principle of Least Privilege** means granting users, processes, or systems only the minimum permissions necessary to perform their functions.
 
@@ -13978,7 +20574,7 @@ public class ApiKeyAuthorizationHandler : AuthorizationHandler
 
 ---
 
-### 108. How do you secure sensitive data in configuration files?
+### How do you secure sensitive data in configuration files?
 
 **Never store secrets in plain text!** Use secure storage mechanisms.
 
@@ -14131,7 +20727,7 @@ public class MyService
 
 ---
 
-### 109. Explain the importance of HTTPS and how to implement it
+### Explain the importance of HTTPS and how to implement it
 
 **HTTPS (HTTP Secure)** encrypts data in transit using TLS/SSL, protecting against eavesdropping, tampering, and man-in-the-middle attacks.
 
@@ -14275,7 +20871,7 @@ app.Use(async (context, next) =>
 
 ---
 
-### 110. What are the OWASP Top 10 security risks?
+### What are the OWASP Top 10 security risks?
 
 The **OWASP Top 10** represents the most critical web application security risks.
 
@@ -14671,9 +21267,3919 @@ All code examples in this guide follow .NET Core best practices and are producti
 6. Assume breach and minimize impact
 ---
 
-## DevOps and CI/CD (5 questions)
+## Domain-Driven Design and Clean Architecture
 
-### 111. What is CI/CD and why is it important?
+### What is Domain-Driven Design (DDD) and what are its core principles?
+
+**Answer:**
+
+Domain-Driven Design (DDD) is a software development approach that focuses on creating software that reflects a deep understanding of the business domain. It emphasizes collaboration between technical and domain experts to build software that accurately models the business.
+
+**Core Principles of DDD:**
+
+1. **Focus on the Domain**
+   - The domain is the heart of the software
+   - Business logic should be the primary concern
+   - Technical concerns are secondary
+
+2. **Ubiquitous Language**
+   - Use the same language throughout the codebase, documentation, and conversations
+   - Terms should be consistent between developers and domain experts
+   - Code should reflect business terminology
+
+3. **Model-Driven Design**
+   - The code should be a direct reflection of the domain model
+   - Changes in understanding should lead to changes in the code
+   - The model should evolve with business understanding
+
+**Example of Ubiquitous Language:**
+
+```csharp
+// ❌ Technical language
+public class UserAccount
+{
+    public int Id { get; set; }
+    public string Username { get; set; }
+    public bool IsActive { get; set; }
+}
+
+// ✅ Domain language
+public class Customer
+{
+    public CustomerId Id { get; set; }
+    public CustomerName Name { get; set; }
+    public CustomerStatus Status { get; set; }
+}
+
+public enum CustomerStatus
+{
+    Active,
+    Suspended,
+    Closed
+}
+```
+
+**Strategic Design Patterns:**
+
+1. **Bounded Contexts**
+   - Define clear boundaries around models
+   - Each context has its own ubiquitous language
+   - Models can be different in different contexts
+
+```csharp
+// E-commerce context
+public class Product
+{
+    public ProductId Id { get; set; }
+    public ProductName Name { get; set; }
+    public Money Price { get; set; }
+    public ProductCategory Category { get; set; }
+}
+
+// Inventory context
+public class InventoryItem
+{
+    public InventoryItemId Id { get; set; }
+    public string SKU { get; set; }
+    public int QuantityOnHand { get; set; }
+    public int ReorderLevel { get; set; }
+}
+```
+
+2. **Context Mapping**
+   - Define relationships between bounded contexts
+   - Shared Kernel, Customer-Supplier, Conformist, Anti-Corruption Layer
+
+**Tactical Design Patterns:**
+
+1. **Entities**
+   - Objects with identity that persists over time
+   - Identity is more important than attributes
+
+```csharp
+public class Order : Entity<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    private readonly List<OrderItem> _items = new();
+    
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        // Business logic for adding items
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        _items.Add(new OrderItem(productId, quantity, unitPrice));
+    }
+}
+```
+
+2. **Value Objects**
+   - Objects defined by their attributes, not identity
+   - Immutable and comparable by value
+
+```csharp
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrEmpty(currency)) throw new ArgumentException("Currency is required");
+        
+        Amount = amount;
+        Currency = currency;
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+}
+```
+
+3. **Aggregates**
+   - Cluster of related objects treated as a unit
+   - One aggregate root controls access to the cluster
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    private readonly List<OrderItem> _items = new();
+    
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+}
+```
+
+4. **Domain Services**
+   - Operations that don't naturally belong to entities or value objects
+   - Stateless operations that involve multiple domain objects
+
+```csharp
+public class OrderPricingService : IDomainService
+{
+    public Money CalculateTotal(Order order, ICustomerRepository customerRepository)
+    {
+        var customer = customerRepository.GetById(order.CustomerId);
+        var baseTotal = order.Items.Sum(item => item.Total);
+        
+        // Apply customer-specific discounts
+        var discount = customer.GetDiscountPercentage();
+        var discountAmount = baseTotal * (discount / 100);
+        
+        return baseTotal - discountAmount;
+    }
+}
+```
+
+5. **Domain Events**
+   - Something important that happened in the domain
+   - Used for decoupling and integration
+
+```csharp
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        ConfirmedAt = DateTime.UtcNow;
+    }
+}
+
+// Event handler
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IEmailService _emailService;
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent)
+    {
+        await _emailService.SendOrderConfirmationAsync(domainEvent.CustomerId, domainEvent.OrderId);
+    }
+}
+```
+
+**Benefits of DDD:**
+
+1. **Better Communication**: Ubiquitous language improves team communication
+2. **Focused Design**: Clear boundaries prevent complexity
+3. **Business Alignment**: Software reflects business understanding
+4. **Maintainability**: Well-structured domain models are easier to maintain
+5. **Testability**: Clear domain logic is easier to test
+
+**When to Use DDD:**
+
+- Complex business domains
+- Long-lived applications
+- When business logic is the primary concern
+- When you have access to domain experts
+- When the domain is well-understood
+
+**Challenges of DDD:**
+
+- Requires domain expertise
+- Can be overkill for simple applications
+- Initial learning curve
+- Requires discipline to maintain boundaries
+- Can lead to over-engineering if not applied judiciously
+
+---
+
+### Explain the difference between Domain, Application, Infrastructure, and Presentation layers in Clean Architecture.
+
+**Answer:**
+
+Clean Architecture (also known as Onion Architecture or Hexagonal Architecture) organizes code into concentric layers with clear dependencies and responsibilities. Each layer has a specific purpose and follows the Dependency Inversion Principle.
+
+**Layer Structure:**
+
+```
+┌─────────────────────────────────────┐
+│           Presentation              │ ← Controllers, UI, APIs
+├─────────────────────────────────────┤
+│           Application               │ ← Use Cases, Services
+├─────────────────────────────────────┤
+│             Domain                  │ ← Business Logic, Entities
+├─────────────────────────────────────┤
+│          Infrastructure             │ ← Data Access, External Services
+└─────────────────────────────────────┘
+```
+
+**1. Domain Layer (Core)**
+
+The innermost layer containing business logic and rules. It has no dependencies on other layers.
+
+```csharp
+// Domain/Entities/Order.cs
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    private readonly List<OrderItem> _items = new();
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to confirmed order");
+            
+        _items.Add(new OrderItem(productId, quantity, unitPrice));
+    }
+    
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId));
+    }
+}
+
+// Domain/ValueObjects/Money.cs
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
+    }
+}
+
+// Domain/Interfaces/IOrderRepository.cs
+public interface IOrderRepository
+{
+    Task<Order> GetByIdAsync(OrderId id);
+    Task SaveAsync(Order order);
+    Task DeleteAsync(OrderId id);
+}
+```
+
+**2. Application Layer**
+
+Contains use cases and application services. Depends only on the Domain layer.
+
+```csharp
+// Application/UseCases/CreateOrder/CreateOrderCommand.cs
+public record CreateOrderCommand(CustomerId CustomerId, List<OrderItemDto> Items);
+
+// Application/UseCases/CreateOrder/CreateOrderHandler.cs
+public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderId>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IProductRepository _productRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    {
+        var order = new Order(request.CustomerId);
+        
+        foreach (var item in request.Items)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductId);
+            var quantity = new Quantity(item.Quantity);
+            var unitPrice = new Money(item.UnitPrice, "USD");
+            
+            order.AddItem(product.Id, quantity, unitPrice);
+        }
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        return order.Id;
+    }
+}
+
+// Application/Services/OrderApplicationService.cs
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IOrderPricingService _pricingService;
+    
+    public async Task<OrderDto> GetOrderDetailsAsync(OrderId orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        var total = _pricingService.CalculateTotal(order);
+        
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = total.Amount,
+            Items = order.Items.Select(item => new OrderItemDto
+            {
+                ProductId = item.ProductId.Value,
+                Quantity = item.Quantity.Value,
+                UnitPrice = item.UnitPrice.Amount
+            }).ToList()
+        };
+    }
+}
+```
+
+**3. Infrastructure Layer**
+
+Handles external concerns like data persistence, external APIs, and frameworks. Implements interfaces defined in the Domain layer.
+
+```csharp
+// Infrastructure/Data/Repositories/OrderRepository.cs
+public class OrderRepository : IOrderRepository
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task<Order> GetByIdAsync(OrderId id)
+    {
+        var orderEntity = await _context.Orders
+            .Include(o => o.Items)
+            .FirstOrDefaultAsync(o => o.Id == id.Value);
+            
+        if (orderEntity == null)
+            return null;
+            
+        return MapToDomain(orderEntity);
+    }
+    
+    public async Task SaveAsync(Order order)
+    {
+        var orderEntity = MapToEntity(order);
+        
+        if (_context.Entry(orderEntity).State == EntityState.Detached)
+            _context.Orders.Add(orderEntity);
+        else
+            _context.Orders.Update(orderEntity);
+            
+        await _context.SaveChangesAsync();
+    }
+    
+    private Order MapToDomain(OrderEntity entity)
+    {
+        // Mapping logic from entity to domain object
+        return new Order(new OrderId(entity.Id))
+        {
+            CustomerId = new CustomerId(entity.CustomerId),
+            Status = Enum.Parse<OrderStatus>(entity.Status)
+        };
+    }
+}
+
+// Infrastructure/Data/ApplicationDbContext.cs
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<OrderEntity> Orders { get; set; }
+    public DbSet<OrderItemEntity> OrderItems { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+}
+
+// Infrastructure/ExternalServices/EmailService.cs
+public class EmailService : IEmailService
+{
+    private readonly SmtpClient _smtpClient;
+    
+    public async Task SendOrderConfirmationAsync(CustomerId customerId, OrderId orderId)
+    {
+        // Implementation for sending email
+        var message = new MailMessage();
+        // ... email logic
+        await _smtpClient.SendMailAsync(message);
+    }
+}
+```
+
+**4. Presentation Layer**
+
+Handles user interface and external API concerns. Depends on the Application layer.
+
+```csharp
+// Presentation/Controllers/OrdersController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IMediator _mediator;
+    private readonly OrderApplicationService _orderService;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderId>> CreateOrder([FromBody] CreateOrderRequest request)
+    {
+        var command = new CreateOrderCommand(
+            new CustomerId(request.CustomerId),
+            request.Items.Select(item => new OrderItemDto
+            {
+                ProductId = new ProductId(item.ProductId),
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            }).ToList()
+        );
+        
+        var orderId = await _mediator.Send(command);
+        return Ok(orderId);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        var order = await _orderService.GetOrderDetailsAsync(new OrderId(id));
+        return Ok(order);
+    }
+}
+
+// Presentation/Models/CreateOrderRequest.cs
+public class CreateOrderRequest
+{
+    public int CustomerId { get; set; }
+    public List<OrderItemRequest> Items { get; set; }
+}
+
+public class OrderItemRequest
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+}
+```
+
+**Dependency Flow:**
+
+```csharp
+// ✅ Correct: Dependencies point inward
+Presentation → Application → Domain
+Infrastructure → Domain
+
+// ❌ Wrong: Dependencies point outward
+Domain → Application → Presentation
+Domain → Infrastructure
+```
+
+**Key Principles:**
+
+1. **Dependency Inversion**: High-level modules don't depend on low-level modules
+2. **Single Responsibility**: Each layer has one reason to change
+3. **Interface Segregation**: Depend on abstractions, not concretions
+4. **Open/Closed**: Open for extension, closed for modification
+
+**Benefits:**
+
+- **Testability**: Easy to unit test business logic
+- **Maintainability**: Clear separation of concerns
+- **Flexibility**: Easy to change external dependencies
+- **Independence**: Business logic independent of frameworks
+- **Reusability**: Domain logic can be reused across applications
+
+**Project Structure:**
+
+```
+src/
+├── Domain/
+│   ├── Entities/
+│   ├── ValueObjects/
+│   ├── Interfaces/
+│   └── Events/
+├── Application/
+│   ├── UseCases/
+│   ├── Services/
+│   └── DTOs/
+├── Infrastructure/
+│   ├── Data/
+│   ├── ExternalServices/
+│   └── Configuration/
+└── Presentation/
+    ├── Controllers/
+    ├── Models/
+    └── Middleware/
+```
+
+This architecture ensures that business logic remains pure and independent of external concerns, making the system more maintainable and testable.
+
+---
+
+### What are the main building blocks of DDD (Entities, Value Objects, Aggregates, Domain Services)?
+
+**Answer:**
+
+Domain-Driven Design provides several tactical patterns as building blocks to model complex business domains effectively. These patterns help create a rich domain model that accurately represents business concepts.
+
+**1. Entities**
+
+Entities are objects with a distinct identity that persists over time. Their identity is more important than their attributes.
+
+```csharp
+public abstract class Entity<TId> where TId : ValueObject
+{
+    public TId Id { get; protected set; }
+    
+    protected Entity(TId id)
+    {
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+    }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj is not Entity<TId> other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id.Equals(other.Id);
+    }
+    
+    public override int GetHashCode() => Id.GetHashCode();
+}
+
+public class Customer : Entity<CustomerId>
+{
+    public CustomerName Name { get; private set; }
+    public Email Email { get; private set; }
+    public CustomerStatus Status { get; private set; }
+    private readonly List<OrderId> _orderIds = new();
+    
+    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
+    
+    public Customer(CustomerId id, CustomerName name, Email email) : base(id)
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Email = email ?? throw new ArgumentNullException(nameof(email));
+        Status = CustomerStatus.Active;
+    }
+    
+    public void UpdateEmail(Email newEmail)
+    {
+        if (Status == CustomerStatus.Closed)
+            throw new InvalidOperationException("Cannot update email for closed customer");
+            
+        Email = newEmail;
+    }
+    
+    public void Close()
+    {
+        if (Status == CustomerStatus.Closed)
+            throw new InvalidOperationException("Customer is already closed");
+            
+        Status = CustomerStatus.Closed;
+    }
+    
+    public void AddOrder(OrderId orderId)
+    {
+        if (!_orderIds.Contains(orderId))
+            _orderIds.Add(orderId);
+    }
+}
+```
+
+**2. Value Objects**
+
+Value objects are defined by their attributes rather than identity. They are immutable and compared by value.
+
+```csharp
+public abstract class ValueObject
+{
+    protected abstract IEnumerable<object> GetEqualityComponents();
+    
+    public override bool Equals(object obj)
+    {
+        if (obj == null || obj.GetType() != GetType()) return false;
+        
+        var other = (ValueObject)obj;
+        return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+    }
+    
+    public override int GetHashCode()
+    {
+        return GetEqualityComponents()
+            .Select(x => x?.GetHashCode() ?? 0)
+            .Aggregate((x, y) => x ^ y);
+    }
+}
+
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+    
+    public static Money operator -(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot subtract different currencies");
+            
+        return new Money(left.Amount - right.Amount, left.Currency);
+    }
+    
+    public static Money operator *(Money money, decimal multiplier)
+    {
+        return new Money(money.Amount * multiplier, money.Currency);
+    }
+}
+
+public class Address : ValueObject
+{
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string ZipCode { get; }
+    public string Country { get; }
+    
+    public Address(string street, string city, string state, string zipCode, string country)
+    {
+        Street = street ?? throw new ArgumentNullException(nameof(street));
+        City = city ?? throw new ArgumentNullException(nameof(city));
+        State = state ?? throw new ArgumentNullException(nameof(state));
+        ZipCode = zipCode ?? throw new ArgumentNullException(nameof(zipCode));
+        Country = country ?? throw new ArgumentNullException(nameof(country));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Street;
+        yield return City;
+        yield return State;
+        yield return ZipCode;
+        yield return Country;
+    }
+}
+```
+
+**3. Aggregates**
+
+Aggregates are clusters of related objects treated as a unit for data changes. They have one aggregate root that controls access.
+
+```csharp
+public abstract class AggregateRoot<TId> : Entity<TId> where TId : ValueObject
+{
+    private readonly List<DomainEvent> _domainEvents = new();
+    
+    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    
+    protected AggregateRoot(TId id) : base(id) { }
+    
+    protected void AddDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+    
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public Money Total { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId) : base(id)
+    {
+        CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
+        Status = OrderStatus.Draft;
+        CreatedAt = DateTime.UtcNow;
+        Total = new Money(0, "USD");
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void RemoveItem(ProductId productId)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot remove items from a confirmed order");
+            
+        var item = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (item != null)
+        {
+            _items.Remove(item);
+            RecalculateTotal();
+        }
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+public class OrderItem : Entity<OrderItemId>
+{
+    public ProductId ProductId { get; private set; }
+    public Quantity Quantity { get; private set; }
+    public Money UnitPrice { get; private set; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice) 
+        : base(new OrderItemId(Guid.NewGuid()))
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    public void IncreaseQuantity(Quantity additionalQuantity)
+    {
+        Quantity = new Quantity(Quantity.Value + additionalQuantity.Value);
+    }
+    
+    public void UpdateQuantity(Quantity newQuantity)
+    {
+        Quantity = newQuantity ?? throw new ArgumentNullException(nameof(newQuantity));
+    }
+}
+```
+
+**4. Domain Services**
+
+Domain services contain business logic that doesn't naturally belong to entities or value objects.
+
+```csharp
+public interface IDomainService
+{
+}
+
+public class OrderPricingService : IDomainService
+{
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IProductRepository _productRepository;
+    
+    public OrderPricingService(ICustomerRepository customerRepository, IProductRepository productRepository)
+    {
+        _customerRepository = customerRepository;
+        _productRepository = productRepository;
+    }
+    
+    public Money CalculateOrderTotal(Order order)
+    {
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var customer = _customerRepository.GetById(order.CustomerId);
+        
+        // Apply customer-specific discount
+        var discountPercentage = GetCustomerDiscountPercentage(customer);
+        var discountAmount = baseTotal * (discountPercentage / 100);
+        
+        // Apply bulk order discount
+        var bulkDiscount = CalculateBulkDiscount(order.Items.Count());
+        var bulkDiscountAmount = baseTotal * (bulkDiscount / 100);
+        
+        var totalDiscount = discountAmount + bulkDiscountAmount;
+        return baseTotal - totalDiscount;
+    }
+    
+    private decimal GetCustomerDiscountPercentage(Customer customer)
+    {
+        return customer.Status switch
+        {
+            CustomerStatus.VIP => 15m,
+            CustomerStatus.Premium => 10m,
+            CustomerStatus.Regular => 5m,
+            _ => 0m
+        };
+    }
+    
+    private decimal CalculateBulkDiscount(int itemCount)
+    {
+        return itemCount switch
+        {
+            >= 20 => 10m,
+            >= 10 => 5m,
+            _ => 0m
+        };
+    }
+}
+
+public class OrderValidationService : IDomainService
+{
+    public ValidationResult ValidateOrder(Order order, Customer customer)
+    {
+        var errors = new List<string>();
+        
+        // Check customer status
+        if (customer.Status == CustomerStatus.Suspended)
+            errors.Add("Customer account is suspended");
+            
+        // Check order limits
+        if (order.Total.Amount > customer.CreditLimit)
+            errors.Add("Order total exceeds customer credit limit");
+            
+        // Check product availability
+        foreach (var item in order.Items)
+        {
+            if (!IsProductAvailable(item.ProductId, item.Quantity))
+                errors.Add($"Product {item.ProductId} is not available in requested quantity");
+        }
+        
+        return new ValidationResult(errors);
+    }
+    
+    private bool IsProductAvailable(ProductId productId, Quantity quantity)
+    {
+        // Implementation would check inventory
+        return true; // Simplified for example
+    }
+}
+
+public class ValidationResult
+{
+    public bool IsValid => !Errors.Any();
+    public List<string> Errors { get; }
+    
+    public ValidationResult(List<string> errors)
+    {
+        Errors = errors ?? new List<string>();
+    }
+}
+```
+
+**Key Characteristics:**
+
+| Building Block | Identity | Mutability | Lifecycle | Responsibility |
+|----------------|----------|------------|-----------|----------------|
+| **Entity** | Has identity | Mutable | Long-lived | Business logic with identity |
+| **Value Object** | No identity | Immutable | Short-lived | Encapsulate values |
+| **Aggregate** | Has identity | Mutable | Long-lived | Consistency boundary |
+| **Domain Service** | No identity | Stateless | Per operation | Cross-cutting business logic |
+
+**Best Practices:**
+
+1. **Entities**: Focus on identity and business rules
+2. **Value Objects**: Make them immutable and comparable
+3. **Aggregates**: Keep them small and focused
+4. **Domain Services**: Use sparingly, prefer methods on entities
+5. **Consistency**: Maintain invariants within aggregates
+6. **Encapsulation**: Hide internal state and expose behavior
+
+These building blocks work together to create a rich, expressive domain model that accurately represents business concepts and rules.
+
+---
+
+### What is the difference between Entities and Value Objects in DDD?
+
+**Answer:**
+
+Entities and Value Objects are fundamental building blocks in Domain-Driven Design, but they serve different purposes and have distinct characteristics. Understanding their differences is crucial for creating effective domain models.
+
+**Key Differences:**
+
+| Aspect | Entity | Value Object |
+|--------|--------|--------------|
+| **Identity** | Has unique identity | No identity, defined by attributes |
+| **Equality** | Compared by identity | Compared by value |
+| **Mutability** | Mutable | Immutable |
+| **Lifecycle** | Long-lived, persists over time | Short-lived, can be recreated |
+| **Tracking** | Tracked by ID | Not tracked individually |
+
+**1. Entities - Identity Matters**
+
+Entities are objects with a distinct identity that persists over time. Their identity is more important than their attributes.
+
+```csharp
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    public Customer(CustomerId id, string name, string email)
+    {
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Email = email ?? throw new ArgumentNullException(nameof(email));
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    public void UpdateEmail(string newEmail)
+    {
+        Email = newEmail ?? throw new ArgumentNullException(nameof(newEmail));
+    }
+    
+    public void ChangeName(string newName)
+    {
+        Name = newName ?? throw new ArgumentNullException(nameof(newName));
+    }
+    
+    // Identity-based equality
+    public override bool Equals(object obj)
+    {
+        if (obj is not Customer other) return false;
+        return Id.Equals(other.Id);
+    }
+    
+    public override int GetHashCode() => Id.GetHashCode();
+}
+
+// Usage
+var customer1 = new Customer(new CustomerId(1), "John Doe", "john@example.com");
+var customer2 = new Customer(new CustomerId(1), "Jane Smith", "jane@example.com");
+
+// These are considered the same entity (same ID)
+Console.WriteLine(customer1.Equals(customer2)); // True
+Console.WriteLine(customer1 == customer2); // True (if operator overloaded)
+```
+
+**2. Value Objects - Value Matters**
+
+Value objects are defined by their attributes rather than identity. They are immutable and compared by value.
+
+```csharp
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    // Value-based equality
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+    
+    public static Money operator *(Money money, decimal multiplier)
+    {
+        return new Money(money.Amount * multiplier, money.Currency);
+    }
+}
+
+public class Address : ValueObject
+{
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string ZipCode { get; }
+    public string Country { get; }
+    
+    public Address(string street, string city, string state, string zipCode, string country)
+    {
+        Street = street ?? throw new ArgumentNullException(nameof(street));
+        City = city ?? throw new ArgumentNullException(nameof(city));
+        State = state ?? throw new ArgumentNullException(nameof(state));
+        ZipCode = zipCode ?? throw new ArgumentNullException(nameof(zipCode));
+        Country = country ?? throw new ArgumentNullException(nameof(country));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Street;
+        yield return City;
+        yield return State;
+        yield return ZipCode;
+        yield return Country;
+    }
+}
+
+// Usage
+var money1 = new Money(100, "USD");
+var money2 = new Money(100, "USD");
+var money3 = new Money(100, "EUR");
+
+Console.WriteLine(money1.Equals(money2)); // True - same value
+Console.WriteLine(money1.Equals(money3)); // False - different currency
+
+// Value objects can be recreated
+var newMoney = new Money(200, "USD"); // Creates new instance
+```
+
+**3. Practical Examples**
+
+**Entity Example - Order:**
+
+```csharp
+public class Order : Entity<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public Money Total { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Address ShippingAddress { get; private set; } // Value Object
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId, Address shippingAddress)
+    {
+        Id = id;
+        CustomerId = customerId;
+        ShippingAddress = shippingAddress; // Value Object
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        // Business logic for adding items
+        var item = new OrderItem(productId, quantity, unitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+    }
+    
+    public void UpdateShippingAddress(Address newAddress)
+    {
+        // Can replace the entire value object
+        ShippingAddress = newAddress;
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+```
+
+**Value Object Example - OrderItem:**
+
+```csharp
+public class OrderItem : ValueObject
+{
+    public ProductId ProductId { get; }
+    public Quantity Quantity { get; }
+    public Money UnitPrice { get; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return ProductId;
+        yield return Quantity;
+        yield return UnitPrice;
+    }
+    
+    public OrderItem WithIncreasedQuantity(Quantity additionalQuantity)
+    {
+        // Return new instance instead of mutating
+        return new OrderItem(ProductId, new Quantity(Quantity.Value + additionalQuantity.Value), UnitPrice);
+    }
+}
+```
+
+**4. When to Use Each**
+
+**Use Entities when:**
+- The object has a distinct identity
+- You need to track the object over time
+- The object can change its attributes but remains the same
+- You need to reference the object from other parts of the system
+
+```csharp
+// Customer is an entity - we track them by ID
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    
+    // Customer can change name/email but remains the same customer
+    public void UpdateProfile(string newName, string newEmail)
+    {
+        Name = newName;
+        Email = newEmail;
+    }
+}
+```
+
+**Use Value Objects when:**
+- The object is defined by its attributes
+- The object is immutable
+- You don't need to track individual instances
+- The object represents a concept or measurement
+
+```csharp
+// Money is a value object - defined by amount and currency
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    // Money is immutable - operations return new instances
+    public Money Add(Money other)
+    {
+        if (Currency != other.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(Amount + other.Amount, Currency);
+    }
+}
+```
+
+**5. Common Mistakes**
+
+**❌ Wrong: Treating Value Objects as Entities**
+
+```csharp
+// BAD: Giving identity to something that should be a value object
+public class Money : Entity<MoneyId>
+{
+    public MoneyId Id { get; set; } // Unnecessary identity
+    public decimal Amount { get; set; }
+    public string Currency { get; set; }
+}
+```
+
+**❌ Wrong: Making Entities Mutable in Wrong Ways**
+
+```csharp
+// BAD: Exposing setters that break encapsulation
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; set; } // Should be private set
+    public string Name { get; set; }   // Should be private set
+    public string Email { get; set; }  // Should be private set
+}
+```
+
+**✅ Correct: Proper Separation**
+
+```csharp
+// GOOD: Entity with proper encapsulation
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    
+    public void UpdateEmail(string newEmail)
+    {
+        // Business logic for email validation
+        if (string.IsNullOrWhiteSpace(newEmail))
+            throw new ArgumentException("Email cannot be empty");
+            
+        Email = newEmail;
+    }
+}
+
+// GOOD: Value object that's immutable
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
+    }
+    
+    // Operations return new instances
+    public Money Add(Money other) => new Money(Amount + other.Amount, Currency);
+}
+```
+
+**Key Takeaways:**
+
+1. **Entities** have identity and are mutable
+2. **Value Objects** have no identity and are immutable
+3. **Entities** are tracked by ID, **Value Objects** by value
+4. **Entities** can change attributes, **Value Objects** are replaced
+5. **Entities** are long-lived, **Value Objects** can be recreated
+6. Use **Entities** for things that have identity, **Value Objects** for concepts and measurements
+
+---
+
+### Explain the concept of Aggregates in DDD and how they maintain consistency.
+
+**Answer:**
+
+Aggregates are one of the most important tactical patterns in Domain-Driven Design. They define consistency boundaries and ensure that business rules are maintained within a cluster of related objects.
+
+**What are Aggregates?**
+
+An Aggregate is a cluster of related objects that are treated as a unit for the purpose of data changes. It has one Aggregate Root that serves as the entry point and controls access to all objects within the aggregate.
+
+**Key Characteristics:**
+
+1. **Consistency Boundary**: All business rules within an aggregate are enforced
+2. **Single Entry Point**: Only the aggregate root can be referenced from outside
+3. **Transactional Consistency**: Changes to an aggregate are atomic
+4. **Invariant Enforcement**: Business rules are maintained within the aggregate
+
+**Example: Order Aggregate**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    // Private collection - only accessible through aggregate root
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId) : base(id)
+    {
+        Id = id;
+        CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    // Business operations that maintain invariants
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        if (quantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void RemoveItem(ProductId productId)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot remove items from a confirmed order");
+            
+        var item = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (item != null)
+        {
+            _items.Remove(item);
+            RecalculateTotal();
+        }
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        // Business rule: Minimum order amount
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+    
+    public void Ship()
+    {
+        if (Status != OrderStatus.Confirmed)
+            throw new InvalidOperationException("Only confirmed orders can be shipped");
+            
+        Status = OrderStatus.Shipped;
+        AddDomainEvent(new OrderShippedEvent(Id, CustomerId));
+    }
+    
+    // Private method to maintain consistency
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+// OrderItem is part of the Order aggregate
+public class OrderItem : Entity<OrderItemId>
+{
+    public ProductId ProductId { get; private set; }
+    public Quantity Quantity { get; private set; }
+    public Money UnitPrice { get; private set; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice) 
+        : base(new OrderItemId(Guid.NewGuid()))
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    public void IncreaseQuantity(Quantity additionalQuantity)
+    {
+        if (additionalQuantity.Value <= 0)
+            throw new ArgumentException("Additional quantity must be positive");
+            
+        Quantity = new Quantity(Quantity.Value + additionalQuantity.Value);
+    }
+    
+    public void UpdateQuantity(Quantity newQuantity)
+    {
+        if (newQuantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        Quantity = newQuantity;
+    }
+}
+```
+
+**Consistency Rules and Invariants:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    // Invariant: Order total must always equal sum of item totals
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+    
+    // Invariant: Cannot add items to confirmed orders
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+        // ... rest of implementation
+    }
+    
+    // Invariant: Cannot confirm empty orders
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+        // ... rest of implementation
+    }
+    
+    // Invariant: Order total must be positive
+    private void ValidateTotal()
+    {
+        if (Total.Amount < 0)
+            throw new InvalidOperationException("Order total cannot be negative");
+    }
+}
+```
+
+**Aggregate Boundaries:**
+
+```csharp
+// ✅ GOOD: Order and OrderItem are in the same aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    private readonly List<OrderItem> _items = new();
+    // OrderItem is part of Order aggregate
+}
+
+// ❌ BAD: Order and Customer in the same aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    public Customer Customer { get; set; } // Customer should be separate aggregate
+}
+
+// ✅ GOOD: Order references Customer by ID
+public class Order : AggregateRoot<OrderId>
+{
+    public CustomerId CustomerId { get; private set; } // Reference to another aggregate
+}
+```
+
+**Repository Pattern with Aggregates:**
+
+```csharp
+public interface IOrderRepository
+{
+    Task<Order> GetByIdAsync(OrderId id);
+    Task SaveAsync(Order order);
+    Task DeleteAsync(OrderId id);
+}
+
+public class OrderRepository : IOrderRepository
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task<Order> GetByIdAsync(OrderId id)
+    {
+        var orderEntity = await _context.Orders
+            .Include(o => o.Items) // Load entire aggregate
+            .FirstOrDefaultAsync(o => o.Id == id.Value);
+            
+        if (orderEntity == null)
+            return null;
+            
+        return MapToDomain(orderEntity);
+    }
+    
+    public async Task SaveAsync(Order order)
+    {
+        var orderEntity = MapToEntity(order);
+        
+        // Save entire aggregate as a unit
+        if (_context.Entry(orderEntity).State == EntityState.Detached)
+            _context.Orders.Add(orderEntity);
+        else
+            _context.Orders.Update(orderEntity);
+            
+        await _context.SaveChangesAsync();
+    }
+    
+    private Order MapToDomain(OrderEntity entity)
+    {
+        var order = new Order(new OrderId(entity.Id), new CustomerId(entity.CustomerId));
+        
+        foreach (var itemEntity in entity.Items)
+        {
+            order.AddItem(
+                new ProductId(itemEntity.ProductId),
+                new Quantity(itemEntity.Quantity),
+                new Money(itemEntity.UnitPrice, "USD")
+            );
+        }
+        
+        return order;
+    }
+}
+```
+
+**Domain Events in Aggregates:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Publish domain event
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Publish domain event
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+}
+
+// Domain event
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public Money Total { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId, Money total)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Total = total;
+        ConfirmedAt = DateTime.UtcNow;
+    }
+}
+```
+
+**Best Practices for Aggregates:**
+
+1. **Keep Aggregates Small**: Small aggregates are easier to understand and maintain
+2. **Single Responsibility**: Each aggregate should have one clear responsibility
+3. **Consistency Boundaries**: Define clear boundaries for business rules
+4. **Reference by ID**: Reference other aggregates by ID, not by object
+5. **Eventual Consistency**: Use domain events for cross-aggregate communication
+
+```csharp
+// ✅ GOOD: Small, focused aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    // Only order-related business logic
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice) { }
+    public void Confirm() { }
+    public void Cancel() { }
+}
+
+// ❌ BAD: Large aggregate with too many responsibilities
+public class Order : AggregateRoot<OrderId>
+{
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice) { }
+    public void Confirm() { }
+    public void Cancel() { }
+    public void ProcessPayment() { } // Should be separate aggregate
+    public void UpdateInventory() { } // Should be separate aggregate
+    public void SendNotification() { } // Should be separate aggregate
+}
+```
+
+**Key Benefits:**
+
+1. **Consistency**: Business rules are enforced within the aggregate
+2. **Encapsulation**: Internal state is protected
+3. **Performance**: Can load entire aggregate in one transaction
+4. **Simplicity**: Clear boundaries make the system easier to understand
+5. **Maintainability**: Changes to business rules are localized
+
+Aggregates are essential for maintaining data consistency and enforcing business rules in complex domains. They provide a clear structure for organizing related objects and ensure that the system remains in a valid state at all times.
+
+---
+
+### What are Domain Services and when should you use them?
+
+**Answer:**
+
+Domain Services are stateless services that contain business logic that doesn't naturally belong to entities or value objects. They represent operations that involve multiple domain objects or complex business rules that span across different aggregates.
+
+**When to Use Domain Services:**
+
+1. **Operations involving multiple aggregates**
+2. **Complex business logic that doesn't fit in entities**
+3. **Domain calculations that require external data**
+4. **Business rules that span multiple domain objects**
+
+**Example: Order Pricing Service**
+
+```csharp
+public interface IDomainService
+{
+}
+
+public class OrderPricingService : IDomainService
+{
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IProductRepository _productRepository;
+    
+    public OrderPricingService(ICustomerRepository customerRepository, IProductRepository productRepository)
+    {
+        _customerRepository = customerRepository;
+        _productRepository = productRepository;
+    }
+    
+    public Money CalculateOrderTotal(Order order)
+    {
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var customer = _customerRepository.GetById(order.CustomerId);
+        
+        // Apply customer-specific discount
+        var customerDiscount = CalculateCustomerDiscount(customer, baseTotal);
+        
+        // Apply bulk order discount
+        var bulkDiscount = CalculateBulkDiscount(order.Items.Count(), baseTotal);
+        
+        // Apply seasonal discount
+        var seasonalDiscount = CalculateSeasonalDiscount(baseTotal);
+        
+        var totalDiscount = customerDiscount + bulkDiscount + seasonalDiscount;
+        return baseTotal - totalDiscount;
+    }
+    
+    private Money CalculateCustomerDiscount(Customer customer, Money baseTotal)
+    {
+        var discountPercentage = customer.Status switch
+        {
+            CustomerStatus.VIP => 15m,
+            CustomerStatus.Premium => 10m,
+            CustomerStatus.Regular => 5m,
+            _ => 0m
+        };
+        
+        return baseTotal * (discountPercentage / 100);
+    }
+    
+    private Money CalculateBulkDiscount(int itemCount, Money baseTotal)
+    {
+        var discountPercentage = itemCount switch
+        {
+            >= 20 => 10m,
+            >= 10 => 5m,
+            _ => 0m
+        };
+        
+        return baseTotal * (discountPercentage / 100);
+    }
+    
+    private Money CalculateSeasonalDiscount(Money baseTotal)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var isHolidaySeason = currentMonth == 12 || currentMonth == 1; // December or January
+        
+        return isHolidaySeason ? baseTotal * 0.05m : new Money(0, baseTotal.Currency);
+    }
+}
+```
+
+**Example: Order Validation Service**
+
+```csharp
+public class OrderValidationService : IDomainService
+{
+    private readonly IInventoryService _inventoryService;
+    private readonly ICustomerService _customerService;
+    
+    public OrderValidationService(IInventoryService inventoryService, ICustomerService customerService)
+    {
+        _inventoryService = inventoryService;
+        _customerService = customerService;
+    }
+    
+    public ValidationResult ValidateOrder(Order order)
+    {
+        var errors = new List<string>();
+        
+        // Validate customer
+        var customerValidation = ValidateCustomer(order.CustomerId);
+        errors.AddRange(customerValidation.Errors);
+        
+        // Validate inventory
+        var inventoryValidation = ValidateInventory(order.Items);
+        errors.AddRange(inventoryValidation.Errors);
+        
+        // Validate business rules
+        var businessRuleValidation = ValidateBusinessRules(order);
+        errors.AddRange(businessRuleValidation.Errors);
+        
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateCustomer(CustomerId customerId)
+    {
+        var customer = _customerService.GetCustomer(customerId);
+        var errors = new List<string>();
+        
+        if (customer == null)
+            errors.Add("Customer not found");
+        else if (customer.Status == CustomerStatus.Suspended)
+            errors.Add("Customer account is suspended");
+        else if (customer.Status == CustomerStatus.Closed)
+            errors.Add("Customer account is closed");
+            
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateInventory(IEnumerable<OrderItem> items)
+    {
+        var errors = new List<string>();
+        
+        foreach (var item in items)
+        {
+            var availableQuantity = _inventoryService.GetAvailableQuantity(item.ProductId);
+            if (availableQuantity < item.Quantity.Value)
+            {
+                errors.Add($"Insufficient inventory for product {item.ProductId}. Available: {availableQuantity}, Requested: {item.Quantity.Value}");
+            }
+        }
+        
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateBusinessRules(Order order)
+    {
+        var errors = new List<string>();
+        
+        // Business rule: Minimum order amount
+        if (order.Total.Amount < 10)
+            errors.Add("Minimum order amount is $10");
+            
+        // Business rule: Maximum items per order
+        if (order.Items.Count() > 50)
+            errors.Add("Maximum 50 items per order");
+            
+        // Business rule: No orders on weekends for certain products
+        if (IsWeekend() && HasRestrictedProducts(order.Items))
+            errors.Add("Orders with restricted products cannot be placed on weekends");
+            
+        return new ValidationResult(errors);
+    }
+    
+    private bool IsWeekend()
+    {
+        var dayOfWeek = DateTime.Now.DayOfWeek;
+        return dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday;
+    }
+    
+    private bool HasRestrictedProducts(IEnumerable<OrderItem> items)
+    {
+        var restrictedProductIds = new[] { "ALCOHOL", "TOBACCO" };
+        return items.Any(item => restrictedProductIds.Contains(item.ProductId.Value));
+    }
+}
+
+public class ValidationResult
+{
+    public bool IsValid => !Errors.Any();
+    public List<string> Errors { get; }
+    
+    public ValidationResult(List<string> errors)
+    {
+        Errors = errors ?? new List<string>();
+    }
+}
+```
+
+**Example: Shipping Cost Calculation Service**
+
+```csharp
+public class ShippingCostCalculationService : IDomainService
+{
+    private readonly IShippingRateRepository _shippingRateRepository;
+    private readonly IAddressValidationService _addressValidationService;
+    
+    public ShippingCostCalculationService(
+        IShippingRateRepository shippingRateRepository,
+        IAddressValidationService addressValidationService)
+    {
+        _shippingRateRepository = shippingRateRepository;
+        _addressValidationService = addressValidationService;
+    }
+    
+    public Money CalculateShippingCost(Order order, Address shippingAddress)
+    {
+        // Validate address
+        if (!_addressValidationService.IsValidAddress(shippingAddress))
+            throw new InvalidOperationException("Invalid shipping address");
+        
+        // Get shipping rates
+        var shippingRates = _shippingRateRepository.GetRatesForAddress(shippingAddress);
+        
+        // Calculate package weight and dimensions
+        var packageInfo = CalculatePackageInfo(order.Items);
+        
+        // Find best shipping option
+        var bestRate = FindBestShippingRate(shippingRates, packageInfo);
+        
+        return bestRate.Cost;
+    }
+    
+    private PackageInfo CalculatePackageInfo(IEnumerable<OrderItem> items)
+    {
+        var totalWeight = items.Sum(item => item.Product.Weight * item.Quantity.Value);
+        var totalVolume = items.Sum(item => item.Product.Volume * item.Quantity.Value);
+        
+        return new PackageInfo(totalWeight, totalVolume);
+    }
+    
+    private ShippingRate FindBestShippingRate(IEnumerable<ShippingRate> rates, PackageInfo packageInfo)
+    {
+        var applicableRates = rates.Where(rate => 
+            rate.MaxWeight >= packageInfo.Weight && 
+            rate.MaxVolume >= packageInfo.Volume);
+            
+        return applicableRates.OrderBy(rate => rate.Cost.Amount).First();
+    }
+}
+
+public class PackageInfo
+{
+    public decimal Weight { get; }
+    public decimal Volume { get; }
+    
+    public PackageInfo(decimal weight, decimal volume)
+    {
+        Weight = weight;
+        Volume = volume;
+    }
+}
+```
+
+**Domain Service vs Application Service:**
+
+```csharp
+// Domain Service - contains business logic
+public class OrderPricingService : IDomainService
+{
+    public Money CalculateOrderTotal(Order order)
+    {
+        // Pure business logic
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var discount = CalculateDiscount(order);
+        return baseTotal - discount;
+    }
+    
+    private Money CalculateDiscount(Order order)
+    {
+        // Complex business rules for discount calculation
+        // This is domain logic, not application logic
+    }
+}
+
+// Application Service - orchestrates domain operations
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly OrderPricingService _pricingService;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> CreateOrderAsync(CreateOrderCommand command)
+    {
+        // Application logic - orchestration
+        var order = new Order(command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(item.ProductId, item.Quantity, item.UnitPrice);
+        }
+        
+        // Use domain service for business logic
+        var total = _pricingService.CalculateOrderTotal(order);
+        order.SetTotal(total);
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        return order.Id;
+    }
+}
+```
+
+**Best Practices for Domain Services:**
+
+1. **Keep them stateless**: Domain services should not maintain state
+2. **Use sparingly**: Prefer methods on entities when possible
+3. **Single responsibility**: Each service should have one clear purpose
+4. **Pure business logic**: Don't mix infrastructure concerns
+5. **Testable**: Should be easy to unit test
+
+```csharp
+// ✅ Good: Stateless domain service
+public class TaxCalculationService : IDomainService
+{
+    public Money CalculateTax(Order order, Address shippingAddress)
+    {
+        // Pure business logic for tax calculation
+        var taxRate = GetTaxRateForAddress(shippingAddress);
+        return order.Total * taxRate;
+    }
+    
+    private decimal GetTaxRateForAddress(Address address)
+    {
+        // Business logic for determining tax rate
+        return address.State switch
+        {
+            "CA" => 0.0875m,
+            "NY" => 0.08m,
+            "TX" => 0.0625m,
+            _ => 0.05m
+        };
+    }
+}
+
+// ❌ Bad: Domain service with infrastructure concerns
+public class BadTaxCalculationService : IDomainService
+{
+    private readonly HttpClient _httpClient; // Infrastructure concern
+    
+    public async Task<Money> CalculateTaxAsync(Order order, Address address)
+    {
+        // This mixes domain logic with infrastructure
+        var response = await _httpClient.GetAsync($"https://tax-api.com/rate/{address.State}");
+        var taxRate = await response.Content.ReadAsStringAsync();
+        return order.Total * decimal.Parse(taxRate);
+    }
+}
+```
+
+**When NOT to Use Domain Services:**
+
+1. **Simple operations**: Use entity methods instead
+2. **Infrastructure concerns**: Use application services
+3. **Cross-cutting concerns**: Use application services or middleware
+4. **Data access**: Use repositories
+
+```csharp
+// ❌ Don't use domain service for simple operations
+public class BadOrderService : IDomainService
+{
+    public void UpdateOrderStatus(Order order, OrderStatus status)
+    {
+        order.UpdateStatus(status); // This should be a method on Order entity
+    }
+}
+
+// ✅ Use entity method instead
+public class Order : AggregateRoot<OrderId>
+{
+    public void UpdateStatus(OrderStatus status)
+    {
+        // Business logic for status update
+        if (Status == OrderStatus.Shipped && status == OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot revert shipped order to draft");
+            
+        Status = status;
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **Domain Services** contain business logic that doesn't belong to entities or value objects
+2. **Use them sparingly** - prefer entity methods when possible
+3. **Keep them stateless** and focused on business logic
+4. **Don't mix infrastructure concerns** - keep them pure
+5. **Test them thoroughly** as they contain important business rules
+
+---
+
+### What are Domain Events and how do you implement them in .NET?
+
+**Answer:**
+
+Domain Events are a way to capture something important that happened in the domain. They represent business events that other parts of the system might be interested in, enabling loose coupling between different parts of the domain.
+
+**Key Characteristics:**
+
+1. **Business Meaning**: Represent something important that happened
+2. **Immutable**: Once created, they cannot be changed
+3. **Past Tense**: Named as things that have already happened
+4. **Rich Information**: Contain all necessary data for event handlers
+
+**Basic Domain Event Implementation:**
+
+```csharp
+public abstract class DomainEvent
+{
+    public Guid Id { get; }
+    public DateTime OccurredOn { get; }
+    public string EventType { get; }
+    
+    protected DomainEvent()
+    {
+        Id = Guid.NewGuid();
+        OccurredOn = DateTime.UtcNow;
+        EventType = GetType().Name;
+    }
+}
+
+// Example domain events
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public Money Total { get; }
+    public List<OrderItem> Items { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId, Money total, List<OrderItem> items)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Total = total;
+        Items = items;
+    }
+}
+
+public class OrderCancelledEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public string Reason { get; }
+    
+    public OrderCancelledEvent(OrderId orderId, CustomerId customerId, string reason)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Reason = reason;
+    }
+}
+
+public class PaymentProcessedEvent : DomainEvent
+{
+    public PaymentId PaymentId { get; }
+    public OrderId OrderId { get; }
+    public Money Amount { get; }
+    public PaymentStatus Status { get; }
+    
+    public PaymentProcessedEvent(PaymentId paymentId, OrderId orderId, Money amount, PaymentStatus status)
+    {
+        PaymentId = paymentId;
+        OrderId = orderId;
+        Amount = amount;
+        Status = status;
+    }
+}
+```
+
+**Domain Event Handler Interface:**
+
+```csharp
+public interface IDomainEventHandler<in TDomainEvent> where TDomainEvent : DomainEvent
+{
+    Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken = default);
+}
+
+// Generic handler interface
+public interface IDomainEventHandler
+{
+    Task Handle(DomainEvent domainEvent, CancellationToken cancellationToken = default);
+    bool CanHandle(DomainEvent domainEvent);
+}
+```
+
+**Event Handler Implementations:**
+
+```csharp
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IEmailService _emailService;
+    private readonly IInventoryService _inventoryService;
+    private readonly ILogger<OrderConfirmedEventHandler> _logger;
+    
+    public OrderConfirmedEventHandler(
+        IEmailService emailService,
+        IInventoryService inventoryService,
+        ILogger<OrderConfirmedEventHandler> logger)
+    {
+        _emailService = emailService;
+        _inventoryService = inventoryService;
+        _logger = logger;
+    }
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Processing order confirmation for order {OrderId}", domainEvent.OrderId);
+        
+        try
+        {
+            // Send confirmation email
+            await _emailService.SendOrderConfirmationAsync(
+                domainEvent.CustomerId, 
+                domainEvent.OrderId, 
+                domainEvent.Total);
+            
+            // Reserve inventory
+            foreach (var item in domainEvent.Items)
+            {
+                await _inventoryService.ReserveInventoryAsync(
+                    item.ProductId, 
+                    item.Quantity);
+            }
+            
+            _logger.LogInformation("Successfully processed order confirmation for order {OrderId}", domainEvent.OrderId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to process order confirmation for order {OrderId}", domainEvent.OrderId);
+            throw;
+        }
+    }
+}
+
+public class OrderCancelledEventHandler : IDomainEventHandler<OrderCancelledEvent>
+{
+    private readonly IEmailService _emailService;
+    private readonly IInventoryService _inventoryService;
+    private readonly IPaymentService _paymentService;
+    
+    public async Task Handle(OrderCancelledEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        // Send cancellation email
+        await _emailService.SendOrderCancellationAsync(
+            domainEvent.CustomerId, 
+            domainEvent.OrderId, 
+            domainEvent.Reason);
+        
+        // Release reserved inventory
+        // Note: This would need to get the order items from somewhere
+        // In a real implementation, you might include them in the event
+        
+        // Process refund if payment was made
+        await _paymentService.ProcessRefundAsync(domainEvent.OrderId);
+    }
+}
+
+public class PaymentProcessedEventHandler : IDomainEventHandler<PaymentProcessedEvent>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IShippingService _shippingService;
+    
+    public async Task Handle(PaymentProcessedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        if (domainEvent.Status == PaymentStatus.Successful)
+        {
+            // Update order status
+            var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId);
+            order.MarkAsPaid();
+            await _orderRepository.SaveAsync(order);
+            
+            // Initiate shipping
+            await _shippingService.CreateShipmentAsync(domainEvent.OrderId);
+        }
+        else
+        {
+            // Handle failed payment
+            var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId);
+            order.MarkPaymentFailed();
+            await _orderRepository.SaveAsync(order);
+        }
+    }
+}
+```
+
+**Domain Event Dispatcher:**
+
+```csharp
+public interface IDomainEventDispatcher
+{
+    Task DispatchAsync(DomainEvent domainEvent, CancellationToken cancellationToken = default);
+    Task DispatchAsync(IEnumerable<DomainEvent> domainEvents, CancellationToken cancellationToken = default);
+}
+
+public class DomainEventDispatcher : IDomainEventDispatcher
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<DomainEventDispatcher> _logger;
+    
+    public DomainEventDispatcher(IServiceProvider serviceProvider, ILogger<DomainEventDispatcher> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+    
+    public async Task DispatchAsync(DomainEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Dispatching domain event {EventType} with ID {EventId}", 
+            domainEvent.EventType, domainEvent.Id);
+        
+        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
+        var handlers = _serviceProvider.GetServices(handlerType);
+        
+        var tasks = handlers.Select(handler => 
+        {
+            var handleMethod = handler.GetType().GetMethod("Handle");
+            var task = (Task)handleMethod.Invoke(handler, new object[] { domainEvent, cancellationToken });
+            return task;
+        });
+        
+        await Task.WhenAll(tasks);
+        
+        _logger.LogInformation("Successfully dispatched domain event {EventType} with ID {EventId}", 
+            domainEvent.EventType, domainEvent.Id);
+    }
+    
+    public async Task DispatchAsync(IEnumerable<DomainEvent> domainEvents, CancellationToken cancellationToken = default)
+    {
+        var tasks = domainEvents.Select(domainEvent => DispatchAsync(domainEvent, cancellationToken));
+        await Task.WhenAll(tasks);
+    }
+}
+```
+
+**Integration with Aggregates:**
+
+```csharp
+public abstract class AggregateRoot<TId> : Entity<TId> where TId : ValueObject
+{
+    private readonly List<DomainEvent> _domainEvents = new();
+    
+    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    
+    protected void AddDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+    
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Raise domain event
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total, _items.ToList()));
+    }
+    
+    public void Cancel(string reason)
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Raise domain event
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId, reason));
+    }
+}
+```
+
+**Event Publishing in Application Layer:**
+
+```csharp
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> ConfirmOrderAsync(OrderId orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+            throw new OrderNotFoundException(orderId);
+            
+        order.Confirm();
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events after successful save
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+        
+        return order.Id;
+    }
+}
+```
+
+**Event Store Implementation:**
+
+```csharp
+public interface IEventStore
+{
+    Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion);
+}
+
+public class EventStore : IEventStore
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion)
+    {
+        var eventEntities = events.Select((domainEvent, index) => new DomainEventEntity
+        {
+            Id = domainEvent.Id,
+            AggregateId = aggregateId,
+            EventType = domainEvent.EventType,
+            EventData = JsonSerializer.Serialize(domainEvent),
+            Version = expectedVersion + index + 1,
+            OccurredOn = domainEvent.OccurredOn
+        });
+        
+        _context.DomainEvents.AddRange(eventEntities);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId)
+    {
+        var eventEntities = await _context.DomainEvents
+            .Where(e => e.AggregateId == aggregateId)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    private DomainEvent DeserializeEvent(DomainEventEntity eventEntity)
+    {
+        var eventType = Type.GetType(eventEntity.EventType);
+        return (DomainEvent)JsonSerializer.Deserialize(eventEntity.EventData, eventType);
+    }
+}
+
+public class DomainEventEntity
+{
+    public Guid Id { get; set; }
+    public Guid AggregateId { get; set; }
+    public string EventType { get; set; }
+    public string EventData { get; set; }
+    public int Version { get; set; }
+    public DateTime OccurredOn { get; set; }
+}
+```
+
+**Best Practices:**
+
+1. **Immutable Events**: Domain events should be immutable
+2. **Rich Information**: Include all necessary data for event handlers
+3. **Past Tense Naming**: Use past tense for event names
+4. **Single Responsibility**: Each event should represent one business occurrence
+5. **Async Handling**: Use async/await for event handlers
+6. **Error Handling**: Implement proper error handling in event handlers
+7. **Idempotency**: Make event handlers idempotent when possible
+
+**Benefits:**
+
+1. **Loose Coupling**: Reduces coupling between different parts of the system
+2. **Extensibility**: Easy to add new event handlers without changing existing code
+3. **Audit Trail**: Provides a complete history of domain events
+4. **Integration**: Enables integration between different bounded contexts
+5. **Testing**: Makes it easier to test business logic in isolation
+
+Domain Events are a powerful pattern for creating loosely coupled, extensible systems that can evolve over time while maintaining business integrity.
+
+---
+
+### What is the difference between Domain Models and Data Transfer Objects (DTOs)?
+
+**Answer:**
+
+Domain Models and Data Transfer Objects (DTOs) serve different purposes in a software system. Understanding their differences is crucial for maintaining clean architecture and proper separation of concerns.
+
+**Key Differences:**
+
+| Aspect | Domain Models | DTOs |
+|--------|---------------|------|
+| **Purpose** | Represent business concepts and rules | Transfer data between layers |
+| **Business Logic** | Contains business logic and rules | No business logic |
+| **Validation** | Domain validation and invariants | Data format validation |
+| **Lifecycle** | Long-lived, persistent | Short-lived, transient |
+| **Coupling** | Tightly coupled to business domain | Loosely coupled, generic |
+| **Immutability** | Can be mutable (entities) or immutable (value objects) | Usually immutable |
+
+**Domain Models:**
+
+Domain models represent business concepts and contain business logic. They are the heart of the domain-driven design.
+
+```csharp
+// Domain Model - Order Entity
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId)
+    {
+        Id = id;
+        CustomerId = customerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    // Business logic
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        if (quantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        // Business rule: Minimum order amount
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+// Domain Model - Value Object
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+}
+```
+
+**DTOs (Data Transfer Objects):**
+
+DTOs are simple objects used to transfer data between different layers of the application.
+
+```csharp
+// DTO for creating an order
+public class CreateOrderDto
+{
+    public int CustomerId { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderItemDto
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+}
+
+// DTO for order response
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+// DTO for order summary
+public class OrderSummaryDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+```
+
+**Mapping Between Domain Models and DTOs:**
+
+```csharp
+public class OrderMapper
+{
+    public static OrderDto ToDto(Order order)
+    {
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            Currency = order.Total.Currency,
+            CreatedAt = order.CreatedAt,
+            Items = order.Items.Select(ToItemDto).ToList()
+        };
+    }
+    
+    public static OrderItemDto ToItemDto(OrderItem item)
+    {
+        return new OrderItemDto
+        {
+            ProductId = item.ProductId.Value,
+            Quantity = item.Quantity.Value,
+            UnitPrice = item.UnitPrice.Amount
+        };
+    }
+    
+    public static Order ToDomain(CreateOrderDto dto)
+    {
+        var order = new Order(new OrderId(dto.CustomerId), new CustomerId(dto.CustomerId));
+        
+        foreach (var itemDto in dto.Items)
+        {
+            order.AddItem(
+                new ProductId(itemDto.ProductId),
+                new Quantity(itemDto.Quantity),
+                new Money(itemDto.UnitPrice, "USD")
+            );
+        }
+        
+        return order;
+    }
+}
+```
+
+**Usage in Application Layer:**
+
+```csharp
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly OrderMapper _mapper;
+    
+    public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+    {
+        // Convert DTO to domain model
+        var order = OrderMapper.ToDomain(createOrderDto);
+        
+        // Business logic is handled by the domain model
+        order.Confirm();
+        
+        // Save domain model
+        await _orderRepository.SaveAsync(order);
+        
+        // Convert back to DTO for response
+        return OrderMapper.ToDto(order);
+    }
+    
+    public async Task<OrderDto> GetOrderAsync(int orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(new OrderId(orderId));
+        if (order == null)
+            throw new OrderNotFoundException(orderId);
+            
+        return OrderMapper.ToDto(order);
+    }
+    
+    public async Task<List<OrderSummaryDto>> GetOrderSummariesAsync(int customerId)
+    {
+        var orders = await _orderRepository.GetByCustomerIdAsync(new CustomerId(customerId));
+        
+        return orders.Select(order => new OrderSummaryDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            CreatedAt = order.CreatedAt
+        }).ToList();
+    }
+}
+```
+
+**API Controller Usage:**
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly OrderApplicationService _orderService;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] CreateOrderDto createOrderDto)
+    {
+        try
+        {
+            var order = await _orderService.CreateOrderAsync(createOrderDto);
+            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        try
+        {
+            var order = await _orderService.GetOrderAsync(id);
+            return Ok(order);
+        }
+        catch (OrderNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<List<OrderSummaryDto>>> GetCustomerOrders(int customerId)
+    {
+        var orders = await _orderService.GetOrderSummariesAsync(customerId);
+        return Ok(orders);
+    }
+}
+```
+
+**Validation Differences:**
+
+```csharp
+// Domain Model Validation (Business Rules)
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        // Business rule validation
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+    }
+}
+
+// DTO Validation (Data Format)
+public class CreateOrderDto
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Customer ID must be positive")]
+    public int CustomerId { get; set; }
+    
+    [Required]
+    [MinLength(1, ErrorMessage = "Order must have at least one item")]
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderItemDto
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Product ID must be positive")]
+    public int ProductId { get; set; }
+    
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be positive")]
+    public int Quantity { get; set; }
+    
+    [Required]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Unit price must be positive")]
+    public decimal UnitPrice { get; set; }
+}
+```
+
+**When to Use Each:**
+
+**Use Domain Models when:**
+- Representing business concepts
+- Implementing business logic and rules
+- Maintaining business invariants
+- Modeling the core domain
+
+**Use DTOs when:**
+- Transferring data between layers
+- Exposing data through APIs
+- Serializing/deserializing data
+- Reducing coupling between layers
+
+**Common Mistakes:**
+
+```csharp
+// ❌ BAD: DTO with business logic
+public class OrderDto
+{
+    public int Id { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    
+    public void Confirm() // Business logic in DTO
+    {
+        if (Status != "Draft")
+            throw new InvalidOperationException("Cannot confirm non-draft order");
+        Status = "Confirmed";
+    }
+}
+
+// ❌ BAD: Domain model used as DTO
+public class Order : AggregateRoot<OrderId>
+{
+    public int Id { get; set; } // Should be OrderId
+    public int CustomerId { get; set; } // Should be CustomerId
+    public string Status { get; set; } // Should be OrderStatus enum
+    public decimal Total { get; set; } // Should be Money value object
+}
+
+// ✅ GOOD: Proper separation
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    
+    public void Confirm() { /* Business logic */ }
+}
+
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    // No business logic
+}
+```
+
+**Key Takeaways:**
+
+1. **Domain Models** contain business logic and represent business concepts
+2. **DTOs** are simple data containers for transferring data between layers
+3. **Domain Models** are long-lived and persistent
+4. **DTOs** are short-lived and transient
+5. **Use mapping** to convert between domain models and DTOs
+6. **Keep them separate** to maintain clean architecture
+7. **Domain Models** enforce business rules, **DTOs** handle data format validation
+
+---
+
+### How do you implement the CQRS (Command Query Responsibility Segregation) pattern?
+
+**Answer:**
+
+CQRS (Command Query Responsibility Segregation) is a pattern that separates read and write operations by using different models for commands (writes) and queries (reads). This allows each side to be optimized independently.
+
+**Core Concepts:**
+
+1. **Commands**: Operations that change state (writes)
+2. **Queries**: Operations that read data (reads)
+3. **Command Handlers**: Process commands and update the domain
+4. **Query Handlers**: Process queries and return data
+5. **Separate Models**: Different models for commands and queries
+
+**Basic CQRS Implementation:**
+
+```csharp
+// Command and Query base classes
+public interface ICommand
+{
+}
+
+public interface ICommandHandler<in TCommand> where TCommand : ICommand
+{
+    Task Handle(TCommand command, CancellationToken cancellationToken = default);
+}
+
+public interface IQuery<TResult>
+{
+}
+
+public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery<TResult>
+{
+    Task<TResult> Handle(TQuery query, CancellationToken cancellationToken = default);
+}
+
+// Mediator interface
+public interface IMediator
+{
+    Task<TResult> Send<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
+    Task Send(ICommand command, CancellationToken cancellationToken = default);
+}
+```
+
+**Command Implementation:**
+
+```csharp
+// Commands
+public record CreateOrderCommand(CustomerId CustomerId, List<OrderItemDto> Items) : ICommand;
+
+public record ConfirmOrderCommand(OrderId OrderId) : ICommand;
+
+public record CancelOrderCommand(OrderId OrderId, string Reason) : ICommand;
+
+public record AddOrderItemCommand(OrderId OrderId, ProductId ProductId, Quantity Quantity, Money UnitPrice) : ICommand;
+
+// Command Handlers
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(CreateOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = new Order(new OrderId(Guid.NewGuid()), command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(
+                new ProductId(item.ProductId),
+                new Quantity(item.Quantity),
+                new Money(item.UnitPrice, "USD")
+            );
+        }
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+
+public class ConfirmOrderCommandHandler : ICommandHandler<ConfirmOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(ConfirmOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(command.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(command.OrderId);
+            
+        order.Confirm();
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+
+public class CancelOrderCommandHandler : ICommandHandler<CancelOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(CancelOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(command.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(command.OrderId);
+            
+        order.Cancel(command.Reason);
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+```
+
+**Query Implementation:**
+
+```csharp
+// Queries
+public record GetOrderQuery(OrderId OrderId) : IQuery<OrderDto>;
+
+public record GetOrdersByCustomerQuery(CustomerId CustomerId) : IQuery<List<OrderSummaryDto>>;
+
+public record GetOrderHistoryQuery(OrderId OrderId) : IQuery<List<OrderHistoryDto>>;
+
+public record SearchOrdersQuery(string SearchTerm, int Page, int PageSize) : IQuery<SearchOrdersResult>;
+
+// Query DTOs
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderSummaryDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+public class OrderHistoryDto
+{
+    public DateTime Timestamp { get; set; }
+    public string Action { get; set; }
+    public string Description { get; set; }
+}
+
+public class SearchOrdersResult
+{
+    public List<OrderSummaryDto> Orders { get; set; }
+    public int TotalCount { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+}
+
+// Query Handlers
+public class GetOrderQueryHandler : IQueryHandler<GetOrderQuery, OrderDto>
+{
+    private readonly IOrderRepository _orderRepository;
+    
+    public async Task<OrderDto> Handle(GetOrderQuery query, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(query.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(query.OrderId);
+            
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            Currency = order.Total.Currency,
+            CreatedAt = order.CreatedAt,
+            Items = order.Items.Select(item => new OrderItemDto
+            {
+                ProductId = item.ProductId.Value,
+                Quantity = item.Quantity.Value,
+                UnitPrice = item.UnitPrice.Amount
+            }).ToList()
+        };
+    }
+}
+
+public class GetOrdersByCustomerQueryHandler : IQueryHandler<GetOrdersByCustomerQuery, List<OrderSummaryDto>>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task<List<OrderSummaryDto>> Handle(GetOrdersByCustomerQuery query, CancellationToken cancellationToken = default)
+    {
+        var orders = await _orderReadRepository.GetByCustomerIdAsync(query.CustomerId);
+        
+        return orders.Select(order => new OrderSummaryDto
+        {
+            Id = order.Id,
+            CustomerId = order.CustomerId,
+            Status = order.Status,
+            Total = order.Total,
+            CreatedAt = order.CreatedAt
+        }).ToList();
+    }
+}
+
+public class SearchOrdersQueryHandler : IQueryHandler<SearchOrdersQuery, SearchOrdersResult>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task<SearchOrdersResult> Handle(SearchOrdersQuery query, CancellationToken cancellationToken = default)
+    {
+        var result = await _orderReadRepository.SearchAsync(query.SearchTerm, query.Page, query.PageSize);
+        
+        return new SearchOrdersResult
+        {
+            Orders = result.Orders.Select(order => new OrderSummaryDto
+            {
+                Id = order.Id,
+                CustomerId = order.CustomerId,
+                Status = order.Status,
+                Total = order.Total,
+                CreatedAt = order.CreatedAt
+            }).ToList(),
+            TotalCount = result.TotalCount,
+            Page = query.Page,
+            PageSize = query.PageSize
+        };
+    }
+}
+```
+
+**Separate Read and Write Models:**
+
+```csharp
+// Write Model (Domain)
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    // Business logic and invariants
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        // Business logic...
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+}
+
+// Read Model (Optimized for queries)
+public class OrderReadModel
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string CustomerName { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ConfirmedAt { get; set; }
+    public DateTime? ShippedAt { get; set; }
+    public string ShippingAddress { get; set; }
+    public List<OrderItemReadModel> Items { get; set; }
+}
+
+public class OrderItemReadModel
+{
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal Total { get; set; }
+}
+
+// Read Repository
+public interface IOrderReadRepository
+{
+    Task<OrderReadModel> GetByIdAsync(int orderId);
+    Task<List<OrderReadModel>> GetByCustomerIdAsync(int customerId);
+    Task<SearchResult<OrderReadModel>> SearchAsync(string searchTerm, int page, int pageSize);
+}
+
+public class OrderReadRepository : IOrderReadRepository
+{
+    private readonly ReadDbContext _context;
+    
+    public async Task<OrderReadModel> GetByIdAsync(int orderId)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Where(o => o.Id == orderId)
+            .Select(o => new OrderReadModel
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                Status = o.Status,
+                Total = o.Total,
+                Currency = o.Currency,
+                CreatedAt = o.CreatedAt,
+                ConfirmedAt = o.ConfirmedAt,
+                ShippedAt = o.ShippedAt,
+                ShippingAddress = o.ShippingAddress,
+                Items = o.Items.Select(item => new OrderItemReadModel
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    Total = item.Total
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+    }
+    
+    public async Task<List<OrderReadModel>> GetByCustomerIdAsync(int customerId)
+    {
+        return await _context.Orders
+            .Where(o => o.CustomerId == customerId)
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new OrderReadModel
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                Status = o.Status,
+                Total = o.Total,
+                Currency = o.Currency,
+                CreatedAt = o.CreatedAt,
+                ConfirmedAt = o.ConfirmedAt,
+                ShippedAt = o.ShippedAt
+            })
+            .ToListAsync();
+    }
+}
+```
+
+**Event-Driven Updates to Read Model:**
+
+```csharp
+// Event handler to update read model
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        // Update read model when domain event occurs
+        await _orderReadRepository.UpdateOrderStatusAsync(
+            domainEvent.OrderId.Value, 
+            "Confirmed", 
+            DateTime.UtcNow);
+    }
+}
+
+public class OrderCancelledEventHandler : IDomainEventHandler<OrderCancelledEvent>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task Handle(OrderCancelledEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _orderReadRepository.UpdateOrderStatusAsync(
+            domainEvent.OrderId.Value, 
+            "Cancelled", 
+            DateTime.UtcNow);
+    }
+}
+```
+
+**API Controller Usage:**
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IMediator _mediator;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderId>> CreateOrder([FromBody] CreateOrderCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpPost("{id}/confirm")]
+    public async Task<ActionResult> ConfirmOrder(int id)
+    {
+        var command = new ConfirmOrderCommand(new OrderId(id));
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpPost("{id}/cancel")]
+    public async Task<ActionResult> CancelOrder(int id, [FromBody] CancelOrderRequest request)
+    {
+        var command = new CancelOrderCommand(new OrderId(id), request.Reason);
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        var query = new GetOrderQuery(new OrderId(id));
+        var order = await _mediator.Send(query);
+        return Ok(order);
+    }
+    
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<List<OrderSummaryDto>>> GetCustomerOrders(int customerId)
+    {
+        var query = new GetOrdersByCustomerQuery(new CustomerId(customerId));
+        var orders = await _mediator.Send(query);
+        return Ok(orders);
+    }
+    
+    [HttpGet("search")]
+    public async Task<ActionResult<SearchOrdersResult>> SearchOrders(
+        [FromQuery] string searchTerm, 
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 10)
+    {
+        var query = new SearchOrdersQuery(searchTerm, page, pageSize);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+}
+```
+
+**Benefits of CQRS:**
+
+1. **Separation of Concerns**: Commands and queries are handled separately
+2. **Optimization**: Each side can be optimized independently
+3. **Scalability**: Read and write operations can be scaled separately
+4. **Flexibility**: Different models for different use cases
+5. **Performance**: Read models can be denormalized for better query performance
+6. **Maintainability**: Clear separation makes the code easier to understand and maintain
+
+**When to Use CQRS:**
+
+- Complex domains with different read and write requirements
+- High-performance applications with many reads
+- Systems where read and write models differ significantly
+- Applications that need to scale reads and writes independently
+- Systems with complex reporting requirements
+
+**Best Practices:**
+
+1. **Start Simple**: Begin with a single model and separate when needed
+2. **Event-Driven Updates**: Use domain events to keep read models in sync
+3. **Eventual Consistency**: Accept that read models might be slightly behind
+4. **Proper Error Handling**: Handle failures in command and query processing
+5. **Testing**: Test commands and queries separately
+6. **Documentation**: Document the separation and synchronization strategy
+
+CQRS is a powerful pattern that can significantly improve the performance and maintainability of complex applications when applied appropriately.
+
+---
+
+### What is Event Sourcing and how does it relate to DDD?
+
+**Answer:**
+
+Event Sourcing is a pattern where the state of an application is determined by a sequence of events that have occurred, rather than by the current state alone. It's closely related to Domain-Driven Design and provides a powerful way to capture business events and maintain a complete audit trail.
+
+**Core Concepts:**
+
+1. **Events as Source of Truth**: The event store is the primary source of truth
+2. **Event Store**: Persistent storage for all domain events
+3. **Aggregate Reconstruction**: Rebuild aggregate state by replaying events
+4. **Event Stream**: Chronological sequence of events for an aggregate
+5. **Snapshots**: Periodic snapshots to optimize reconstruction
+
+**Basic Event Sourcing Implementation:**
+
+```csharp
+// Base event class
+public abstract class DomainEvent
+{
+    public Guid Id { get; }
+    public Guid AggregateId { get; }
+    public int Version { get; }
+    public DateTime OccurredOn { get; }
+    public string EventType { get; }
+    
+    protected DomainEvent(Guid aggregateId, int version)
+    {
+        Id = Guid.NewGuid();
+        AggregateId = aggregateId;
+        Version = version;
+        OccurredOn = DateTime.UtcNow;
+        EventType = GetType().Name;
+    }
+}
+
+// Order events
+public class OrderCreatedEvent : DomainEvent
+{
+    public CustomerId CustomerId { get; }
+    public DateTime CreatedAt { get; }
+    
+    public OrderCreatedEvent(Guid aggregateId, int version, CustomerId customerId, DateTime createdAt)
+        : base(aggregateId, version)
+    {
+        CustomerId = customerId;
+        CreatedAt = createdAt;
+    }
+}
+
+public class OrderItemAddedEvent : DomainEvent
+{
+    public ProductId ProductId { get; }
+    public Quantity Quantity { get; }
+    public Money UnitPrice { get; }
+    
+    public OrderItemAddedEvent(Guid aggregateId, int version, ProductId productId, Quantity quantity, Money unitPrice)
+        : base(aggregateId, version)
+    {
+        ProductId = productId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+    }
+}
+
+public class OrderConfirmedEvent : DomainEvent
+{
+    public Money Total { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(Guid aggregateId, int version, Money total, DateTime confirmedAt)
+        : base(aggregateId, version)
+    {
+        Total = total;
+        ConfirmedAt = confirmedAt;
+    }
+}
+
+public class OrderCancelledEvent : DomainEvent
+{
+    public string Reason { get; }
+    public DateTime CancelledAt { get; }
+    
+    public OrderCancelledEvent(Guid aggregateId, int version, string reason, DateTime cancelledAt)
+        : base(aggregateId, version)
+    {
+        Reason = reason;
+        CancelledAt = cancelledAt;
+    }
+}
+```
+
+**Event-Sourced Aggregate:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    // Constructor for creating new orders
+    public Order(OrderId id, CustomerId customerId)
+    {
+        Id = id;
+        CustomerId = customerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+        
+        // Raise event
+        RaiseEvent(new OrderCreatedEvent(id.Value, 1, customerId, CreatedAt));
+    }
+    
+    // Constructor for rebuilding from events
+    private Order()
+    {
+        // Used by event sourcing
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        var item = new OrderItem(productId, quantity, unitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+        
+        // Raise event
+        RaiseEvent(new OrderItemAddedEvent(Id.Value, Version + 1, productId, quantity, unitPrice));
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Raise event
+        RaiseEvent(new OrderConfirmedEvent(Id.Value, Version + 1, Total, DateTime.UtcNow));
+    }
+    
+    public void Cancel(string reason)
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Raise event
+        RaiseEvent(new OrderCancelledEvent(Id.Value, Version + 1, reason, DateTime.UtcNow));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+    
+    // Event application methods
+    private void Apply(OrderCreatedEvent @event)
+    {
+        Id = new OrderId(@event.AggregateId);
+        CustomerId = @event.CustomerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = @event.CreatedAt;
+    }
+    
+    private void Apply(OrderItemAddedEvent @event)
+    {
+        var item = new OrderItem(@event.ProductId, @event.Quantity, @event.UnitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+    }
+    
+    private void Apply(OrderConfirmedEvent @event)
+    {
+        Status = OrderStatus.Confirmed;
+    }
+    
+    private void Apply(OrderCancelledEvent @event)
+    {
+        Status = OrderStatus.Cancelled;
+    }
+}
+```
+
+**Event Store Interface and Implementation:**
+
+```csharp
+public interface IEventStore
+{
+    Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(DateTime from, DateTime to);
+}
+
+public class EventStore : IEventStore
+{
+    private readonly EventStoreDbContext _context;
+    private readonly IEventSerializer _eventSerializer;
+    
+    public async Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion)
+    {
+        var eventEntities = events.Select((domainEvent, index) => new EventEntity
+        {
+            Id = domainEvent.Id,
+            AggregateId = aggregateId,
+            EventType = domainEvent.EventType,
+            EventData = _eventSerializer.Serialize(domainEvent),
+            Version = expectedVersion + index + 1,
+            OccurredOn = domainEvent.OccurredOn
+        });
+        
+        _context.Events.AddRange(eventEntities);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.AggregateId == aggregateId)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.AggregateId == aggregateId && e.Version > fromVersion)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(DateTime from, DateTime to)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.OccurredOn >= from && e.OccurredOn <= to)
+            .OrderBy(e => e.OccurredOn)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    private DomainEvent DeserializeEvent(EventEntity eventEntity)
+    {
+        var eventType = Type.GetType(eventEntity.EventType);
+        return (DomainEvent)_eventSerializer.Deserialize(eventEntity.EventData, eventType);
+    }
+}
+
+public class EventEntity
+{
+    public Guid Id { get; set; }
+    public Guid AggregateId { get; set; }
+    public string EventType { get; set; }
+    public string EventData { get; set; }
+    public int Version { get; set; }
+    public DateTime OccurredOn { get; set; }
+}
+```
+
+**Event-Sourced Repository:**
+
+```csharp
+public interface IEventSourcedRepository<TAggregate> where TAggregate : AggregateRoot
+{
+    Task<TAggregate> GetByIdAsync(Guid id);
+    Task SaveAsync(TAggregate aggregate);
+}
+
+public class EventSourcedOrderRepository : IEventSourcedRepository<Order>
+{
+    private readonly IEventStore _eventStore;
+    private readonly ISnapshotStore _snapshotStore;
+    
+    public async Task<Order> GetByIdAsync(Guid id)
+    {
+        // Try to get from snapshot first
+        var snapshot = await _snapshotStore.GetSnapshotAsync<Order>(id);
+        var fromVersion = 0;
+        
+        if (snapshot != null)
+        {
+            fromVersion = snapshot.Version;
+        }
+        
+        // Get events from the snapshot version
+        var events = await _eventStore.GetEventsAsync(id, fromVersion);
+        
+        // Reconstruct aggregate
+        var order = new Order();
+        
+        // Apply snapshot if available
+        if (snapshot != null)
+        {
+            order.RestoreFromSnapshot(snapshot);
+        }
+        
+        // Apply events
+        foreach (var @event in events)
+        {
+            order.ApplyEvent(@event);
+        }
+        
+        return order;
+    }
+    
+    public async Task SaveAsync(Order aggregate)
+    {
+        var events = aggregate.GetUncommittedEvents();
+        var expectedVersion = aggregate.Version - events.Count();
+        
+        await _eventStore.SaveEventsAsync(aggregate.Id.Value, events, expectedVersion);
+        
+        // Create snapshot if needed
+        if (ShouldCreateSnapshot(aggregate))
+        {
+            var snapshot = aggregate.CreateSnapshot();
+            await _snapshotStore.SaveSnapshotAsync(aggregate.Id.Value, snapshot);
+        }
+        
+        aggregate.MarkEventsAsCommitted();
+    }
+    
+    private bool ShouldCreateSnapshot(Order aggregate)
+    {
+        // Create snapshot every 100 events
+        return aggregate.Version % 100 == 0;
+    }
+}
+```
+
+**Snapshot Implementation:**
+
+```csharp
+public interface ISnapshotStore
+{
+    Task<TSnapshot> GetSnapshotAsync<TSnapshot>(Guid aggregateId) where TSnapshot : class;
+    Task SaveSnapshotAsync<TSnapshot>(Guid aggregateId, TSnapshot snapshot) where TSnapshot : class;
+}
+
+public class OrderSnapshot
+{
+    public Guid AggregateId { get; set; }
+    public int Version { get; set; }
+    public CustomerId CustomerId { get; set; }
+    public OrderStatus Status { get; set; }
+    public Money Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItem> Items { get; set; }
+    public DateTime SnapshotDate { get; set; }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    // ... existing code ...
+    
+    public OrderSnapshot CreateSnapshot()
+    {
+        return new OrderSnapshot
+        {
+            AggregateId = Id.Value,
+            Version = Version,
+            CustomerId = CustomerId,
+            Status = Status,
+            Total = Total,
+            CreatedAt = CreatedAt,
+            Items = _items.ToList(),
+            SnapshotDate = DateTime.UtcNow
+        };
+    }
+    
+    public void RestoreFromSnapshot(OrderSnapshot snapshot)
+    {
+        Id = new OrderId(snapshot.AggregateId);
+        CustomerId = snapshot.CustomerId;
+        Status = snapshot.Status;
+        Total = snapshot.Total;
+        CreatedAt = snapshot.CreatedAt;
+        _items.Clear();
+        _items.AddRange(snapshot.Items);
+        Version = snapshot.Version;
+    }
+}
+```
+
+**Event Sourcing with CQRS:**
+
+```csharp
+// Command side - uses event sourcing
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
+{
+    private readonly IEventSourcedRepository<Order> _orderRepository;
+    
+    public async Task Handle(CreateOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = new Order(new OrderId(Guid.NewGuid()), command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(
+                new ProductId(item.ProductId),
+                new Quantity(item.Quantity),
+                new Money(item.UnitPrice, "USD")
+            );
+        }
+        
+        await _orderRepository.SaveAsync(order);
+    }
+}
+
+// Query side - uses read models updated by events
+public class OrderReadModelUpdater : IDomainEventHandler<OrderCreatedEvent>
+{
+    private readonly IOrderReadRepository _readRepository;
+    
+    public async Task Handle(OrderCreatedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _readRepository.CreateOrderAsync(new OrderReadModel
+        {
+            Id = domainEvent.AggregateId,
+            CustomerId = domainEvent.CustomerId.Value,
+            Status = "Draft",
+            Total = 0,
+            CreatedAt = domainEvent.CreatedAt
+        });
+    }
+}
+
+public class OrderItemAddedEventHandler : IDomainEventHandler<OrderItemAddedEvent>
+{
+    private readonly IOrderReadRepository _readRepository;
+    
+    public async Task Handle(OrderItemAddedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _readRepository.AddOrderItemAsync(domainEvent.AggregateId, new OrderItemReadModel
+        {
+            ProductId = domainEvent.ProductId.Value,
+            Quantity = domainEvent.Quantity.Value,
+            UnitPrice = domainEvent.UnitPrice.Amount
+        });
+    }
+}
+```
+
+**Benefits of Event Sourcing:**
+
+1. **Complete Audit Trail**: Every change is recorded as an event
+2. **Temporal Queries**: Can query the state at any point in time
+3. **Debugging**: Easy to understand what happened and when
+4. **Compliance**: Meets regulatory requirements for audit trails
+5. **Replay Capability**: Can replay events to rebuild state
+6. **Integration**: Events can be used for integration between systems
+7. **Analytics**: Rich data for business intelligence and analytics
+
+**Challenges of Event Sourcing:**
+
+1. **Complexity**: More complex than traditional CRUD
+2. **Event Schema Evolution**: Need to handle changes to event structure
+3. **Performance**: Rebuilding aggregates from events can be slow
+4. **Storage**: Can require more storage space
+5. **Learning Curve**: Team needs to understand the pattern
+
+**When to Use Event Sourcing:**
+
+- Systems requiring complete audit trails
+- Complex business domains with rich event models
+- Systems where temporal queries are important
+- Applications with compliance requirements
+- Systems that need to replay events for analysis
+- Integration scenarios where events are valuable
+
+**Best Practices:**
+
+1. **Event Design**: Design events to be meaningful and immutable
+2. **Snapshot Strategy**: Use snapshots to optimize performance
+3. **Event Versioning**: Plan for event schema evolution
+4. **Error Handling**: Handle event processing failures gracefully
+5. **Testing**: Test event sourcing thoroughly with event replay
+6. **Documentation**: Document event schemas and processing logic
+
+Event Sourcing is a powerful pattern that provides significant benefits for complex domains, especially when combined with DDD and CQRS. It's particularly valuable for systems that need complete audit trails and temporal querying capabilities.
+
+---
+
+## DevOps and CI/CD
+
+### What is CI/CD and why is it important?
 
 **CI/CD** stands for **Continuous Integration/Continuous Deployment (or Delivery)**.
 
@@ -14743,7 +25249,7 @@ steps:
 
 ---
 
-### 112. Have you worked with Docker? Explain containerization.
+### Have you worked with Docker? Explain containerization.
 
 Yes, Docker is essential for modern .NET Core application deployment.
 
@@ -14863,7 +25369,7 @@ docker rm myapi-container
 
 ---
 
-### 113. What is Kubernetes and what problems does it solve?
+### What is Kubernetes and what problems does it solve?
 
 **Kubernetes (K8s)** is an open-source container orchestration platform that automates deployment, scaling, and management of containerized applications.
 
@@ -15075,7 +25581,7 @@ kubectl delete -f deployment.yaml
 
 ---
 
-### 114. Explain the concept of Infrastructure as Code.
+### Explain the concept of Infrastructure as Code.
 
 **Infrastructure as Code (IaC)** is the practice of managing and provisioning infrastructure through machine-readable configuration files rather than manual processes or interactive configuration tools.
 
@@ -15325,7 +25831,7 @@ class MyStack : Stack
 
 ---
 
-### 115. What Azure/AWS services have you worked with for .NET applications?
+### What Azure/AWS services have you worked with for .NET applications?
 
 Here's an overview of commonly used cloud services for .NET Core applications:
 
@@ -15655,9 +26161,9 @@ CI/CD: Azure DevOps / GitHub Actions
 
 ---
 
-## General and Behavioral (5 questions)
+## General and Behavioral
 
-### 116. How do you stay updated with the latest .NET technologies?
+### How do you stay updated with the latest .NET technologies?
 
 Staying current with .NET technologies requires a multi-faceted approach:
 
@@ -15690,7 +26196,7 @@ Staying current with .NET technologies requires a multi-faceted approach:
 - Attend workshops and webinars
 - Set aside dedicated learning time each week
 
-### 117. Describe a challenging bug you've encountered and how you resolved it.
+### Describe a challenging bug you've encountered and how you resolved it.
 
 **The Problem:**
 We experienced intermittent database deadlocks in a high-traffic ASP.NET Core API that processed financial transactions. The deadlocks occurred randomly, affecting approximately 2-3% of requests during peak hours, causing transaction failures and customer complaints.
@@ -15775,7 +26281,7 @@ await transaction.CommitAsync();
 - Monitor and analyze deadlock graphs proactively
 - Implement proper retry mechanisms for transient failures
 
-### 118. How do you handle technical debt in a project?
+### How do you handle technical debt in a project?
 
 Technical debt is inevitable in software development, but it must be managed strategically:
 
@@ -15879,7 +26385,7 @@ When encountering technical debt, ask:
 3. What's the cost of fixing now vs. later?
 4. Can this be addressed incrementally?
 
-### 119. Explain your code review process and what you look for.
+### Explain your code review process and what you look for.
 
 **Code Review Process:**
 
@@ -16065,7 +26571,7 @@ public async Task GetUserAsync_WhenUserNotFound_ThrowsUserNotFoundException()
 - Mark minor suggestions as non-blocking
 - Document patterns for team learning
 
-### 120. How do you mentor junior developers on your team?
+### How do you mentor junior developers on your team?
 
 Effective mentoring is crucial for team growth and knowledge transfer. Here's my comprehensive approach:
 
