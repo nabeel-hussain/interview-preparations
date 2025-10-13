@@ -18,6 +18,12 @@
 - [What are generics and what are their benefits?](#what-are-generics-and-what-are-their-benefits)
 - [Explain the concept of attributes in C# and provide examples](#explain-the-concept-of-attributes-in-c-and-provide-examples)
 - [What is the difference between `using` statement and `using` declaration?](#what-is-the-difference-between-using-statement-and-using-declaration)
+- [What is exception handling and how does it work in C#?](#what-is-exception-handling-and-how-does-it-work-in-c)
+- [What are properties and indexers in C#?](#what-are-properties-and-indexers-in-c)
+- [What are the key differences between .NET Framework, .NET Core, and .NET 5+?](#what-are-the-key-differences-between-net-framework-net-core-and-net-5)
+- [What are assemblies and namespaces in .NET?](#what-are-assemblies-and-namespaces-in-net)
+- [What are lambda expressions and how do they work in C#?](#what-are-lambda-expressions-and-how-do-they-work-in-c)
+- [What are the fundamental concepts of threading in .NET?](#what-are-the-fundamental-concepts-of-threading-in-net)
 
 ### [Object-Oriented Programming](#object-oriented-programming)
 - [Explain the four pillars of OOP with real-world examples](#explain-the-four-pillars-of-oop-with-real-world-examples)
@@ -2163,6 +2169,1258 @@ public void Dispose()
 
 ---
 
+### What is exception handling and how does it work in C#?
+
+**Answer:**
+
+**Exception Handling** is a mechanism in C# that allows you to handle runtime errors gracefully, preventing your application from crashing and providing meaningful error messages to users.
+
+**How Exception Handling Works:**
+- When an error occurs, an exception object is created
+- The runtime searches for an appropriate exception handler
+- If found, the handler executes and the program continues
+- If not found, the program terminates with an unhandled exception
+
+**Basic Exception Handling Structure:**
+```csharp
+try
+{
+    // Code that might throw an exception
+    int result = Divide(10, 0);
+}
+catch (DivideByZeroException ex)
+{
+    // Handle specific exception
+    Console.WriteLine($"Error: {ex.Message}");
+}
+catch (Exception ex)
+{
+    // Handle any other exception
+    Console.WriteLine($"Unexpected error: {ex.Message}");
+}
+finally
+{
+    // Always executes (cleanup code)
+    Console.WriteLine("Cleanup code here");
+}
+```
+
+**Exception Hierarchy:**
+```csharp
+System.Object
+└── System.Exception
+    ├── System.SystemException
+    │   ├── ArgumentException
+    │   ├── NullReferenceException
+    │   ├── IndexOutOfRangeException
+    │   └── DivideByZeroException
+    └── System.ApplicationException
+        └── Custom exceptions
+```
+
+**Key Differences: throw vs throw ex vs throw new**
+
+**1. `throw` (rethrow):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Log the exception
+    LogError(ex);
+    
+    // Rethrow the original exception (preserves stack trace)
+    throw;  // GOOD - keeps original stack trace
+}
+```
+
+**2. `throw ex` (lose stack trace):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Log the exception
+    LogError(ex);
+    
+    // Rethrow but lose original stack trace
+    throw ex;  // BAD - loses original stack trace
+}
+```
+
+**3. `throw new` (new exception):**
+```csharp
+try
+{
+    // Some operation
+}
+catch (Exception ex)
+{
+    // Create new exception with original as inner exception
+    throw new CustomException("Something went wrong", ex);  // GOOD
+}
+```
+
+**When to Use Each:**
+- **try-catch**: Handle exceptions you can recover from
+- **try-finally**: Ensure cleanup code always runs
+- **try-catch-finally**: Handle exceptions AND ensure cleanup
+
+**Custom Exceptions:**
+```csharp
+// Custom exception class
+public class InsufficientFundsException : Exception
+{
+    public decimal CurrentBalance { get; }
+    public decimal RequiredAmount { get; }
+    
+    public InsufficientFundsException(decimal currentBalance, decimal requiredAmount)
+        : base($"Insufficient funds. Current: {currentBalance:C}, Required: {requiredAmount:C}")
+    {
+        CurrentBalance = currentBalance;
+        RequiredAmount = requiredAmount;
+    }
+    
+    public InsufficientFundsException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+}
+
+// Usage
+public void Withdraw(decimal amount)
+{
+    if (amount > Balance)
+    {
+        throw new InsufficientFundsException(Balance, amount);
+    }
+    
+    Balance -= amount;
+}
+```
+
+**Best Practices:**
+1. **Catch specific exceptions** when possible
+2. **Don't catch and ignore** exceptions silently
+3. **Use `throw`** instead of `throw ex` to preserve stack trace
+4. **Include inner exceptions** when creating new exceptions
+5. **Log exceptions** before rethrowing
+6. **Use finally blocks** for cleanup code
+7. **Don't throw exceptions** for normal program flow
+
+---
+
+### What are properties and indexers in C#?
+
+**Answer:**
+
+**Properties** are members that provide a flexible mechanism to read, write, or compute the values of private fields. They act as intermediaries between the outside world and the internal state of a class.
+
+**Basic Property Syntax:**
+```csharp
+public class Person
+{
+    private string _name;
+    private int _age;
+    
+    // Traditional property with backing field
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+    
+    // Auto-property (C# 3.0+)
+    public int Age { get; set; }
+    
+    // Read-only auto-property
+    public DateTime CreatedAt { get; } = DateTime.Now;
+    
+    // Property with validation
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            if (string.IsNullOrEmpty(value) || !value.Contains("@"))
+                throw new ArgumentException("Invalid email format");
+            _email = value;
+        }
+    }
+    private string _email;
+}
+```
+
+**Property Types:**
+
+**1. Auto-Properties:**
+```csharp
+public class Product
+{
+    // Auto-property with getter and setter
+    public string Name { get; set; }
+    
+    // Read-only auto-property
+    public int Id { get; }
+    
+    // Auto-property with initializer
+    public decimal Price { get; set; } = 0m;
+    
+    // Auto-property with different access modifiers
+    public string Description { get; private set; }
+}
+```
+
+**2. Expression-Bodied Properties (C# 6.0+):**
+```csharp
+public class Rectangle
+{
+    public double Width { get; set; }
+    public double Height { get; set; }
+    
+    // Expression-bodied property
+    public double Area => Width * Height;
+    
+    // Expression-bodied property with getter/setter
+    public double Perimeter
+    {
+        get => 2 * (Width + Height);
+        set => Width = Height = value / 4; // Square
+    }
+}
+```
+
+**3. Init-Only Properties (C# 9.0+):**
+```csharp
+public class User
+{
+    // Can only be set during object initialization
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    
+    // Computed property
+    public string FullName => $"{FirstName} {LastName}";
+}
+
+// Usage
+var user = new User
+{
+    FirstName = "John",
+    LastName = "Doe"
+    // Cannot set FirstName after initialization
+    // user.FirstName = "Jane"; // Compile error
+};
+```
+
+**Indexers:**
+Indexers allow objects to be indexed like arrays, providing a way to access elements using square bracket notation.
+
+**Basic Indexer:**
+```csharp
+public class StringCollection
+{
+    private string[] _items = new string[10];
+    
+    // Indexer
+    public string this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _items.Length)
+                throw new IndexOutOfRangeException();
+            return _items[index];
+        }
+        set
+        {
+            if (index < 0 || index >= _items.Length)
+                throw new IndexOutOfRangeException();
+            _items[index] = value;
+        }
+    }
+}
+
+// Usage
+StringCollection collection = new StringCollection();
+collection[0] = "Hello";
+collection[1] = "World";
+Console.WriteLine(collection[0]); // "Hello"
+```
+
+**Multi-dimensional Indexers:**
+```csharp
+public class Matrix
+{
+    private int[,] _matrix;
+    
+    public Matrix(int rows, int columns)
+    {
+        _matrix = new int[rows, columns];
+    }
+    
+    // Multi-dimensional indexer
+    public int this[int row, int column]
+    {
+        get => _matrix[row, column];
+        set => _matrix[row, column] = value;
+    }
+}
+
+// Usage
+Matrix matrix = new Matrix(3, 3);
+matrix[0, 0] = 1;
+matrix[1, 1] = 2;
+```
+
+**String-based Indexers:**
+```csharp
+public class Dictionary
+{
+    private Dictionary<string, string> _items = new();
+    
+    // String-based indexer
+    public string this[string key]
+    {
+        get => _items.TryGetValue(key, out string value) ? value : null;
+        set => _items[key] = value;
+    }
+}
+
+// Usage
+Dictionary dict = new Dictionary();
+dict["name"] = "John";
+dict["age"] = "30";
+Console.WriteLine(dict["name"]); // "John"
+```
+
+**Properties vs Fields:**
+```csharp
+public class Example
+{
+    // Field - direct access to memory
+    public string FieldName;
+    
+    // Property - controlled access with logic
+    private string _propertyName;
+    public string PropertyName
+    {
+        get => _propertyName;
+        set => _propertyName = value?.Trim();
+    }
+}
+```
+
+**Key Differences:**
+- **Fields**: Direct memory access, no validation, no side effects
+- **Properties**: Controlled access, validation, side effects, encapsulation
+
+**Best Practices:**
+1. Use properties for public data access
+2. Use fields only for private implementation details
+3. Use auto-properties when no validation is needed
+4. Use expression-bodied properties for simple computations
+5. Use init-only properties for immutable data
+6. Validate input in property setters
+7. Use indexers when your class represents a collection
+
+---
+
+### What are the key differences between .NET Framework, .NET Core, and .NET 5+?
+
+**Answer:**
+
+The .NET ecosystem has evolved significantly, with different versions serving different purposes and platforms.
+
+**Historical Timeline:**
+- **.NET Framework (2002)**: Original .NET platform for Windows
+- **.NET Core (2016)**: Cross-platform, open-source rewrite
+- **.NET 5+ (2020)**: Unified platform combining Framework and Core
+
+**Key Differences:**
+
+| Feature | .NET Framework | .NET Core | .NET 5+ |
+|---------|---------------|-----------|---------|
+| **Platform Support** | Windows only | Cross-platform | Cross-platform |
+| **Open Source** | No | Yes | Yes |
+| **Side-by-side** | No | Yes | Yes |
+| **Performance** | Good | Better | Best |
+| **Deployment** | Framework-dependent | Self-contained | Self-contained |
+| **Package Size** | Large | Smaller | Smallest |
+| **Docker Support** | Limited | Excellent | Excellent |
+
+**.NET Framework:**
+```csharp
+// .NET Framework - Windows only
+// Uses System.Web for web applications
+// Requires .NET Framework runtime installed
+// Larger package size
+// Limited cross-platform support
+
+// Example: ASP.NET Web Forms (Framework only)
+public partial class Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        // Framework-specific code
+    }
+}
+```
+
+**.NET Core:**
+```csharp
+// .NET Core - Cross-platform
+// Modern, lightweight, fast
+// Self-contained deployments
+// Better performance
+// Docker-friendly
+
+// Example: ASP.NET Core Web API
+[ApiController]
+[Route("api/[controller]")]
+public class WeatherController : ControllerBase
+{
+    [HttpGet]
+    public IEnumerable<WeatherForecast> Get()
+    {
+        // Core-specific code
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55)
+        });
+    }
+}
+```
+
+**.NET 5+ (Unified):**
+```csharp
+// .NET 5+ - Best of both worlds
+// Single platform for all scenarios
+// Improved performance
+// Modern language features
+// Long-term support versions
+
+// Example: Modern .NET 6+ Web API
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/", () => "Hello World!");
+app.Run();
+```
+
+**Migration Path:**
+```csharp
+// .NET Framework → .NET Core → .NET 5+
+// 1. Update project file format
+// 2. Replace Framework-specific APIs
+// 3. Update dependencies
+// 4. Test cross-platform compatibility
+
+// Old .NET Framework project file
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+</Project>
+
+// New .NET 5+ project file
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+</Project>
+```
+
+**When to Use Each:**
+
+**.NET Framework:**
+- Legacy Windows applications
+- When you need Windows-specific features
+- Existing applications that are difficult to migrate
+- When you need specific Framework-only libraries
+
+**.NET Core:**
+- New cross-platform applications
+- Microservices and containers
+- High-performance scenarios
+- Cloud-native applications
+
+**.NET 5+:**
+- All new development (recommended)
+- Modern applications
+- When you want the latest features
+- Long-term support and updates
+
+**Performance Comparison:**
+```csharp
+// Benchmark results (approximate)
+// .NET Framework: Baseline
+// .NET Core: 2-3x faster
+// .NET 5+: 3-4x faster
+// .NET 6+: 4-5x faster
+
+// Example: JSON serialization performance
+var data = new { Name = "John", Age = 30 };
+var json = JsonSerializer.Serialize(data); // Much faster in .NET 5+
+```
+
+**Package Size Comparison:**
+```
+.NET Framework: ~50MB (runtime)
+.NET Core: ~30MB (runtime)
+.NET 5+: ~25MB (runtime)
+Self-contained: ~100MB+ (includes runtime)
+```
+
+**API Differences:**
+```csharp
+// .NET Framework
+using System.Web;
+using System.Web.Mvc;
+
+// .NET Core/5+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+
+// Configuration differences
+// Framework: web.config, app.config
+// Core/5+: appsettings.json, environment variables
+```
+
+**Best Practices:**
+1. **Use .NET 5+** for all new development
+2. **Migrate gradually** from Framework to .NET 5+
+3. **Test thoroughly** when migrating
+4. **Use self-contained deployments** for containers
+5. **Leverage cross-platform benefits** when possible
+6. **Keep dependencies updated** for security and performance
+
+---
+
+### What are assemblies and namespaces in .NET?
+
+**Answer:**
+
+**Assemblies** are the fundamental unit of deployment and versioning in .NET. They contain compiled code, metadata, and resources that make up a .NET application.
+
+**Namespaces** are logical groupings of related types that help organize code and avoid naming conflicts.
+
+**Assemblies:**
+
+**What is an Assembly:**
+- A compiled unit of code (usually a .dll or .exe file)
+- Contains Intermediate Language (IL) code, metadata, and resources
+- The smallest unit of deployment in .NET
+- Has a unique identity (name, version, culture, public key)
+
+**Assembly Structure:**
+```
+MyAssembly.dll
+├── Assembly Manifest (metadata)
+├── Type Metadata
+├── IL Code
+├── Resources (images, strings, etc.)
+└── Security Information
+```
+
+**Types of Assemblies:**
+```csharp
+// 1. Executable Assembly (.exe)
+// Contains an entry point (Main method)
+// Can be run directly
+
+// 2. Library Assembly (.dll)
+// Contains reusable code
+// Cannot be run directly
+// Referenced by other assemblies
+
+// Example: Creating a library assembly
+namespace MyLibrary
+{
+    public class Calculator
+    {
+        public int Add(int a, int b) => a + b;
+        public int Multiply(int a, int b) => a * b;
+    }
+}
+
+// Compile to: MyLibrary.dll
+```
+
+**Assembly Manifest:**
+```csharp
+// Assembly information (in AssemblyInfo.cs or project file)
+[assembly: AssemblyTitle("MyApplication")]
+[assembly: AssemblyDescription("A sample application")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyCompany("MyCompany")]
+[assembly: AssemblyProduct("MyProduct")]
+[assembly: AssemblyCopyright("Copyright © 2024")]
+```
+
+**Global Assembly Cache (GAC):**
+```csharp
+// GAC is a machine-wide cache for shared assemblies
+// Only available in .NET Framework (not in .NET Core/5+)
+// Used for system assemblies and shared libraries
+
+// Installing to GAC (Framework only)
+gacutil -i MyAssembly.dll
+
+// Strong-named assemblies can be installed in GAC
+[assembly: AssemblyKeyFile("MyKey.snk")]
+```
+
+**Namespaces:**
+
+**What is a Namespace:**
+- A logical grouping of related types
+- Helps avoid naming conflicts
+- Provides a hierarchical organization
+- Similar to folders in a file system
+
+**Namespace Declaration:**
+```csharp
+// Single namespace
+namespace MyCompany.MyProject
+{
+    public class User { }
+    public class Product { }
+}
+
+// Multiple namespaces in same file
+namespace MyCompany.MyProject.Data
+{
+    public class UserRepository { }
+}
+
+namespace MyCompany.MyProject.Services
+{
+    public class UserService { }
+}
+
+// Nested namespaces
+namespace MyCompany
+{
+    namespace MyProject
+    {
+        namespace Data
+        {
+            public class UserRepository { }
+        }
+    }
+}
+```
+
+**Using Namespaces:**
+```csharp
+// Fully qualified name
+MyCompany.MyProject.User user = new MyCompany.MyProject.User();
+
+// Using directive
+using MyCompany.MyProject;
+User user = new User();
+
+// Using alias
+using Data = MyCompany.MyProject.Data;
+Data.UserRepository repo = new Data.UserRepository();
+
+// Global using (C# 10+)
+global using System;
+global using System.Collections.Generic;
+```
+
+**Assembly vs Namespace Relationship:**
+```csharp
+// One assembly can contain multiple namespaces
+// MyLibrary.dll contains:
+namespace MyCompany.Data
+{
+    public class UserRepository { }
+}
+
+namespace MyCompany.Services
+{
+    public class UserService { }
+}
+
+// Multiple assemblies can contain the same namespace
+// MyLibrary1.dll and MyLibrary2.dll both contain:
+namespace MyCompany.Common
+{
+    // Different types in each assembly
+}
+```
+
+**Assembly Loading:**
+```csharp
+// Load assembly dynamically
+Assembly assembly = Assembly.LoadFrom("MyLibrary.dll");
+Type type = assembly.GetType("MyCompany.MyClass");
+object instance = Activator.CreateInstance(type);
+
+// Get all types in assembly
+Assembly currentAssembly = Assembly.GetExecutingAssembly();
+Type[] types = currentAssembly.GetTypes();
+
+// Get assembly from type
+Assembly userAssembly = typeof(User).Assembly;
+```
+
+**Best Practices:**
+
+**Assemblies:**
+1. **Keep assemblies focused** - one responsibility per assembly
+2. **Use strong naming** for shared libraries
+3. **Version your assemblies** properly
+4. **Minimize assembly dependencies** to reduce complexity
+5. **Use assembly attributes** for metadata
+
+**Namespaces:**
+1. **Follow naming conventions** - Company.Project.Feature
+2. **Keep namespaces shallow** - avoid deep nesting
+3. **Use meaningful names** that describe the purpose
+4. **Group related types** together
+5. **Avoid namespace conflicts** with well-known libraries
+
+**Example Project Structure:**
+```
+MyProject/
+├── MyProject.Core/           (Assembly)
+│   ├── Models/              (Namespace)
+│   │   ├── User.cs
+│   │   └── Product.cs
+│   └── Interfaces/          (Namespace)
+│       └── IRepository.cs
+├── MyProject.Data/          (Assembly)
+│   └── Repositories/        (Namespace)
+│       └── UserRepository.cs
+└── MyProject.Web/           (Assembly)
+    └── Controllers/         (Namespace)
+        └── UserController.cs
+```
+
+---
+
+### What are lambda expressions and how do they work in C#?
+
+**Answer:**
+
+**Lambda Expressions** are anonymous functions that allow you to write inline code blocks that can be passed as arguments to methods or assigned to variables. They provide a concise way to represent delegates or expression trees.
+
+**Basic Lambda Syntax:**
+```csharp
+// Lambda expression syntax: (parameters) => expression
+// Simple lambda
+Func<int, int> square = x => x * x;
+int result = square(5); // 25
+
+// Lambda with multiple parameters
+Func<int, int, int> add = (x, y) => x + y;
+int sum = add(3, 4); // 7
+
+// Lambda with no parameters
+Func<string> getMessage = () => "Hello World";
+string message = getMessage(); // "Hello World"
+```
+
+**Lambda vs Anonymous Methods:**
+```csharp
+// Anonymous method (C# 2.0)
+Func<int, int> oldWay = delegate(int x) { return x * x; };
+
+// Lambda expression (C# 3.0+) - more concise
+Func<int, int> newWay = x => x * x;
+
+// Both do the same thing, but lambda is cleaner
+```
+
+**Lambda with LINQ:**
+```csharp
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+// Using lambda with LINQ methods
+var evenNumbers = numbers.Where(x => x % 2 == 0);
+var doubled = numbers.Select(x => x * 2);
+var sum = numbers.Aggregate((x, y) => x + y);
+
+// Lambda with complex expressions
+var result = numbers
+    .Where(x => x > 5)
+    .Select(x => x * x)
+    .OrderByDescending(x => x);
+```
+
+**Lambda with Events:**
+```csharp
+public class Button
+{
+    public event EventHandler Click;
+    
+    protected virtual void OnClick()
+    {
+        Click?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+// Using lambda with events
+Button button = new Button();
+button.Click += (sender, e) => Console.WriteLine("Button clicked!");
+button.Click += (sender, e) => MessageBox.Show("Hello!");
+```
+
+**Lambda with Action and Func:**
+```csharp
+// Action - no return value
+Action<string> printMessage = message => Console.WriteLine(message);
+printMessage("Hello"); // Prints "Hello"
+
+// Action with multiple parameters
+Action<string, int> printMessageWithCount = (msg, count) => 
+    Console.WriteLine($"{msg} (Count: {count})");
+
+// Func - with return value
+Func<int, int, int> multiply = (x, y) => x * y;
+int product = multiply(3, 4); // 12
+
+// Func with different return types
+Func<string, int> getLength = str => str.Length;
+int length = getLength("Hello"); // 5
+```
+
+**Lambda with Complex Logic:**
+```csharp
+// Lambda with multiple statements (use braces)
+Func<int, int> complexOperation = x =>
+{
+    int temp = x * 2;
+    if (temp > 10)
+        return temp + 5;
+    else
+        return temp - 2;
+};
+
+// Lambda with local variables
+Func<int, int> factorial = n =>
+{
+    int result = 1;
+    for (int i = 1; i <= n; i++)
+        result *= i;
+    return result;
+};
+```
+
+**Lambda with Predicates:**
+```csharp
+// Predicate<T> - returns bool
+Predicate<int> isEven = x => x % 2 == 0;
+bool result = isEven(4); // true
+
+// Using with List<T>.FindAll
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+var evenNumbers = numbers.FindAll(x => x % 2 == 0); // [2, 4, 6]
+```
+
+**Lambda with Custom Delegates:**
+```csharp
+// Custom delegate
+public delegate int MathOperation(int x, int y);
+
+// Using lambda with custom delegate
+MathOperation add = (x, y) => x + y;
+MathOperation multiply = (x, y) => x * y;
+
+int sum = add(5, 3); // 8
+int product = multiply(5, 3); // 15
+```
+
+**Lambda with Expression Trees:**
+```csharp
+using System.Linq.Expressions;
+
+// Expression tree - represents code as data
+Expression<Func<int, int, int>> expression = (x, y) => x + y;
+
+// Can be compiled to executable code
+Func<int, int, int> compiled = expression.Compile();
+int result = compiled(3, 4); // 7
+
+// Can be analyzed and modified
+BinaryExpression body = (BinaryExpression)expression.Body;
+ParameterExpression left = (ParameterExpression)body.Left;
+ParameterExpression right = (ParameterExpression)body.Right;
+```
+
+**Lambda with Closures:**
+```csharp
+// Lambda captures variables from outer scope
+int multiplier = 10;
+Func<int, int> multiplyByTen = x => x * multiplier;
+
+int result = multiplyByTen(5); // 50
+
+// Changing the captured variable affects the lambda
+multiplier = 20;
+int newResult = multiplyByTen(5); // 100
+```
+
+**Lambda with Async/Await:**
+```csharp
+// Async lambda
+Func<Task<string>> asyncLambda = async () =>
+{
+    await Task.Delay(1000);
+    return "Async result";
+};
+
+// Using async lambda
+string result = await asyncLambda();
+```
+
+**When to Use Lambda Expressions:**
+1. **LINQ operations** - Where, Select, OrderBy, etc.
+2. **Event handlers** - Simple event handling
+3. **Callback functions** - Passing behavior as parameters
+4. **Functional programming** - Map, filter, reduce operations
+5. **Short, simple operations** - One-liner functions
+
+**When NOT to Use Lambda Expressions:**
+1. **Complex logic** - Use regular methods instead
+2. **Reusable code** - Create named methods
+3. **Performance-critical code** - Regular methods might be faster
+4. **Debugging** - Harder to debug than named methods
+
+**Best Practices:**
+1. **Keep lambdas simple** - avoid complex logic
+2. **Use meaningful parameter names** when possible
+3. **Consider readability** - don't sacrifice clarity for brevity
+4. **Use parentheses** for multiple parameters: `(x, y) => x + y`
+5. **Use braces** for multiple statements: `x => { /* multiple statements */ }`
+
+---
+
+### What are the fundamental concepts of threading in .NET?
+
+**Answer:**
+
+**Threading** allows your application to perform multiple operations concurrently, improving responsiveness and utilizing multiple CPU cores effectively.
+
+**Basic Threading Concepts:**
+
+**Thread vs Process:**
+```csharp
+// Process: Complete application with its own memory space
+// Thread: Unit of execution within a process
+// A process can have multiple threads
+
+// Creating a new thread
+Thread newThread = new Thread(() =>
+{
+    Console.WriteLine("Running on background thread");
+    Thread.Sleep(2000);
+    Console.WriteLine("Background thread completed");
+});
+
+newThread.Start();
+Console.WriteLine("Main thread continues...");
+```
+
+**Thread Class:**
+```csharp
+public class ThreadExample
+{
+    public static void Main()
+    {
+        // Create and start a thread
+        Thread workerThread = new Thread(DoWork);
+        workerThread.Start();
+        
+        // Main thread continues
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"Main thread: {i}");
+            Thread.Sleep(500);
+        }
+        
+        // Wait for worker thread to complete
+        workerThread.Join();
+        Console.WriteLine("All threads completed");
+    }
+    
+    static void DoWork()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"Worker thread: {i}");
+            Thread.Sleep(300);
+        }
+    }
+}
+```
+
+**ThreadPool:**
+```csharp
+// ThreadPool manages a pool of worker threads
+// More efficient than creating new threads manually
+// Automatically manages thread lifecycle
+
+public class ThreadPoolExample
+{
+    public static void Main()
+    {
+        // Queue work to ThreadPool
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 1");
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 2");
+        ThreadPool.QueueUserWorkItem(DoWork, "Task 3");
+        
+        Console.WriteLine("Main thread continues...");
+        Thread.Sleep(3000); // Wait for tasks to complete
+    }
+    
+    static void DoWork(object state)
+    {
+        string taskName = (string)state;
+        Console.WriteLine($"ThreadPool thread executing: {taskName}");
+        Thread.Sleep(1000);
+        Console.WriteLine($"Completed: {taskName}");
+    }
+}
+```
+
+**Race Conditions:**
+```csharp
+// Race condition example
+public class RaceConditionExample
+{
+    private static int counter = 0;
+    
+    public static void Main()
+    {
+        // Start multiple threads that modify shared data
+        Thread[] threads = new Thread[5];
+        
+        for (int i = 0; i < 5; i++)
+        {
+            threads[i] = new Thread(IncrementCounter);
+            threads[i].Start();
+        }
+        
+        // Wait for all threads
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+        
+        Console.WriteLine($"Final counter value: {counter}");
+        // Expected: 5000, Actual: varies due to race condition
+    }
+    
+    static void IncrementCounter()
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            counter++; // Race condition here!
+        }
+    }
+}
+```
+
+**Thread Synchronization:**
+
+**1. Lock Statement:**
+```csharp
+public class SynchronizedExample
+{
+    private static int counter = 0;
+    private static readonly object lockObject = new object();
+    
+    public static void Main()
+    {
+        Thread[] threads = new Thread[5];
+        
+        for (int i = 0; i < 5; i++)
+        {
+            threads[i] = new Thread(IncrementCounterSafely);
+            threads[i].Start();
+        }
+        
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+        
+        Console.WriteLine($"Final counter value: {counter}"); // Always 5000
+    }
+    
+    static void IncrementCounterSafely()
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            lock (lockObject) // Thread-safe increment
+            {
+                counter++;
+            }
+        }
+    }
+}
+```
+
+**2. Monitor Class:**
+```csharp
+public class MonitorExample
+{
+    private static readonly object lockObject = new object();
+    
+    public static void Main()
+    {
+        Thread thread1 = new Thread(DoWorkWithMonitor);
+        Thread thread2 = new Thread(DoWorkWithMonitor);
+        
+        thread1.Start();
+        thread2.Start();
+        
+        thread1.Join();
+        thread2.Join();
+    }
+    
+    static void DoWorkWithMonitor()
+    {
+        Monitor.Enter(lockObject);
+        try
+        {
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} acquired lock");
+            Thread.Sleep(2000);
+        }
+        finally
+        {
+            Monitor.Exit(lockObject);
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} released lock");
+        }
+    }
+}
+```
+
+**3. Mutex:**
+```csharp
+public class MutexExample
+{
+    private static Mutex mutex = new Mutex();
+    
+    public static void Main()
+    {
+        Thread[] threads = new Thread[3];
+        
+        for (int i = 0; i < 3; i++)
+        {
+            threads[i] = new Thread(DoWorkWithMutex);
+            threads[i].Start();
+        }
+        
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+    }
+    
+    static void DoWorkWithMutex()
+    {
+        mutex.WaitOne(); // Acquire mutex
+        try
+        {
+            Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} in critical section");
+            Thread.Sleep(1000);
+        }
+        finally
+        {
+            mutex.ReleaseMutex(); // Release mutex
+        }
+    }
+}
+```
+
+**Thread vs Task:**
+```csharp
+// Thread - lower level, more control
+Thread thread = new Thread(() =>
+{
+    Console.WriteLine("Thread-based work");
+});
+thread.Start();
+
+// Task - higher level, better for most scenarios
+Task task = Task.Run(() =>
+{
+    Console.WriteLine("Task-based work");
+});
+
+// Task with return value
+Task<int> taskWithResult = Task.Run(() =>
+{
+    Thread.Sleep(1000);
+    return 42;
+});
+
+int result = await taskWithResult;
+Console.WriteLine($"Result: {result}");
+```
+
+**Thread Safety:**
+```csharp
+public class ThreadSafeCounter
+{
+    private int _count = 0;
+    private readonly object _lock = new object();
+    
+    public int Count
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _count;
+            }
+        }
+    }
+    
+    public void Increment()
+    {
+        lock (_lock)
+        {
+            _count++;
+        }
+    }
+    
+    public void Decrement()
+    {
+        lock (_lock)
+        {
+            _count--;
+        }
+    }
+}
+```
+
+**Best Practices:**
+1. **Use Task instead of Thread** for most scenarios
+2. **Avoid shared mutable state** when possible
+3. **Use appropriate synchronization** mechanisms
+4. **Don't lock on public objects** or types
+5. **Keep critical sections short** to avoid blocking
+6. **Use thread-safe collections** when available
+7. **Avoid Thread.Sleep** in production code
+8. **Use async/await** for I/O operations
+
+**Common Threading Issues:**
+1. **Race conditions** - multiple threads accessing shared data
+2. **Deadlocks** - threads waiting for each other indefinitely
+3. **Starvation** - some threads never get CPU time
+4. **Context switching overhead** - too many threads can hurt performance
+
+---
 
 ## Object-Oriented Programming
 
