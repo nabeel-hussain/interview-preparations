@@ -36,6 +36,12 @@
 - [Explain dependency injection and its benefits](#explain-dependency-injection-and-its-benefits)
 - [What are design patterns? Name and explain 5 commonly used patterns](#what-are-design-patterns-name-and-explain-5-commonly-used-patterns)
 - [What is the difference between shallow copy and deep copy?](#what-is-the-difference-between-shallow-copy-and-deep-copy)
+- [What is the difference between virtual, override, and new keywords in C#?](#what-is-the-difference-between-virtual-override-and-new-keywords-in-c)
+- [What are access modifiers in C# and when would you use each?](#what-are-access-modifiers-in-c-and-when-would-you-use-each)
+- [What is the difference between static and instance members?](#what-is-the-difference-between-static-and-instance-members)
+- [What are constructors and destructors in C#?](#what-are-constructors-and-destructors-in-c)
+- [What is method hiding and how does it differ from method overriding?](#what-is-method-hiding-and-how-does-it-differ-from-method-overriding)
+- [What are partial classes and partial methods in C#?](#what-are-partial-classes-and-partial-methods-in-c)
 
 ### [Asynchronous Programming](#asynchronous-programming)
 - [Explain `async` and `await` keywords in C#](#explain-async-and-await-keywords-in-c)
@@ -5675,6 +5681,1824 @@ public class PersonSerializable
 | Performance | Faster | Slower |
 | Memory | Uses less memory | Uses more memory |
 | Implementation | Simple (MemberwiseClone) | Complex (manual or serialization) |
+---
+
+### What is the difference between virtual, override, and new keywords in C#?
+
+**Answer:**
+
+These three keywords control how methods behave in inheritance hierarchies and are fundamental to understanding polymorphism in C#.
+
+**1. `virtual` Keyword:**
+- Marks a method in the base class as **overridable**
+- Allows derived classes to provide their own implementation
+- Enables **runtime polymorphism**
+
+**2. `override` Keyword:**
+- Used in derived classes to **replace** the virtual method implementation
+- Provides **runtime polymorphism** - the correct method is called based on the actual object type
+- Must override a virtual, abstract, or override method
+
+**3. `new` Keyword:**
+- Used for **method hiding** (not overriding)
+- Creates a new method that **hides** the base class method
+- Provides **compile-time polymorphism** - method called depends on reference type, not object type
+
+**Example:**
+
+```csharp
+public class Animal
+{
+    // Virtual method - can be overridden
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+    
+    // Regular method - can be hidden with 'new'
+    public void Move()
+    {
+        Console.WriteLine("Animal moves");
+    }
+}
+
+public class Dog : Animal
+{
+    // Override - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Dog barks: Woof!");
+    }
+    
+    // Method hiding with 'new' - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Dog runs on four legs");
+    }
+}
+
+public class Cat : Animal
+{
+    // Override - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Cat meows: Meow!");
+    }
+    
+    // Method hiding with 'new' - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Cat walks gracefully");
+    }
+}
+
+// Demonstration of the differences
+public class PolymorphismDemo
+{
+    public static void DemonstratePolymorphism()
+    {
+        // Runtime Polymorphism (override)
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+        
+        // Calls the overridden method based on actual object type
+        animal1.MakeSound(); // Output: "Dog barks: Woof!"
+        animal2.MakeSound(); // Output: "Cat meows: Meow!"
+        
+        // Compile-time Polymorphism (new)
+        // Calls the method based on reference type, not object type
+        animal1.Move(); // Output: "Animal moves" (base class method)
+        animal2.Move(); // Output: "Animal moves" (base class method)
+        
+        // To call the hidden method, need to cast to derived type
+        ((Dog)animal1).Move(); // Output: "Dog runs on four legs"
+        ((Cat)animal2).Move(); // Output: "Cat walks gracefully"
+        
+        // Direct instantiation calls the correct method
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        
+        dog.MakeSound(); // Output: "Dog barks: Woof!"
+        dog.Move();      // Output: "Dog runs on four legs"
+        
+        cat.MakeSound(); // Output: "Cat meows: Meow!"
+        cat.Move();      // Output: "Cat walks gracefully"
+    }
+}
+```
+
+**Advanced Example with Method Chaining:**
+
+```csharp
+public class Vehicle
+{
+    public virtual void Start()
+    {
+        Console.WriteLine("Vehicle started");
+    }
+    
+    public virtual void Stop()
+    {
+        Console.WriteLine("Vehicle stopped");
+    }
+    
+    // Virtual method that can be overridden
+    public virtual void DisplayInfo()
+    {
+        Console.WriteLine("This is a vehicle");
+    }
+}
+
+public class Car : Vehicle
+{
+    public override void Start()
+    {
+        Console.WriteLine("Car engine started");
+        base.Start(); // Call base implementation
+    }
+    
+    public override void Stop()
+    {
+        Console.WriteLine("Car engine stopped");
+        base.Stop(); // Call base implementation
+    }
+    
+    // Override with additional functionality
+    public override void DisplayInfo()
+    {
+        base.DisplayInfo(); // Call base method
+        Console.WriteLine("It has 4 wheels");
+    }
+}
+
+public class ElectricCar : Car
+{
+    public override void Start()
+    {
+        Console.WriteLine("Electric car booting up...");
+        // Don't call base.Start() - we want different behavior
+        Console.WriteLine("Electric car ready");
+    }
+    
+    // Hide the Stop method with new implementation
+    public new void Stop()
+    {
+        Console.WriteLine("Electric car shutting down");
+        // This doesn't call the base Stop method
+    }
+}
+
+// Usage
+Vehicle vehicle = new ElectricCar();
+vehicle.Start(); // Calls ElectricCar.Start() - runtime polymorphism
+vehicle.Stop();  // Calls Vehicle.Stop() - compile-time polymorphism (hiding)
+
+ElectricCar electricCar = new ElectricCar();
+electricCar.Stop(); // Calls ElectricCar.Stop() - the hidden method
+```
+
+**Key Differences Summary:**
+
+| Aspect | `virtual` | `override` | `new` |
+|--------|-----------|------------|-------|
+| **Purpose** | Makes method overridable | Replaces virtual method | Hides base method |
+| **Polymorphism** | Enables runtime | Runtime polymorphism | Compile-time binding |
+| **Method Resolution** | Based on object type | Based on object type | Based on reference type |
+| **Base Method Call** | Can call with `base.` | Can call with `base.` | Cannot call base method |
+| **When to Use** | Base class design | Derived class implementation | Method hiding scenarios |
+
+**Best Practices:**
+- Use `virtual` in base classes when you want derived classes to customize behavior
+- Use `override` when you want true polymorphism and method replacement
+- Use `new` sparingly - only when you need to hide a method and don't want polymorphism
+- Prefer `override` over `new` for better object-oriented design
+- Always call `base.MethodName()` in overrides when you want to extend, not replace, functionality
+
+---
+
+### What are access modifiers in C# and when would you use each?
+
+**Answer:**
+
+Access modifiers control the visibility and accessibility of classes, methods, properties, and other members in C#. They are fundamental to encapsulation and object-oriented design.
+
+**Available Access Modifiers:**
+
+**1. `public` - Most Permissive**
+- Accessible from anywhere
+- No restrictions on access
+
+**2. `private` - Most Restrictive**
+- Only accessible within the same class
+- Default for class members
+
+**3. `protected` - Family Access**
+- Accessible within the same class and derived classes
+- Not accessible from outside the inheritance hierarchy
+
+**4. `internal` - Assembly Access**
+- Accessible within the same assembly (project)
+- Default for classes and interfaces
+
+**5. `protected internal` - Family or Assembly Access**
+- Accessible within the same assembly OR derived classes (even in different assemblies)
+
+**6. `private protected` - Family and Assembly Access (C# 7.2+)**
+- Accessible within the same class, derived classes, AND same assembly
+
+**Example:**
+
+```csharp
+// Assembly: MyLibrary.dll
+namespace MyLibrary
+{
+    // Internal class - only accessible within this assembly
+    internal class InternalHelper
+    {
+        public void DoWork() { }
+    }
+    
+    // Public class - accessible from other assemblies
+    public class BankAccount
+    {
+        // Private field - only accessible within this class
+        private decimal balance;
+        private string accountNumber;
+        
+        // Protected field - accessible in derived classes
+        protected DateTime lastTransactionDate;
+        
+        // Internal field - accessible within this assembly
+        internal string internalNotes;
+        
+        // Protected internal - accessible in derived classes OR same assembly
+        protected internal string specialNotes;
+        
+        // Private protected - accessible in derived classes AND same assembly
+        private protected string confidentialNotes;
+        
+        // Public constructor
+        public BankAccount(string accountNumber, decimal initialBalance)
+        {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+            lastTransactionDate = DateTime.Now;
+        }
+        
+        // Public property - accessible from anywhere
+        public decimal Balance
+        {
+            get { return balance; }
+            private set // Private setter - only this class can modify
+            {
+                if (value < 0)
+                    throw new ArgumentException("Balance cannot be negative");
+                balance = value;
+            }
+        }
+        
+        // Public method - accessible from anywhere
+        public void Deposit(decimal amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            
+            Balance += amount;
+            lastTransactionDate = DateTime.Now;
+            LogTransaction("Deposit", amount);
+        }
+        
+        // Protected method - accessible in derived classes
+        protected virtual void LogTransaction(string type, decimal amount)
+        {
+            Console.WriteLine($"{type}: {amount:C} on {lastTransactionDate}");
+        }
+        
+        // Internal method - accessible within this assembly
+        internal void InternalAudit()
+        {
+            Console.WriteLine($"Internal audit for account {accountNumber}");
+        }
+        
+        // Private method - only accessible within this class
+        private void ValidateAccount()
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+                throw new InvalidOperationException("Invalid account number");
+        }
+    }
+    
+    // Derived class in the same assembly
+    public class SavingsAccount : BankAccount
+    {
+        private decimal interestRate;
+        
+        public SavingsAccount(string accountNumber, decimal initialBalance, decimal interestRate)
+            : base(accountNumber, initialBalance)
+        {
+            this.interestRate = interestRate;
+        }
+        
+        // Can access protected members
+        public void ApplyInterest()
+        {
+            decimal interest = Balance * interestRate;
+            Balance += interest; // Can access protected setter through property
+            lastTransactionDate = DateTime.Now; // Can access protected field
+            LogTransaction("Interest", interest); // Can access protected method
+        }
+        
+        // Can access protected internal members
+        public void UpdateSpecialNotes(string notes)
+        {
+            specialNotes = notes; // Accessible
+        }
+        
+        // Can access private protected members
+        public void UpdateConfidentialNotes(string notes)
+        {
+            confidentialNotes = notes; // Accessible (same assembly + derived)
+        }
+        
+        // Override protected method
+        protected override void LogTransaction(string type, decimal amount)
+        {
+            base.LogTransaction(type, amount);
+            Console.WriteLine($"Interest Rate: {interestRate:P}");
+        }
+    }
+}
+
+// Assembly: MyApplication.exe (references MyLibrary.dll)
+namespace MyApplication
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            var account = new BankAccount("123456", 1000);
+            
+            // Public members - accessible
+            account.Deposit(500);
+            Console.WriteLine($"Balance: {account.Balance}");
+            
+            // Internal members - NOT accessible (different assembly)
+            // account.InternalAudit(); // Compilation error
+            
+            // Protected members - NOT accessible (not derived class)
+            // account.lastTransactionDate = DateTime.Now; // Compilation error
+            
+            // Private members - NOT accessible
+            // account.balance = 2000; // Compilation error
+            
+            var savingsAccount = new SavingsAccount("789012", 2000, 0.05m);
+            savingsAccount.ApplyInterest();
+            savingsAccount.UpdateSpecialNotes("VIP Customer");
+        }
+    }
+    
+    // Derived class in different assembly
+    public class CheckingAccount : BankAccount
+    {
+        public CheckingAccount(string accountNumber, decimal initialBalance)
+            : base(accountNumber, initialBalance)
+        {
+        }
+        
+        // Can access protected members
+        public void ProcessCheck(decimal amount)
+        {
+            Balance -= amount; // Can access protected setter
+            lastTransactionDate = DateTime.Now; // Can access protected field
+        }
+        
+        // Can access protected internal members
+        public void UpdateSpecialNotes(string notes)
+        {
+            specialNotes = notes; // Accessible (derived class)
+        }
+        
+        // CANNOT access private protected members (different assembly)
+        // public void UpdateConfidentialNotes(string notes)
+        // {
+        //     confidentialNotes = notes; // Compilation error
+        // }
+    }
+}
+```
+
+**Access Modifier Guidelines:**
+
+**When to use `public`:**
+- API surface that external code needs to use
+- Properties that represent the object's state
+- Methods that provide core functionality
+
+**When to use `private`:**
+- Implementation details that should be hidden
+- Helper methods used only within the class
+- Fields that should only be modified through properties
+
+**When to use `protected`:**
+- Members that derived classes need to access
+- Virtual methods that can be overridden
+- Fields that derived classes need to modify
+
+**When to use `internal`:**
+- Classes that are implementation details of your library
+- Methods that should only be used within your assembly
+- Testing utilities that shouldn't be exposed publicly
+
+**When to use `protected internal`:**
+- Members that derived classes OR assembly code needs
+- Rarely used - consider if you really need this level of access
+
+**When to use `private protected`:**
+- Members that only derived classes in the same assembly should access
+- Very specific use case - rarely needed
+
+**Default Access Levels:**
+- **Class members**: `private`
+- **Classes and interfaces**: `internal`
+- **Namespaces**: Always `public` (cannot be modified)
+
+**Best Practices:**
+- Start with the most restrictive access level (`private`)
+- Only increase visibility when necessary
+- Use properties instead of public fields
+- Prefer `protected` over `protected internal` when possible
+- Document public APIs thoroughly
+- Use `internal` for testing utilities
+
+---
+
+### What is the difference between static and instance members?
+
+**Answer:**
+
+**Static members** belong to the class itself, while **instance members** belong to individual objects (instances) of the class. This fundamental difference affects memory allocation, access patterns, and usage scenarios.
+
+**Key Differences:**
+
+| Aspect | Static Members | Instance Members |
+|--------|----------------|------------------|
+| **Memory** | One copy per class | One copy per instance |
+| **Access** | Accessed via class name | Accessed via object reference |
+| **Lifecycle** | Created when class is first used | Created when object is instantiated |
+| **Context** | No access to instance data | Can access both instance and static data |
+| **Thread Safety** | Shared across all instances | Each instance has its own copy |
+
+**Example:**
+
+```csharp
+public class Counter
+{
+    // Static field - shared across all instances
+    private static int totalCount = 0;
+    
+    // Instance field - each object has its own copy
+    private int instanceCount = 0;
+    
+    // Static property - accessed via class name
+    public static int TotalCount
+    {
+        get { return totalCount; }
+        private set { totalCount = value; }
+    }
+    
+    // Instance property - accessed via object reference
+    public int InstanceCount
+    {
+        get { return instanceCount; }
+        private set { instanceCount = value; }
+    }
+    
+    // Static constructor - called once when class is first used
+    static Counter()
+    {
+        Console.WriteLine("Static constructor called - Counter class initialized");
+        TotalCount = 0;
+    }
+    
+    // Instance constructor - called for each new object
+    public Counter()
+    {
+        Console.WriteLine("Instance constructor called - new Counter created");
+        InstanceCount = 0;
+    }
+    
+    // Static method - can only access static members
+    public static void ResetTotalCount()
+    {
+        TotalCount = 0;
+        Console.WriteLine("Total count reset to 0");
+    }
+    
+    // Instance method - can access both static and instance members
+    public void Increment()
+    {
+        InstanceCount++;
+        TotalCount++; // Can access static members from instance methods
+        Console.WriteLine($"Instance count: {InstanceCount}, Total count: {TotalCount}");
+    }
+    
+    // Static method that creates and returns instances
+    public static Counter CreateCounter()
+    {
+        return new Counter();
+    }
+    
+    // Instance method that uses static members
+    public void DisplayStats()
+    {
+        Console.WriteLine($"This counter: {InstanceCount}");
+        Console.WriteLine($"All counters total: {TotalCount}");
+    }
+}
+
+// Usage demonstration
+public class StaticVsInstanceDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Static vs Instance Members Demo ===");
+        
+        // Access static members via class name
+        Console.WriteLine($"Initial total count: {Counter.TotalCount}");
+        Counter.ResetTotalCount();
+        
+        // Create instances
+        Counter counter1 = new Counter();
+        Counter counter2 = new Counter();
+        Counter counter3 = new Counter();
+        
+        // Use instance methods
+        counter1.Increment(); // Instance: 1, Total: 1
+        counter1.Increment(); // Instance: 2, Total: 2
+        
+        counter2.Increment(); // Instance: 1, Total: 3
+        counter2.Increment(); // Instance: 2, Total: 4
+        counter2.Increment(); // Instance: 3, Total: 5
+        
+        counter3.Increment(); // Instance: 1, Total: 6
+        
+        // Display stats for each instance
+        counter1.DisplayStats();
+        counter2.DisplayStats();
+        counter3.DisplayStats();
+        
+        // Static count is shared across all instances
+        Console.WriteLine($"Final total count: {Counter.TotalCount}");
+    }
+}
+```
+
+**Advanced Example - Utility Classes:**
+
+```csharp
+// Static utility class - cannot be instantiated
+public static class MathUtils
+{
+    // Static constants
+    public const double PI = 3.14159265359;
+    public const double E = 2.71828182846;
+    
+    // Static readonly field
+    private static readonly Random random = new Random();
+    
+    // Static methods - no instance needed
+    public static double CalculateCircleArea(double radius)
+    {
+        return PI * radius * radius;
+    }
+    
+    public static double CalculateHypotenuse(double a, double b)
+    {
+        return Math.Sqrt(a * a + b * b);
+    }
+    
+    public static int GetRandomNumber(int min, int max)
+    {
+        return random.Next(min, max + 1);
+    }
+    
+    // Static method with generic type
+    public static T Max<T>(T a, T b) where T : IComparable<T>
+    {
+        return a.CompareTo(b) > 0 ? a : b;
+    }
+}
+
+// Instance class with both static and instance members
+public class BankAccount
+{
+    // Static field - shared across all accounts
+    private static int nextAccountNumber = 1000;
+    
+    // Static property
+    public static int NextAccountNumber => nextAccountNumber;
+    
+    // Instance fields
+    private int accountNumber;
+    private decimal balance;
+    private string accountHolder;
+    
+    // Static method to generate account numbers
+    public static int GenerateAccountNumber()
+    {
+        return ++nextAccountNumber;
+    }
+    
+    // Instance constructor
+    public BankAccount(string accountHolder, decimal initialBalance)
+    {
+        this.accountNumber = GenerateAccountNumber(); // Uses static method
+        this.accountHolder = accountHolder;
+        this.balance = initialBalance;
+    }
+    
+    // Instance methods
+    public void Deposit(decimal amount)
+    {
+        balance += amount;
+    }
+    
+    public void Withdraw(decimal amount)
+    {
+        if (balance >= amount)
+            balance -= amount;
+        else
+            throw new InvalidOperationException("Insufficient funds");
+    }
+    
+    // Instance method that uses static members
+    public void DisplayAccountInfo()
+    {
+        Console.WriteLine($"Account #{accountNumber}");
+        Console.WriteLine($"Holder: {accountHolder}");
+        Console.WriteLine($"Balance: {balance:C}");
+        Console.WriteLine($"Next account number will be: {NextAccountNumber}");
+    }
+}
+
+// Usage
+public class Program
+{
+    public static void Main()
+    {
+        // Use static utility methods
+        double area = MathUtils.CalculateCircleArea(5.0);
+        double hypotenuse = MathUtils.CalculateHypotenuse(3.0, 4.0);
+        int randomNum = MathUtils.GetRandomNumber(1, 100);
+        
+        Console.WriteLine($"Circle area: {area:F2}");
+        Console.WriteLine($"Hypotenuse: {hypotenuse:F2}");
+        Console.WriteLine($"Random number: {randomNum}");
+        
+        // Create bank accounts
+        var account1 = new BankAccount("John Doe", 1000);
+        var account2 = new BankAccount("Jane Smith", 2000);
+        
+        account1.DisplayAccountInfo();
+        account2.DisplayAccountInfo();
+        
+        // Static members are shared
+        Console.WriteLine($"Next account number: {BankAccount.NextAccountNumber}");
+    }
+}
+```
+
+**When to Use Static Members:**
+
+**Use static for:**
+- Utility methods that don't need instance data
+- Constants and configuration values
+- Factory methods
+- Extension methods
+- Mathematical operations
+- Caching mechanisms
+- Logging utilities
+
+**Use instance members for:**
+- Data that varies per object
+- Methods that operate on object state
+- Properties that represent object characteristics
+- Methods that need access to instance fields
+
+**Important Considerations:**
+
+**Static Members:**
+- Cannot access instance members directly
+- Are shared across all instances (thread safety concerns)
+- Cannot be overridden (but can be hidden with `new`)
+- Cannot implement interfaces (except for static interface members in C# 8+)
+
+**Instance Members:**
+- Can access both static and instance members
+- Each instance has its own copy
+- Can be virtual and overridden
+- Can implement interface members
+
+**Best Practices:**
+- Use static for stateless operations
+- Use instance for stateful operations
+- Be careful with static mutable data (thread safety)
+- Prefer instance members for testability
+- Use static constructors for one-time initialization
+- Consider using static classes for utility functions
+
+---
+
+### What are constructors and destructors in C#?
+
+**Answer:**
+
+**Constructors** are special methods that initialize objects when they are created, while **destructors** (finalizers) are special methods that clean up resources when objects are destroyed by the garbage collector.
+
+**Constructor Types:**
+
+**1. Default Constructor**
+- Parameterless constructor
+- Automatically provided if no constructors are defined
+- Initializes fields to default values
+
+**2. Parameterized Constructor**
+- Takes parameters to initialize the object
+- Allows custom initialization
+
+**3. Copy Constructor**
+- Creates a new object by copying another object
+- Useful for creating deep copies
+
+**4. Static Constructor**
+- Initializes static members
+- Called once before the class is first used
+
+**Example:**
+
+```csharp
+public class Person
+{
+    // Fields
+    private string name;
+    private int age;
+    private DateTime birthDate;
+    private static int totalPersons = 0;
+    
+    // Static constructor - called once when class is first used
+    static Person()
+    {
+        Console.WriteLine("Person class initialized");
+        totalPersons = 0;
+    }
+    
+    // Default constructor
+    public Person()
+    {
+        Console.WriteLine("Default constructor called");
+        name = "Unknown";
+        age = 0;
+        birthDate = DateTime.MinValue;
+        totalPersons++;
+    }
+    
+    // Parameterized constructor
+    public Person(string name, int age)
+    {
+        Console.WriteLine($"Parameterized constructor called for {name}");
+        this.name = name;
+        this.age = age;
+        this.birthDate = DateTime.Now.AddYears(-age);
+        totalPersons++;
+    }
+    
+    // Copy constructor
+    public Person(Person other)
+    {
+        Console.WriteLine($"Copy constructor called for {other.name}");
+        this.name = other.name;
+        this.age = other.age;
+        this.birthDate = other.birthDate;
+        totalPersons++;
+    }
+    
+    // Constructor chaining using 'this'
+    public Person(string name) : this(name, 0)
+    {
+        Console.WriteLine("Constructor chaining - calling parameterized constructor");
+    }
+    
+    // Properties
+    public string Name
+    {
+        get => name;
+        set => name = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public int Age
+    {
+        get => age;
+        set => age = value >= 0 ? value : throw new ArgumentException("Age cannot be negative");
+    }
+    
+    public static int TotalPersons => totalPersons;
+    
+    // Methods
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Name: {name}, Age: {age}, Born: {birthDate:yyyy-MM-dd}");
+    }
+    
+    // Destructor (Finalizer) - called by garbage collector
+    ~Person()
+    {
+        Console.WriteLine($"Destructor called for {name}");
+        totalPersons--;
+    }
+}
+
+// Advanced example with resource management
+public class FileManager : IDisposable
+{
+    private string fileName;
+    private FileStream fileStream;
+    private bool disposed = false;
+    
+    // Constructor with file validation
+    public FileManager(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+            throw new ArgumentException("File name cannot be null or empty");
+        
+        this.fileName = fileName;
+        Console.WriteLine($"FileManager created for: {fileName}");
+    }
+    
+    // Method to open file
+    public void OpenFile()
+    {
+        if (fileStream != null)
+            throw new InvalidOperationException("File is already open");
+        
+        try
+        {
+            fileStream = File.Open(fileName, FileMode.OpenOrCreate);
+            Console.WriteLine($"File opened: {fileName}");
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to open file: {ex.Message}");
+        }
+    }
+    
+    // Method to write data
+    public void WriteData(string data)
+    {
+        if (fileStream == null)
+            throw new InvalidOperationException("File is not open");
+        
+        byte[] bytes = Encoding.UTF8.GetBytes(data);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Flush();
+        Console.WriteLine($"Data written to {fileName}");
+    }
+    
+    // Destructor - backup cleanup (not guaranteed to be called)
+    ~FileManager()
+    {
+        Console.WriteLine($"Destructor called for {fileName}");
+        Dispose(false);
+    }
+    
+    // IDisposable implementation for proper resource cleanup
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this); // Prevents destructor from being called
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                // Dispose managed resources
+                fileStream?.Dispose();
+                Console.WriteLine($"File closed: {fileName}");
+            }
+            
+            // Dispose unmanaged resources (if any)
+            disposed = true;
+        }
+    }
+}
+
+// Constructor inheritance example
+public class Animal
+{
+    protected string species;
+    protected int age;
+    
+    // Base class constructor
+    public Animal(string species, int age)
+    {
+        this.species = species;
+        this.age = age;
+        Console.WriteLine($"Animal constructor: {species}, {age} years old");
+    }
+    
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+}
+
+public class Dog : Animal
+{
+    private string breed;
+    
+    // Derived class constructor - must call base constructor
+    public Dog(string breed, int age) : base("Canine", age)
+    {
+        this.breed = breed;
+        Console.WriteLine($"Dog constructor: {breed} breed");
+    }
+    
+    // Constructor with default breed
+    public Dog(int age) : this("Mixed", age)
+    {
+        Console.WriteLine("Dog constructor with default breed");
+    }
+    
+    public override void MakeSound()
+    {
+        Console.WriteLine($"{breed} dog barks: Woof!");
+    }
+    
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Species: {species}, Breed: {breed}, Age: {age}");
+    }
+}
+
+// Usage demonstration
+public class ConstructorDestructorDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Constructor and Destructor Demo ===");
+        
+        // Default constructor
+        var person1 = new Person();
+        person1.DisplayInfo();
+        
+        // Parameterized constructor
+        var person2 = new Person("John Doe", 30);
+        person2.DisplayInfo();
+        
+        // Constructor chaining
+        var person3 = new Person("Jane Smith");
+        person3.DisplayInfo();
+        
+        // Copy constructor
+        var person4 = new Person(person2);
+        person4.DisplayInfo();
+        
+        // Constructor inheritance
+        var dog = new Dog("Golden Retriever", 3);
+        dog.DisplayInfo();
+        dog.MakeSound();
+        
+        // Resource management with using statement
+        using (var fileManager = new FileManager("test.txt"))
+        {
+            fileManager.OpenFile();
+            fileManager.WriteData("Hello, World!");
+        } // Dispose() is called automatically
+        
+        Console.WriteLine($"Total persons created: {Person.TotalPersons}");
+        
+        // Force garbage collection to see destructors
+        person1 = null;
+        person2 = null;
+        person3 = null;
+        person4 = null;
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+    }
+}
+```
+
+**Constructor Best Practices:**
+
+**1. Constructor Chaining:**
+```csharp
+public class Employee
+{
+    private string name;
+    private int id;
+    private string department;
+    
+    // Chain constructors to avoid code duplication
+    public Employee(string name) : this(name, 0, "Unknown")
+    {
+    }
+    
+    public Employee(string name, int id) : this(name, id, "Unknown")
+    {
+    }
+    
+    public Employee(string name, int id, string department)
+    {
+        this.name = name;
+        this.id = id;
+        this.department = department;
+    }
+}
+```
+
+**2. Validation in Constructors:**
+```csharp
+public class BankAccount
+{
+    private string accountNumber;
+    private decimal balance;
+    
+    public BankAccount(string accountNumber, decimal initialBalance)
+    {
+        // Validate parameters
+        if (string.IsNullOrWhiteSpace(accountNumber))
+            throw new ArgumentException("Account number cannot be null or empty");
+        
+        if (initialBalance < 0)
+            throw new ArgumentException("Initial balance cannot be negative");
+        
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+}
+```
+
+**Destructor Guidelines:**
+
+**When to use destructors:**
+- Clean up unmanaged resources as a safety net
+- Log object destruction for debugging
+- Update static counters or statistics
+
+**When NOT to use destructors:**
+- Don't rely on them for critical cleanup
+- Don't perform time-consuming operations
+- Don't access other managed objects (they might be finalized)
+
+**Best Practices:**
+- Implement `IDisposable` for proper resource management
+- Use `using` statements for automatic disposal
+- Call `GC.SuppressFinalize(this)` in `Dispose()`
+- Keep destructors simple and fast
+- Use constructor chaining to avoid code duplication
+- Validate parameters in constructors
+- Make constructors fail fast with clear error messages
+
+---
+
+### What is method hiding and how does it differ from method overriding?
+
+**Answer:**
+
+**Method hiding** uses the `new` keyword to hide a base class method, while **method overriding** uses the `override` keyword to replace a virtual method. The key difference is in **when** the method resolution occurs and **how** polymorphism behaves.
+
+**Key Differences:**
+
+| Aspect | Method Hiding (`new`) | Method Overriding (`override`) |
+|--------|----------------------|-------------------------------|
+| **Resolution** | Compile-time | Runtime |
+| **Polymorphism** | Based on reference type | Based on object type |
+| **Base Method** | Cannot call base method | Can call base method with `base.` |
+| **Virtual Required** | No (can hide any method) | Yes (must be virtual/abstract/override) |
+| **Method Signature** | Must match exactly | Must match exactly |
+
+**Example:**
+
+```csharp
+public class Animal
+{
+    // Virtual method - can be overridden
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Animal makes a sound");
+    }
+    
+    // Regular method - can be hidden
+    public void Move()
+    {
+        Console.WriteLine("Animal moves");
+    }
+    
+    // Virtual method for demonstration
+    public virtual void Sleep()
+    {
+        Console.WriteLine("Animal sleeps");
+    }
+}
+
+public class Dog : Animal
+{
+    // Method Overriding - runtime polymorphism
+    public override void MakeSound()
+    {
+        Console.WriteLine("Dog barks: Woof!");
+    }
+    
+    // Method Hiding - compile-time polymorphism
+    public new void Move()
+    {
+        Console.WriteLine("Dog runs on four legs");
+    }
+    
+    // Method Hiding with new keyword (explicit)
+    public new void Sleep()
+    {
+        Console.WriteLine("Dog sleeps in a dog bed");
+    }
+}
+
+public class Cat : Animal
+{
+    // Method Overriding
+    public override void MakeSound()
+    {
+        Console.WriteLine("Cat meows: Meow!");
+    }
+    
+    // Method Hiding
+    public new void Move()
+    {
+        Console.WriteLine("Cat walks gracefully");
+    }
+    
+    // Method Hiding
+    public new void Sleep()
+    {
+        Console.WriteLine("Cat sleeps on a windowsill");
+    }
+}
+
+// Demonstration of the differences
+public class MethodHidingVsOverridingDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Method Hiding vs Overriding Demo ===");
+        
+        // Create objects
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+        
+        Dog dog = new Dog();
+        Cat cat = new Cat();
+        
+        Console.WriteLine("\n--- Runtime Polymorphism (Override) ---");
+        // Method resolution based on ACTUAL object type
+        animal1.MakeSound(); // Calls Dog.MakeSound() - runtime polymorphism
+        animal2.MakeSound(); // Calls Cat.MakeSound() - runtime polymorphism
+        
+        Console.WriteLine("\n--- Compile-time Polymorphism (Hiding) ---");
+        // Method resolution based on REFERENCE type
+        animal1.Move(); // Calls Animal.Move() - compile-time polymorphism
+        animal2.Move(); // Calls Animal.Move() - compile-time polymorphism
+        
+        animal1.Sleep(); // Calls Animal.Sleep() - compile-time polymorphism
+        animal2.Sleep(); // Calls Animal.Sleep() - compile-time polymorphism
+        
+        Console.WriteLine("\n--- Direct Object Access ---");
+        // When accessing directly, the hidden method is called
+        dog.Move();  // Calls Dog.Move()
+        cat.Move();  // Calls Cat.Move()
+        
+        dog.Sleep(); // Calls Dog.Sleep()
+        cat.Sleep(); // Calls Cat.Sleep()
+        
+        Console.WriteLine("\n--- Casting to Access Hidden Methods ---");
+        // To call the hidden method through base reference, cast to derived type
+        ((Dog)animal1).Move();  // Calls Dog.Move()
+        ((Cat)animal2).Move();  // Calls Cat.Move()
+    }
+}
+```
+
+**Advanced Example with Method Chaining:**
+
+```csharp
+public class Vehicle
+{
+    public virtual void Start()
+    {
+        Console.WriteLine("Vehicle started");
+    }
+    
+    public virtual void Stop()
+    {
+        Console.WriteLine("Vehicle stopped");
+    }
+    
+    // Regular method that can be hidden
+    public void DisplayInfo()
+    {
+        Console.WriteLine("This is a vehicle");
+    }
+    
+    // Virtual method for overriding
+    public virtual void Maintenance()
+    {
+        Console.WriteLine("Performing general vehicle maintenance");
+    }
+}
+
+public class Car : Vehicle
+{
+    // Override - can call base method
+    public override void Start()
+    {
+        Console.WriteLine("Car engine started");
+        base.Start(); // Can call base implementation
+    }
+    
+    // Override - can call base method
+    public override void Stop()
+    {
+        Console.WriteLine("Car engine stopped");
+        base.Stop(); // Can call base implementation
+    }
+    
+    // Method hiding - cannot call base method directly
+    public new void DisplayInfo()
+    {
+        Console.WriteLine("This is a car with 4 wheels");
+        // Cannot call base.DisplayInfo() directly
+        // Would need to cast: ((Vehicle)this).DisplayInfo();
+    }
+    
+    // Method hiding with new keyword
+    public new void Maintenance()
+    {
+        Console.WriteLine("Performing car-specific maintenance");
+        Console.WriteLine("- Checking oil");
+        Console.WriteLine("- Checking tires");
+        // Cannot call base.Maintenance() directly
+    }
+}
+
+public class ElectricCar : Car
+{
+    // Override the overridden method
+    public override void Start()
+    {
+        Console.WriteLine("Electric car booting up...");
+        base.Start(); // Calls Car.Start()
+    }
+    
+    // Hide the overridden method (not recommended)
+    public new void Stop()
+    {
+        Console.WriteLine("Electric car shutting down");
+        // This hides Car.Stop(), not Vehicle.Stop()
+    }
+    
+    // Override the hidden method
+    public override void Maintenance()
+    {
+        Console.WriteLine("Performing electric car maintenance");
+        Console.WriteLine("- Checking battery");
+        Console.WriteLine("- Checking electric systems");
+        base.Maintenance(); // Calls Car.Maintenance()
+    }
+}
+
+// Usage demonstration
+public class AdvancedDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Advanced Method Hiding vs Overriding ===");
+        
+        Vehicle vehicle = new ElectricCar();
+        
+        Console.WriteLine("\n--- Through Vehicle Reference ---");
+        vehicle.Start();        // Calls ElectricCar.Start() (override chain)
+        vehicle.Stop();         // Calls Car.Stop() (override)
+        vehicle.DisplayInfo();  // Calls Vehicle.DisplayInfo() (hiding)
+        vehicle.Maintenance();  // Calls Car.Maintenance() (override)
+        
+        Console.WriteLine("\n--- Through Car Reference ---");
+        Car car = new ElectricCar();
+        car.Start();        // Calls ElectricCar.Start()
+        car.Stop();         // Calls Car.Stop()
+        car.DisplayInfo();  // Calls Car.DisplayInfo() (hiding)
+        car.Maintenance();  // Calls Car.Maintenance()
+        
+        Console.WriteLine("\n--- Through ElectricCar Reference ---");
+        ElectricCar electricCar = new ElectricCar();
+        electricCar.Start();        // Calls ElectricCar.Start()
+        electricCar.Stop();         // Calls ElectricCar.Stop() (hiding)
+        electricCar.DisplayInfo();  // Calls Car.DisplayInfo() (hiding)
+        electricCar.Maintenance();  // Calls ElectricCar.Maintenance()
+    }
+}
+```
+
+**When to Use Method Hiding:**
+
+**Use `new` (method hiding) when:**
+- You want to provide a completely different implementation
+- The base method is not virtual and you can't override it
+- You want compile-time method resolution
+- You're implementing a different interface or behavior
+
+**Use `override` (method overriding) when:**
+- You want true polymorphism
+- You want to extend or modify base behavior
+- You want runtime method resolution
+- You're following the Liskov Substitution Principle
+
+**Best Practices:**
+
+**1. Prefer Override over Hiding:**
+```csharp
+// Good: Use override for polymorphism
+public class BaseClass
+{
+    public virtual void Method() { }
+}
+
+public class DerivedClass : BaseClass
+{
+    public override void Method() // Preferred
+    {
+        base.Method(); // Can call base implementation
+    }
+}
+
+// Avoid: Method hiding unless necessary
+public class DerivedClass2 : BaseClass
+{
+    public new void Method() // Avoid unless you have a good reason
+    {
+        // Cannot call base.Method() directly
+    }
+}
+```
+
+**2. Be Explicit with `new` Keyword:**
+```csharp
+public class DerivedClass : BaseClass
+{
+    // Explicitly use 'new' to show intent
+    public new void Method()
+    {
+        // Implementation
+    }
+}
+```
+
+**3. Document the Intent:**
+```csharp
+public class DerivedClass : BaseClass
+{
+    /// <summary>
+    /// Hides the base class method with a different implementation.
+    /// This method provides car-specific behavior and does not call the base method.
+    /// </summary>
+    public new void Method()
+    {
+        // Implementation
+    }
+}
+```
+
+**Common Pitfalls:**
+
+1. **Accidental Hiding:** Forgetting to use `override` when you meant to override
+2. **Confusing Behavior:** Method hiding can be confusing because it breaks polymorphism
+3. **Cannot Call Base:** Hidden methods cannot call the base method directly
+4. **Compile-time Resolution:** Method hiding uses compile-time resolution, which can be unexpected
+
+**Summary:**
+- Use `override` for true polymorphism and when you want to extend base behavior
+- Use `new` only when you need to hide a method and provide completely different behavior
+- Always be explicit about your intent
+- Prefer `override` over `new` in most scenarios
+- Document why you're using method hiding
+
+---
+
+### What are partial classes and partial methods in C#?
+
+**Answer:**
+
+**Partial classes** allow you to split a single class definition across multiple files, while **partial methods** allow you to declare a method in one part and optionally implement it in another part. This is particularly useful for code generation, designer files, and organizing large classes.
+
+**Partial Classes:**
+
+**Benefits:**
+- Split large classes across multiple files
+- Separate generated code from hand-written code
+- Organize related functionality
+- Enable multiple developers to work on the same class
+
+**Example:**
+
+```csharp
+// File: Person.cs
+public partial class Person
+{
+    private string firstName;
+    private string lastName;
+    
+    public Person(string firstName, string lastName)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    
+    public string GetFullName()
+    {
+        return $"{firstName} {lastName}";
+    }
+}
+
+// File: Person.Properties.cs
+public partial class Person
+{
+    public string FirstName
+    {
+        get => firstName;
+        set => firstName = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public string LastName
+    {
+        get => lastName;
+        set => lastName = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    
+    public int Age { get; set; }
+    public string Email { get; set; }
+}
+
+// File: Person.Methods.cs
+public partial class Person
+{
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Name: {GetFullName()}");
+        Console.WriteLine($"Age: {Age}");
+        Console.WriteLine($"Email: {Email}");
+    }
+    
+    public bool IsAdult()
+    {
+        return Age >= 18;
+    }
+    
+    public void SendEmail(string subject, string body)
+    {
+        if (string.IsNullOrEmpty(Email))
+            throw new InvalidOperationException("Email address is not set");
+        
+        Console.WriteLine($"Sending email to {Email}");
+        Console.WriteLine($"Subject: {subject}");
+        Console.WriteLine($"Body: {body}");
+    }
+}
+
+// File: Person.Validation.cs
+public partial class Person
+{
+    public bool Validate()
+    {
+        return !string.IsNullOrEmpty(firstName) &&
+               !string.IsNullOrEmpty(lastName) &&
+               Age >= 0 &&
+               IsValidEmail(Email);
+    }
+    
+    private bool IsValidEmail(string email)
+    {
+        return !string.IsNullOrEmpty(email) && email.Contains("@");
+    }
+}
+```
+
+**Advanced Example - Code Generation Scenario:**
+
+```csharp
+// File: User.cs (Hand-written code)
+public partial class User
+{
+    private int id;
+    private string username;
+    private string email;
+    
+    public User(string username, string email)
+    {
+        this.username = username;
+        this.email = email;
+    }
+    
+    // Hand-written business logic
+    public bool IsActive()
+    {
+        return !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(email);
+    }
+    
+    public void UpdateProfile(string newEmail)
+    {
+        if (IsValidEmail(newEmail))
+        {
+            email = newEmail;
+            OnProfileUpdated(); // Partial method call
+        }
+    }
+    
+    // Partial method declaration - implemented in generated code
+    partial void OnProfileUpdated();
+    
+    // Partial method for validation - implemented in generated code
+    partial void ValidateUser();
+    
+    private bool IsValidEmail(string email)
+    {
+        return !string.IsNullOrEmpty(email) && email.Contains("@");
+    }
+}
+
+// File: User.Generated.cs (Generated code - e.g., from Entity Framework)
+public partial class User
+{
+    // Generated properties
+    public int Id
+    {
+        get => id;
+        set => id = value;
+    }
+    
+    public string Username
+    {
+        get => username;
+        set => username = value;
+    }
+    
+    public string Email
+    {
+        get => email;
+        set => email = value;
+    }
+    
+    // Generated methods
+    public override string ToString()
+    {
+        return $"User: {username} ({email})";
+    }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj is User other)
+            return id == other.id;
+        return false;
+    }
+    
+    public override int GetHashCode()
+    {
+        return id.GetHashCode();
+    }
+    
+    // Partial method implementations
+    partial void OnProfileUpdated()
+    {
+        Console.WriteLine($"Profile updated for user: {username}");
+        // Could trigger events, update database, etc.
+    }
+    
+    partial void ValidateUser()
+    {
+        if (string.IsNullOrEmpty(username))
+            throw new InvalidOperationException("Username is required");
+        
+        if (string.IsNullOrEmpty(email))
+            throw new InvalidOperationException("Email is required");
+    }
+}
+```
+
+**Partial Methods:**
+
+**Characteristics:**
+- Must be declared with `partial` keyword
+- Must return `void`
+- Cannot have access modifiers (implicitly `private`)
+- Cannot be `virtual`, `override`, `sealed`, or `extern`
+- Can have `ref` and `out` parameters
+- If not implemented, the compiler removes the method call
+
+**Example:**
+
+```csharp
+// File: DataProcessor.cs
+public partial class DataProcessor
+{
+    private List<string> data;
+    
+    public DataProcessor()
+    {
+        data = new List<string>();
+    }
+    
+    public void ProcessData()
+    {
+        Console.WriteLine("Starting data processing...");
+        
+        // Partial method calls - will be removed if not implemented
+        OnProcessingStarted();
+        
+        foreach (var item in data)
+        {
+            ProcessItem(item);
+            OnItemProcessed(item);
+        }
+        
+        OnProcessingCompleted();
+        Console.WriteLine("Data processing completed.");
+    }
+    
+    private void ProcessItem(string item)
+    {
+        // Process the item
+        Console.WriteLine($"Processing: {item}");
+    }
+    
+    // Partial method declarations
+    partial void OnProcessingStarted();
+    partial void OnItemProcessed(string item);
+    partial void OnProcessingCompleted();
+    partial void OnError(string error);
+}
+
+// File: DataProcessor.Logging.cs
+public partial class DataProcessor
+{
+    // Implement some partial methods
+    partial void OnProcessingStarted()
+    {
+        Console.WriteLine("LOG: Processing started at " + DateTime.Now);
+    }
+    
+    partial void OnItemProcessed(string item)
+    {
+        Console.WriteLine($"LOG: Processed item: {item}");
+    }
+    
+    partial void OnProcessingCompleted()
+    {
+        Console.WriteLine("LOG: Processing completed at " + DateTime.Now);
+    }
+    
+    // OnError is not implemented, so calls to it will be removed by compiler
+}
+
+// File: DataProcessor.Monitoring.cs
+public partial class DataProcessor
+{
+    private int processedCount = 0;
+    
+    // Override the implementation from Logging.cs
+    partial void OnItemProcessed(string item)
+    {
+        processedCount++;
+        Console.WriteLine($"MONITOR: Item {processedCount} processed: {item}");
+    }
+    
+    partial void OnProcessingCompleted()
+    {
+        Console.WriteLine($"MONITOR: Total items processed: {processedCount}");
+    }
+}
+```
+
+**Real-world Example - Entity Framework:**
+
+```csharp
+// File: Customer.cs (Hand-written)
+public partial class Customer
+{
+    public Customer()
+    {
+        Orders = new HashSet<Order>();
+    }
+    
+    // Hand-written business logic
+    public bool IsVIP()
+    {
+        return Orders.Count > 10 || TotalSpent > 10000;
+    }
+    
+    public void AddOrder(Order order)
+    {
+        Orders.Add(order);
+        OnOrderAdded(order);
+    }
+    
+    // Partial methods for extensibility
+    partial void OnOrderAdded(Order order);
+    partial void OnCustomerUpdated();
+}
+
+// File: Customer.Designer.cs (Generated by EF)
+public partial class Customer
+{
+    public int CustomerId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public decimal TotalSpent { get; set; }
+    
+    public virtual ICollection<Order> Orders { get; set; }
+    
+    // Generated partial method implementations
+    partial void OnOrderAdded(Order order)
+    {
+        // Could update TotalSpent, send notifications, etc.
+        TotalSpent += order.TotalAmount;
+    }
+    
+    partial void OnCustomerUpdated()
+    {
+        // Could log changes, update audit trail, etc.
+        Console.WriteLine($"Customer {CustomerId} was updated");
+    }
+}
+```
+
+**Usage and Best Practices:**
+
+```csharp
+public class PartialClassDemo
+{
+    public static void Demonstrate()
+    {
+        Console.WriteLine("=== Partial Classes and Methods Demo ===");
+        
+        // Create and use partial class
+        var person = new Person("John", "Doe");
+        person.Age = 30;
+        person.Email = "john.doe@example.com";
+        person.DisplayInfo();
+        
+        // Use partial methods
+        var processor = new DataProcessor();
+        processor.ProcessData();
+        
+        // Entity Framework example
+        var customer = new Customer();
+        customer.FirstName = "Jane";
+        customer.LastName = "Smith";
+        customer.Email = "jane.smith@example.com";
+        
+        var order = new Order { TotalAmount = 150.00m };
+        customer.AddOrder(order); // Triggers partial method
+        
+        Console.WriteLine($"Customer is VIP: {customer.IsVIP()}");
+    }
+}
+```
+
+**Best Practices:**
+
+**For Partial Classes:**
+- Use for code generation scenarios
+- Organize large classes logically
+- Keep related functionality together
+- Use consistent naming conventions
+- Document the purpose of each partial class
+
+**For Partial Methods:**
+- Use for optional extensibility points
+- Keep method signatures simple
+- Don't rely on partial methods for critical functionality
+- Use for logging, validation, and notification scenarios
+- Consider using events instead for complex scenarios
+
+**When to Use:**
+- **Partial Classes:** Code generation, large classes, multiple developers
+- **Partial Methods:** Optional extensibility, code generation hooks, lightweight events
+
+**When NOT to Use:**
+- Don't use partial classes just to organize small classes
+- Don't use partial methods for complex logic
+- Don't rely on partial methods for critical functionality
+
 ---
 
 ## Asynchronous Programming
