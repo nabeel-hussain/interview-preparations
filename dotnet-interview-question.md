@@ -1,5 +1,159 @@
 # Senior .NET Developer Interview Questions
 
+## Table of Contents
+
+### [C# and .NET Fundamentals](#c-and-net-fundamentals)
+- [Explain the difference between value types and reference types in C#](#explain-the-difference-between-value-types-and-reference-types-in-c)
+- [What is the difference between string and StringBuilder? When would you use each?](#what-is-the-difference-between-string-and-stringbuilder-when-would-you-use-each)
+- [Explain the concepts of boxing and unboxing with performance implications](#explain-the-concepts-of-boxing-and-unboxing-with-performance-implications)
+- [What are extension methods and when should you use them?](#what-are-extension-methods-and-when-should-you-use-them)
+- [Explain the difference between IEnumerable, ICollection, IList, and IQueryable](#explain-the-difference-between-ienumerable-icollection-ilist-and-iqueryable)
+- [What is the difference between abstract class and interface? When would you use each?](#what-is-the-difference-between-abstract-class-and-interface-when-would-you-use-each)
+- [Explain covariance and contravariance in C#](#explain-covariance-and-contravariance-in-c)
+- [What are delegates, events, and how do they differ?](#what-are-delegates-events-and-how-do-they-differ)
+- [Describe the difference between readonly and const in C#](#describe-the-difference-between-readonly-and-const-in-c)
+- [What is reflection and what are its use cases and drawbacks?](#what-is-reflection-and-what-are-its-use-cases-and-drawbacks)
+- [Explain the concept of nullable reference types introduced in C# 8.0](#explain-the-concept-of-nullable-reference-types-introduced-in-c-80)
+- [What is the difference between Finalize() and Dispose() methods?](#what-is-the-difference-between-finalize-and-dispose-methods)
+- [What are generics and what are their benefits?](#what-are-generics-and-what-are-their-benefits)
+- [Explain the concept of attributes in C# and provide examples](#explain-the-concept-of-attributes-in-c-and-provide-examples)
+- [What is the difference between `using` statement and `using` declaration?](#what-is-the-difference-between-using-statement-and-using-declaration)
+
+### [Object-Oriented Programming](#object-oriented-programming)
+- [Explain the four pillars of OOP with real-world examples](#explain-the-four-pillars-of-oop-with-real-world-examples)
+- [What is the SOLID principle? Explain each letter with examples](#what-is-the-solid-principle-explain-each-letter-with-examples)
+- [What is the difference between method overloading and method overriding?](#what-is-the-difference-between-method-overloading-and-method-overriding)
+- [Explain the concept of polymorphism with examples](#explain-the-concept-of-polymorphism-with-examples)
+- [What are sealed classes and sealed methods?](#what-are-sealed-classes-and-sealed-methods)
+- [Describe the difference between composition and inheritance](#describe-the-difference-between-composition-and-inheritance)
+- [What is the Liskov Substitution Principle and why is it important?](#what-is-the-liskov-substitution-principle-and-why-is-it-important)
+- [Explain dependency injection and its benefits](#explain-dependency-injection-and-its-benefits)
+- [What are design patterns? Name and explain 5 commonly used patterns](#what-are-design-patterns-name-and-explain-5-commonly-used-patterns)
+- [What is the difference between shallow copy and deep copy?](#what-is-the-difference-between-shallow-copy-and-deep-copy)
+
+### [Asynchronous Programming](#asynchronous-programming)
+- [Explain `async` and `await` keywords in C#](#explain-async-and-await-keywords-in-c)
+- [What is the difference between `Task` and `Thread`?](#what-is-the-difference-between-task-and-thread)
+- [What is `Task.Run()` vs `Task.Factory.StartNew()`?](#what-is-taskrun-vs-taskfactorystartnew)
+- [Explain what `ConfigureAwait(false)` does and when to use it](#explain-what-configureawaitfalse-does-and-when-to-use-it)
+- [What is a deadlock and how can async/await cause it?](#what-is-a-deadlock-and-how-can-asyncawait-cause-it)
+- [Explain the difference between `Task.WhenAll()` and `Task.WhenAny()`](#explain-the-difference-between-taskwhenall-and-taskwhenany)
+- [What is `ValueTask` and when should you use it over `Task`?](#what-is-valuetask-and-when-should-you-use-it-over-task)
+- [How do you handle exceptions in async methods?](#how-do-you-handle-exceptions-in-async-methods)
+- [What is the difference between synchronous and asynchronous programming?](#what-is-the-difference-between-synchronous-and-asynchronous-programming)
+- [Explain the concept of the `SynchronizationContext`](#explain-the-concept-of-the-synchronizationcontext)
+- [What are the best practices for cancellation in async operations using `CancellationToken`?](#what-are-the-best-practices-for-cancellation-in-async-operations-using-cancellationtoken)
+- [How would you implement parallel processing in .NET?](#how-would-you-implement-parallel-processing-in-net)
+- [What is the difference between `async void` and `async Task`?](#what-is-the-difference-between-async-void-and-async-task)
+- [Explain the `IAsyncEnumerable<T>` interface and when to use it](#explain-the-iasyncenumerablet-interface-and-when-to-use-it)
+- [What is the difference between `TaskCompletionSource<T>` and regular `Task<T>`?](#what-is-the-difference-between-taskcompletionsourcet-and-regular-taskt)
+- [How do you handle timeouts in async operations?](#how-do-you-handle-timeouts-in-async-operations)
+- [What is the difference between `Task.Run()` and `Task.Factory.StartNew()`?](#what-is-the-difference-between-taskrun-and-taskfactorystartnew)
+- [Explain the concept of async streams and `IAsyncDisposable`](#explain-the-concept-of-async-streams-and-iasyncdisposable)
+
+### [ASP.NET Core](#aspnet-core)
+- [Explain the middleware pipeline in ASP.NET Core](#explain-the-middleware-pipeline-in-aspnet-core)
+- [What is the difference between ASP.NET and ASP.NET Core?](#what-is-the-difference-between-aspnet-and-aspnet-core)
+- [Explain dependency injection in ASP.NET Core (Transient, Scoped, Singleton)](#explain-dependency-injection-in-aspnet-core-transient-scoped-singleton)
+- [What are action filters and how do you create custom filters?](#what-are-action-filters-and-how-do-you-create-custom-filters)
+- [Explain the difference between `IActionResult`, `ActionResult<T>`, and returning a concrete type](#explain-the-difference-between-iactionresult-actionresultt-and-returning-a-concrete-type)
+- [What is model binding and validation in ASP.NET Core?](#what-is-model-binding-and-validation-in-aspnet-core)
+- [How do you implement authentication and authorization in ASP.NET Core?](#how-do-you-implement-authentication-and-authorization-in-aspnet-core)
+- [Explain the difference between authentication and authorization](#explain-the-difference-between-authentication-and-authorization)
+- [What is JWT and how do you implement JWT authentication?](#what-is-jwt-and-how-do-you-implement-jwt-authentication)
+- [How do you handle CORS in ASP.NET Core?](#how-do-you-handle-cors-in-aspnet-core)
+- [What are the different ways to manage application configuration?](#what-are-the-different-ways-to-manage-application-configuration)
+- [Explain routing in ASP.NET Core (conventional vs attribute routing)](#explain-routing-in-aspnet-core-conventional-vs-attribute-routing)
+- [What is Razor Pages and how does it differ from MVC?](#what-is-razor-pages-and-how-does-it-differ-from-mvc)
+- [How do you implement versioning in Web APIs?](#how-do-you-implement-versioning-in-web-apis)
+- [What are health checks in ASP.NET Core?](#what-are-health-checks-in-aspnet-core)
+
+### [Entity Framework and Database](#entity-framework-and-database)
+- [What is Entity Framework Core and how does it differ from Entity Framework 6?](#what-is-entity-framework-core-and-how-does-it-differ-from-entity-framework-6)
+- [Explain Code First vs Database First approaches](#explain-code-first-vs-database-first-approaches)
+- [What is the difference between eager loading, lazy loading, and explicit loading?](#what-is-the-difference-between-eager-loading-lazy-loading-and-explicit-loading)
+- [What are migration strategies in EF Core?](#what-are-migration-strategies-in-ef-core)
+- [Explain the Unit of Work and Repository patterns](#explain-the-unit-of-work-and-repository-patterns)
+- [What is the N+1 query problem and how do you solve it?](#what-is-the-n1-query-problem-and-how-do-you-solve-it)
+- [How do you optimize Entity Framework queries?](#how-do-you-optimize-entity-framework-queries)
+- [Explain tracking vs no-tracking queries in EF Core](#explain-tracking-vs-no-tracking-queries-in-ef-core)
+- [What are owned entities and table splitting in EF Core?](#what-are-owned-entities-and-table-splitting-in-ef-core)
+- [How do you handle concurrency in Entity Framework?](#how-do-you-handle-concurrency-in-entity-framework)
+- [Explain the difference between `SaveChanges()` and `SaveChangesAsync()`](#explain-the-difference-between-savechanges-and-savechangesasync)
+- [What are shadow properties in EF Core?](#what-are-shadow-properties-in-ef-core)
+
+### [Performance and Memory Management](#performance-and-memory-management)
+- [Explain garbage collection in .NET and its generations](#explain-garbage-collection-in-net-and-its-generations)
+- [What are memory leaks and how do you identify them in .NET?](#what-are-memory-leaks-and-how-do-you-identify-them-in-net)
+- [What is the difference between stack and heap memory?](#what-is-the-difference-between-stack-and-heap-memory)
+- [How would you profile and optimize a .NET application?](#how-would-you-profile-and-optimize-a-net-application)
+- [What is `Span<T>` and `Memory<T>`? When should you use them?](#what-is-spant-and-memoryt-when-should-you-use-them)
+- [Explain object pooling and when to use it](#explain-object-pooling-and-when-to-use-it)
+- [What are the best practices for string concatenation in loops?](#what-are-the-best-practices-for-string-concatenation-in-loops)
+- [How do you reduce memory allocations in performance-critical code?](#how-do-you-reduce-memory-allocations-in-performance-critical-code)
+- [What is the Large Object Heap (LOH)?](#what-is-the-large-object-heap-loh)
+- [Explain the concept of weak references](#explain-the-concept-of-weak-references)
+
+### [LINQ and Collections](#linq-and-collections)
+- [What is LINQ and what are its advantages?](#what-is-linq-and-what-are-its-advantages)
+- [Explain the difference between LINQ query syntax and method syntax](#explain-the-difference-between-linq-query-syntax-and-method-syntax)
+- [What is the difference between `First()`, `FirstOrDefault()`, `Single()`, and `SingleOrDefault()`?](#what-is-the-difference-between-first-firstordefault-single-and-singleordefault)
+- [Explain deferred execution in LINQ](#explain-deferred-execution-in-linq)
+- [What is the difference between `Select()` and `SelectMany()`?](#what-is-the-difference-between-select-and-selectmany)
+- [How do you optimize LINQ queries?](#how-do-you-optimize-linq-queries)
+- [What are the differences between `List<T>`, `HashSet<T>`, and `Dictionary<TKey, TValue>`?](#what-are-the-differences-between-listt-hashsett-and-dictionarytkey-tvalue)
+- [When would you use `ConcurrentDictionary` over `Dictionary`?](#when-would-you-use-concurrentdictionary-over-dictionary)
+- [Explain `GroupBy()` and `Join()` operations in LINQ](#explain-groupby-and-join-operations-in-linq)
+- [What is the difference between `Where().Select()` and `Select().Where()`?](#what-is-the-difference-between-whereselect-and-selectwhere)
+
+### [Testing](#testing)
+- [What is unit testing and why is it important?](#what-is-unit-testing-and-why-is-it-important)
+- [Explain the AAA pattern (Arrange, Act, Assert)](#explain-the-aaa-pattern-arrange-act-assert)
+- [What is the difference between mocking, stubbing, and faking?](#what-is-the-difference-between-mocking-stubbing-and-faking)
+- [What testing frameworks have you used in .NET (xUnit, NUnit, MSTest)?](#what-testing-frameworks-have-you-used-in-net-xunit-nunit-mstest)
+- [How do you write testable code?](#how-do-you-write-testable-code)
+- [What is TDD (Test-Driven Development)?](#what-is-tdd-test-driven-development)
+- [Explain integration testing vs unit testing](#explain-integration-testing-vs-unit-testing)
+- [What is code coverage and what is a good coverage percentage?](#what-is-code-coverage-and-what-is-a-good-coverage-percentage)
+
+### [Microservices and Architecture](#microservices-and-architecture)
+- [What are microservices and what are their advantages and disadvantages?](#what-are-microservices-and-what-are-their-advantages-and-disadvantages)
+- [Explain the difference between monolithic and microservices architecture](#explain-the-difference-between-monolithic-and-microservices-architecture)
+- [What is API Gateway pattern?](#what-is-api-gateway-pattern)
+- [How do you handle inter-service communication in microservices?](#how-do-you-handle-inter-service-communication-in-microservices)
+- [What is the Circuit Breaker pattern?](#what-is-the-circuit-breaker-pattern)
+- [Explain eventual consistency in distributed systems](#explain-eventual-consistency-in-distributed-systems)
+- [What is the Saga pattern for distributed transactions?](#what-is-the-saga-pattern-for-distributed-transactions)
+- [How do you implement service discovery?](#how-do-you-implement-service-discovery)
+- [What are containers and how do they relate to microservices?](#what-are-containers-and-how-do-they-relate-to-microservices)
+- [Explain the strangler pattern for migrating to microservices](#explain-the-strangler-pattern-for-migrating-to-microservices)
+
+### [Security](#security)
+- [What is SQL injection and how do you prevent it?](#what-is-sql-injection-and-how-do-you-prevent-it)
+- [Explain Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF)](#explain-cross-site-scripting-xss-and-cross-site-request-forgery-csrf)
+- [What are the best practices for storing passwords?](#what-are-the-best-practices-for-storing-passwords)
+- [How do you implement OAuth 2.0 and OpenID Connect?](#how-do-you-implement-oauth-20-and-openid-connect)
+- [What is the principle of least privilege?](#what-is-the-principle-of-least-privilege)
+- [How do you secure sensitive data in configuration files?](#how-do-you-secure-sensitive-data-in-configuration-files)
+- [Explain the importance of HTTPS and how to implement it](#explain-the-importance-of-https-and-how-to-implement-it)
+- [What are the OWASP Top 10 security risks?](#what-are-the-owasp-top-10-security-risks)
+
+### [DevOps and CI/CD](#devops-and-cicd)
+- [What is CI/CD and why is it important?](#what-is-cicd-and-why-is-it-important)
+- [Have you worked with Docker? Explain containerization](#have-you-worked-with-docker-explain-containerization)
+- [What is Kubernetes and what problems does it solve?](#what-is-kubernetes-and-what-problems-does-it-solve)
+- [Explain the concept of Infrastructure as Code](#explain-the-concept-of-infrastructure-as-code)
+- [What Azure/AWS services have you worked with for .NET applications?](#what-azureaws-services-have-you-worked-with-for-net-applications)
+
+### [General and Behavioral](#general-and-behavioral)
+- [How do you stay updated with the latest .NET technologies?](#how-do-you-stay-updated-with-the-latest-net-technologies)
+- [Describe a challenging bug you've encountered and how you resolved it](#describe-a-challenging-bug-youve-encountered-and-how-you-resolved-it)
+- [How do you handle technical debt in a project?](#how-do-you-handle-technical-debt-in-a-project)
+- [Explain your code review process and what you look for](#explain-your-code-review-process-and-what-you-look-for)
+- [How do you mentor junior developers on your team?](#how-do-you-mentor-junior-developers-on-your-team)
+
+---
+
 ## C# and .NET Fundamentals
 
 ### Explain the difference between value types and reference types in C#.
@@ -2009,8 +2163,6 @@ public void Dispose()
 
 ---
 
-
-## Object-Oriented Programming (10 questions)
 
 ## Object-Oriented Programming
 
@@ -4267,7 +4419,7 @@ public class PersonSerializable
 | Implementation | Simple (MemberwiseClone) | Complex (manual or serialization) |
 ---
 
-## Asynchronous Programming (12 questions)
+## Asynchronous Programming
 
 ### Explain `async` and `await` keywords in C#.
 
@@ -6243,7 +6395,7 @@ public async Task ProcessPipelineAsync(List items)
    - Measure and optimize based on actual workload
 ---
 
-## ASP.NET Core (15 questions)
+## ASP.NET Core
 
 ### Explain the middleware pipeline in ASP.NET Core
 
@@ -7534,7 +7686,7 @@ app.MapHealthChecksUI();
 ```
 ---
 
-## Entity Framework and Database (12 questions)
+## Entity Framework and Database
 
 ### What is Entity Framework Core and how does it differ from Entity Framework 6?
 
@@ -9076,7 +9228,7 @@ Entity Framework Core provides a powerful and flexible ORM solution for .NET app
 Master these concepts to build efficient, maintainable, and scalable applications with Entity Framework Core!
 ---
 
-## Performance and Memory Management (10 questions)
+## Performance and Memory Management
 
 ### Explain garbage collection in .NET and its generations.
 
@@ -10528,7 +10680,7 @@ else
 - Building object pools with automatic cleanup
 ---
 
-## LINQ and Collections (10 questions)
+## LINQ and Collections
 
 ### What is LINQ and what are its advantages?
 
@@ -11241,7 +11393,7 @@ var result = items
 ```
 ---
 
-## Testing (8 questions)
+## Testing
 
 ### What is unit testing and why is it important?
 
@@ -11713,7 +11865,7 @@ public void Add_TwoNumbers_ReturnsCorrectSum()
 
 ---
 
-## Microservices and Architecture (10 questions)
+## Microservices and Architecture
 
 ### What are microservices and what are their advantages and disadvantages?
 
@@ -13491,7 +13643,7 @@ This guide covered essential microservices concepts in .NET Core:
 
 ---
 
-## Security (8 questions)
+## Security
 
 ### What is SQL injection and how do you prevent it?
 
@@ -14671,7 +14823,7 @@ All code examples in this guide follow .NET Core best practices and are producti
 6. Assume breach and minimize impact
 ---
 
-## DevOps and CI/CD (5 questions)
+## DevOps and CI/CD
 
 ### What is CI/CD and why is it important?
 
@@ -15655,7 +15807,7 @@ CI/CD: Azure DevOps / GitHub Actions
 
 ---
 
-## General and Behavioral (5 questions)
+## General and Behavioral
 
 ### How do you stay updated with the latest .NET technologies?
 
