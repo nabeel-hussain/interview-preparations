@@ -157,6 +157,18 @@
 - [Explain the importance of HTTPS and how to implement it](#explain-the-importance-of-https-and-how-to-implement-it)
 - [What are the OWASP Top 10 security risks?](#what-are-the-owasp-top-10-security-risks)
 
+### [Domain-Driven Design and Clean Architecture](#domain-driven-design-and-clean-architecture)
+- [What is Domain-Driven Design (DDD) and what are its core principles?](#what-is-domain-driven-design-ddd-and-what-are-its-core-principles)
+- [Explain the difference between Domain, Application, Infrastructure, and Presentation layers in Clean Architecture](#explain-the-difference-between-domain-application-infrastructure-and-presentation-layers-in-clean-architecture)
+- [What are the main building blocks of DDD (Entities, Value Objects, Aggregates, Domain Services)?](#what-are-the-main-building-blocks-of-ddd-entities-value-objects-aggregates-domain-services)
+- [What is the difference between Entities and Value Objects in DDD?](#what-is-the-difference-between-entities-and-value-objects-in-ddd)
+- [Explain the concept of Aggregates in DDD and how they maintain consistency](#explain-the-concept-of-aggregates-in-ddd-and-how-they-maintain-consistency)
+- [What are Domain Services and when should you use them?](#what-are-domain-services-and-when-should-you-use-them)
+- [What are Domain Events and how do you implement them in .NET?](#what-are-domain-events-and-how-do-you-implement-them-in-net)
+- [What is the difference between Domain Models and Data Transfer Objects (DTOs)?](#what-is-the-difference-between-domain-models-and-data-transfer-objects-dtos)
+- [How do you implement the CQRS (Command Query Responsibility Segregation) pattern?](#how-do-you-implement-the-cqrs-command-query-responsibility-segregation-pattern)
+- [What is Event Sourcing and how does it relate to DDD?](#what-is-event-sourcing-and-how-does-it-relate-to-ddd)
+
 ### [DevOps and CI/CD](#devops-and-cicd)
 - [What is CI/CD and why is it important?](#what-is-cicd-and-why-is-it-important)
 - [Have you worked with Docker? Explain containerization](#have-you-worked-with-docker-explain-containerization)
@@ -20483,6 +20495,1691 @@ All code examples in this guide follow .NET Core best practices and are producti
 4. Follow the principle of defense in depth
 5. Never trust user input
 6. Assume breach and minimize impact
+---
+
+## Domain-Driven Design and Clean Architecture
+
+### What is Domain-Driven Design (DDD) and what are its core principles?
+
+**Answer:**
+
+Domain-Driven Design (DDD) is a software development approach that focuses on creating software that reflects a deep understanding of the business domain. It emphasizes collaboration between technical and domain experts to build software that accurately models the business.
+
+**Core Principles of DDD:**
+
+1. **Focus on the Domain**
+   - The domain is the heart of the software
+   - Business logic should be the primary concern
+   - Technical concerns are secondary
+
+2. **Ubiquitous Language**
+   - Use the same language throughout the codebase, documentation, and conversations
+   - Terms should be consistent between developers and domain experts
+   - Code should reflect business terminology
+
+3. **Model-Driven Design**
+   - The code should be a direct reflection of the domain model
+   - Changes in understanding should lead to changes in the code
+   - The model should evolve with business understanding
+
+**Example of Ubiquitous Language:**
+
+```csharp
+// ❌ Technical language
+public class UserAccount
+{
+    public int Id { get; set; }
+    public string Username { get; set; }
+    public bool IsActive { get; set; }
+}
+
+// ✅ Domain language
+public class Customer
+{
+    public CustomerId Id { get; set; }
+    public CustomerName Name { get; set; }
+    public CustomerStatus Status { get; set; }
+}
+
+public enum CustomerStatus
+{
+    Active,
+    Suspended,
+    Closed
+}
+```
+
+**Strategic Design Patterns:**
+
+1. **Bounded Contexts**
+   - Define clear boundaries around models
+   - Each context has its own ubiquitous language
+   - Models can be different in different contexts
+
+```csharp
+// E-commerce context
+public class Product
+{
+    public ProductId Id { get; set; }
+    public ProductName Name { get; set; }
+    public Money Price { get; set; }
+    public ProductCategory Category { get; set; }
+}
+
+// Inventory context
+public class InventoryItem
+{
+    public InventoryItemId Id { get; set; }
+    public string SKU { get; set; }
+    public int QuantityOnHand { get; set; }
+    public int ReorderLevel { get; set; }
+}
+```
+
+2. **Context Mapping**
+   - Define relationships between bounded contexts
+   - Shared Kernel, Customer-Supplier, Conformist, Anti-Corruption Layer
+
+**Tactical Design Patterns:**
+
+1. **Entities**
+   - Objects with identity that persists over time
+   - Identity is more important than attributes
+
+```csharp
+public class Order : Entity<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    private readonly List<OrderItem> _items = new();
+    
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        // Business logic for adding items
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        _items.Add(new OrderItem(productId, quantity, unitPrice));
+    }
+}
+```
+
+2. **Value Objects**
+   - Objects defined by their attributes, not identity
+   - Immutable and comparable by value
+
+```csharp
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrEmpty(currency)) throw new ArgumentException("Currency is required");
+        
+        Amount = amount;
+        Currency = currency;
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+}
+```
+
+3. **Aggregates**
+   - Cluster of related objects treated as a unit
+   - One aggregate root controls access to the cluster
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    private readonly List<OrderItem> _items = new();
+    
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+}
+```
+
+4. **Domain Services**
+   - Operations that don't naturally belong to entities or value objects
+   - Stateless operations that involve multiple domain objects
+
+```csharp
+public class OrderPricingService : IDomainService
+{
+    public Money CalculateTotal(Order order, ICustomerRepository customerRepository)
+    {
+        var customer = customerRepository.GetById(order.CustomerId);
+        var baseTotal = order.Items.Sum(item => item.Total);
+        
+        // Apply customer-specific discounts
+        var discount = customer.GetDiscountPercentage();
+        var discountAmount = baseTotal * (discount / 100);
+        
+        return baseTotal - discountAmount;
+    }
+}
+```
+
+5. **Domain Events**
+   - Something important that happened in the domain
+   - Used for decoupling and integration
+
+```csharp
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        ConfirmedAt = DateTime.UtcNow;
+    }
+}
+
+// Event handler
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IEmailService _emailService;
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent)
+    {
+        await _emailService.SendOrderConfirmationAsync(domainEvent.CustomerId, domainEvent.OrderId);
+    }
+}
+```
+
+**Benefits of DDD:**
+
+1. **Better Communication**: Ubiquitous language improves team communication
+2. **Focused Design**: Clear boundaries prevent complexity
+3. **Business Alignment**: Software reflects business understanding
+4. **Maintainability**: Well-structured domain models are easier to maintain
+5. **Testability**: Clear domain logic is easier to test
+
+**When to Use DDD:**
+
+- Complex business domains
+- Long-lived applications
+- When business logic is the primary concern
+- When you have access to domain experts
+- When the domain is well-understood
+
+**Challenges of DDD:**
+
+- Requires domain expertise
+- Can be overkill for simple applications
+- Initial learning curve
+- Requires discipline to maintain boundaries
+- Can lead to over-engineering if not applied judiciously
+
+---
+
+### Explain the difference between Domain, Application, Infrastructure, and Presentation layers in Clean Architecture.
+
+**Answer:**
+
+Clean Architecture (also known as Onion Architecture or Hexagonal Architecture) organizes code into concentric layers with clear dependencies and responsibilities. Each layer has a specific purpose and follows the Dependency Inversion Principle.
+
+**Layer Structure:**
+
+```
+┌─────────────────────────────────────┐
+│           Presentation              │ ← Controllers, UI, APIs
+├─────────────────────────────────────┤
+│           Application               │ ← Use Cases, Services
+├─────────────────────────────────────┤
+│             Domain                  │ ← Business Logic, Entities
+├─────────────────────────────────────┤
+│          Infrastructure             │ ← Data Access, External Services
+└─────────────────────────────────────┘
+```
+
+**1. Domain Layer (Core)**
+
+The innermost layer containing business logic and rules. It has no dependencies on other layers.
+
+```csharp
+// Domain/Entities/Order.cs
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    private readonly List<OrderItem> _items = new();
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to confirmed order");
+            
+        _items.Add(new OrderItem(productId, quantity, unitPrice));
+    }
+    
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId));
+    }
+}
+
+// Domain/ValueObjects/Money.cs
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
+    }
+}
+
+// Domain/Interfaces/IOrderRepository.cs
+public interface IOrderRepository
+{
+    Task<Order> GetByIdAsync(OrderId id);
+    Task SaveAsync(Order order);
+    Task DeleteAsync(OrderId id);
+}
+```
+
+**2. Application Layer**
+
+Contains use cases and application services. Depends only on the Domain layer.
+
+```csharp
+// Application/UseCases/CreateOrder/CreateOrderCommand.cs
+public record CreateOrderCommand(CustomerId CustomerId, List<OrderItemDto> Items);
+
+// Application/UseCases/CreateOrder/CreateOrderHandler.cs
+public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderId>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IProductRepository _productRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    {
+        var order = new Order(request.CustomerId);
+        
+        foreach (var item in request.Items)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductId);
+            var quantity = new Quantity(item.Quantity);
+            var unitPrice = new Money(item.UnitPrice, "USD");
+            
+            order.AddItem(product.Id, quantity, unitPrice);
+        }
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        return order.Id;
+    }
+}
+
+// Application/Services/OrderApplicationService.cs
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IOrderPricingService _pricingService;
+    
+    public async Task<OrderDto> GetOrderDetailsAsync(OrderId orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        var total = _pricingService.CalculateTotal(order);
+        
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = total.Amount,
+            Items = order.Items.Select(item => new OrderItemDto
+            {
+                ProductId = item.ProductId.Value,
+                Quantity = item.Quantity.Value,
+                UnitPrice = item.UnitPrice.Amount
+            }).ToList()
+        };
+    }
+}
+```
+
+**3. Infrastructure Layer**
+
+Handles external concerns like data persistence, external APIs, and frameworks. Implements interfaces defined in the Domain layer.
+
+```csharp
+// Infrastructure/Data/Repositories/OrderRepository.cs
+public class OrderRepository : IOrderRepository
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task<Order> GetByIdAsync(OrderId id)
+    {
+        var orderEntity = await _context.Orders
+            .Include(o => o.Items)
+            .FirstOrDefaultAsync(o => o.Id == id.Value);
+            
+        if (orderEntity == null)
+            return null;
+            
+        return MapToDomain(orderEntity);
+    }
+    
+    public async Task SaveAsync(Order order)
+    {
+        var orderEntity = MapToEntity(order);
+        
+        if (_context.Entry(orderEntity).State == EntityState.Detached)
+            _context.Orders.Add(orderEntity);
+        else
+            _context.Orders.Update(orderEntity);
+            
+        await _context.SaveChangesAsync();
+    }
+    
+    private Order MapToDomain(OrderEntity entity)
+    {
+        // Mapping logic from entity to domain object
+        return new Order(new OrderId(entity.Id))
+        {
+            CustomerId = new CustomerId(entity.CustomerId),
+            Status = Enum.Parse<OrderStatus>(entity.Status)
+        };
+    }
+}
+
+// Infrastructure/Data/ApplicationDbContext.cs
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<OrderEntity> Orders { get; set; }
+    public DbSet<OrderItemEntity> OrderItems { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+}
+
+// Infrastructure/ExternalServices/EmailService.cs
+public class EmailService : IEmailService
+{
+    private readonly SmtpClient _smtpClient;
+    
+    public async Task SendOrderConfirmationAsync(CustomerId customerId, OrderId orderId)
+    {
+        // Implementation for sending email
+        var message = new MailMessage();
+        // ... email logic
+        await _smtpClient.SendMailAsync(message);
+    }
+}
+```
+
+**4. Presentation Layer**
+
+Handles user interface and external API concerns. Depends on the Application layer.
+
+```csharp
+// Presentation/Controllers/OrdersController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IMediator _mediator;
+    private readonly OrderApplicationService _orderService;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderId>> CreateOrder([FromBody] CreateOrderRequest request)
+    {
+        var command = new CreateOrderCommand(
+            new CustomerId(request.CustomerId),
+            request.Items.Select(item => new OrderItemDto
+            {
+                ProductId = new ProductId(item.ProductId),
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            }).ToList()
+        );
+        
+        var orderId = await _mediator.Send(command);
+        return Ok(orderId);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        var order = await _orderService.GetOrderDetailsAsync(new OrderId(id));
+        return Ok(order);
+    }
+}
+
+// Presentation/Models/CreateOrderRequest.cs
+public class CreateOrderRequest
+{
+    public int CustomerId { get; set; }
+    public List<OrderItemRequest> Items { get; set; }
+}
+
+public class OrderItemRequest
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+}
+```
+
+**Dependency Flow:**
+
+```csharp
+// ✅ Correct: Dependencies point inward
+Presentation → Application → Domain
+Infrastructure → Domain
+
+// ❌ Wrong: Dependencies point outward
+Domain → Application → Presentation
+Domain → Infrastructure
+```
+
+**Key Principles:**
+
+1. **Dependency Inversion**: High-level modules don't depend on low-level modules
+2. **Single Responsibility**: Each layer has one reason to change
+3. **Interface Segregation**: Depend on abstractions, not concretions
+4. **Open/Closed**: Open for extension, closed for modification
+
+**Benefits:**
+
+- **Testability**: Easy to unit test business logic
+- **Maintainability**: Clear separation of concerns
+- **Flexibility**: Easy to change external dependencies
+- **Independence**: Business logic independent of frameworks
+- **Reusability**: Domain logic can be reused across applications
+
+**Project Structure:**
+
+```
+src/
+├── Domain/
+│   ├── Entities/
+│   ├── ValueObjects/
+│   ├── Interfaces/
+│   └── Events/
+├── Application/
+│   ├── UseCases/
+│   ├── Services/
+│   └── DTOs/
+├── Infrastructure/
+│   ├── Data/
+│   ├── ExternalServices/
+│   └── Configuration/
+└── Presentation/
+    ├── Controllers/
+    ├── Models/
+    └── Middleware/
+```
+
+This architecture ensures that business logic remains pure and independent of external concerns, making the system more maintainable and testable.
+
+---
+
+### What are the main building blocks of DDD (Entities, Value Objects, Aggregates, Domain Services)?
+
+**Answer:**
+
+Domain-Driven Design provides several tactical patterns as building blocks to model complex business domains effectively. These patterns help create a rich domain model that accurately represents business concepts.
+
+**1. Entities**
+
+Entities are objects with a distinct identity that persists over time. Their identity is more important than their attributes.
+
+```csharp
+public abstract class Entity<TId> where TId : ValueObject
+{
+    public TId Id { get; protected set; }
+    
+    protected Entity(TId id)
+    {
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+    }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj is not Entity<TId> other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id.Equals(other.Id);
+    }
+    
+    public override int GetHashCode() => Id.GetHashCode();
+}
+
+public class Customer : Entity<CustomerId>
+{
+    public CustomerName Name { get; private set; }
+    public Email Email { get; private set; }
+    public CustomerStatus Status { get; private set; }
+    private readonly List<OrderId> _orderIds = new();
+    
+    public IReadOnlyList<OrderId> OrderIds => _orderIds.AsReadOnly();
+    
+    public Customer(CustomerId id, CustomerName name, Email email) : base(id)
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Email = email ?? throw new ArgumentNullException(nameof(email));
+        Status = CustomerStatus.Active;
+    }
+    
+    public void UpdateEmail(Email newEmail)
+    {
+        if (Status == CustomerStatus.Closed)
+            throw new InvalidOperationException("Cannot update email for closed customer");
+            
+        Email = newEmail;
+    }
+    
+    public void Close()
+    {
+        if (Status == CustomerStatus.Closed)
+            throw new InvalidOperationException("Customer is already closed");
+            
+        Status = CustomerStatus.Closed;
+    }
+    
+    public void AddOrder(OrderId orderId)
+    {
+        if (!_orderIds.Contains(orderId))
+            _orderIds.Add(orderId);
+    }
+}
+```
+
+**2. Value Objects**
+
+Value objects are defined by their attributes rather than identity. They are immutable and compared by value.
+
+```csharp
+public abstract class ValueObject
+{
+    protected abstract IEnumerable<object> GetEqualityComponents();
+    
+    public override bool Equals(object obj)
+    {
+        if (obj == null || obj.GetType() != GetType()) return false;
+        
+        var other = (ValueObject)obj;
+        return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+    }
+    
+    public override int GetHashCode()
+    {
+        return GetEqualityComponents()
+            .Select(x => x?.GetHashCode() ?? 0)
+            .Aggregate((x, y) => x ^ y);
+    }
+}
+
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+    
+    public static Money operator -(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot subtract different currencies");
+            
+        return new Money(left.Amount - right.Amount, left.Currency);
+    }
+    
+    public static Money operator *(Money money, decimal multiplier)
+    {
+        return new Money(money.Amount * multiplier, money.Currency);
+    }
+}
+
+public class Address : ValueObject
+{
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string ZipCode { get; }
+    public string Country { get; }
+    
+    public Address(string street, string city, string state, string zipCode, string country)
+    {
+        Street = street ?? throw new ArgumentNullException(nameof(street));
+        City = city ?? throw new ArgumentNullException(nameof(city));
+        State = state ?? throw new ArgumentNullException(nameof(state));
+        ZipCode = zipCode ?? throw new ArgumentNullException(nameof(zipCode));
+        Country = country ?? throw new ArgumentNullException(nameof(country));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Street;
+        yield return City;
+        yield return State;
+        yield return ZipCode;
+        yield return Country;
+    }
+}
+```
+
+**3. Aggregates**
+
+Aggregates are clusters of related objects treated as a unit for data changes. They have one aggregate root that controls access.
+
+```csharp
+public abstract class AggregateRoot<TId> : Entity<TId> where TId : ValueObject
+{
+    private readonly List<DomainEvent> _domainEvents = new();
+    
+    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    
+    protected AggregateRoot(TId id) : base(id) { }
+    
+    protected void AddDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+    
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public Money Total { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId) : base(id)
+    {
+        CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
+        Status = OrderStatus.Draft;
+        CreatedAt = DateTime.UtcNow;
+        Total = new Money(0, "USD");
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void RemoveItem(ProductId productId)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot remove items from a confirmed order");
+            
+        var item = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (item != null)
+        {
+            _items.Remove(item);
+            RecalculateTotal();
+        }
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+public class OrderItem : Entity<OrderItemId>
+{
+    public ProductId ProductId { get; private set; }
+    public Quantity Quantity { get; private set; }
+    public Money UnitPrice { get; private set; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice) 
+        : base(new OrderItemId(Guid.NewGuid()))
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    public void IncreaseQuantity(Quantity additionalQuantity)
+    {
+        Quantity = new Quantity(Quantity.Value + additionalQuantity.Value);
+    }
+    
+    public void UpdateQuantity(Quantity newQuantity)
+    {
+        Quantity = newQuantity ?? throw new ArgumentNullException(nameof(newQuantity));
+    }
+}
+```
+
+**4. Domain Services**
+
+Domain services contain business logic that doesn't naturally belong to entities or value objects.
+
+```csharp
+public interface IDomainService
+{
+}
+
+public class OrderPricingService : IDomainService
+{
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IProductRepository _productRepository;
+    
+    public OrderPricingService(ICustomerRepository customerRepository, IProductRepository productRepository)
+    {
+        _customerRepository = customerRepository;
+        _productRepository = productRepository;
+    }
+    
+    public Money CalculateOrderTotal(Order order)
+    {
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var customer = _customerRepository.GetById(order.CustomerId);
+        
+        // Apply customer-specific discount
+        var discountPercentage = GetCustomerDiscountPercentage(customer);
+        var discountAmount = baseTotal * (discountPercentage / 100);
+        
+        // Apply bulk order discount
+        var bulkDiscount = CalculateBulkDiscount(order.Items.Count());
+        var bulkDiscountAmount = baseTotal * (bulkDiscount / 100);
+        
+        var totalDiscount = discountAmount + bulkDiscountAmount;
+        return baseTotal - totalDiscount;
+    }
+    
+    private decimal GetCustomerDiscountPercentage(Customer customer)
+    {
+        return customer.Status switch
+        {
+            CustomerStatus.VIP => 15m,
+            CustomerStatus.Premium => 10m,
+            CustomerStatus.Regular => 5m,
+            _ => 0m
+        };
+    }
+    
+    private decimal CalculateBulkDiscount(int itemCount)
+    {
+        return itemCount switch
+        {
+            >= 20 => 10m,
+            >= 10 => 5m,
+            _ => 0m
+        };
+    }
+}
+
+public class OrderValidationService : IDomainService
+{
+    public ValidationResult ValidateOrder(Order order, Customer customer)
+    {
+        var errors = new List<string>();
+        
+        // Check customer status
+        if (customer.Status == CustomerStatus.Suspended)
+            errors.Add("Customer account is suspended");
+            
+        // Check order limits
+        if (order.Total.Amount > customer.CreditLimit)
+            errors.Add("Order total exceeds customer credit limit");
+            
+        // Check product availability
+        foreach (var item in order.Items)
+        {
+            if (!IsProductAvailable(item.ProductId, item.Quantity))
+                errors.Add($"Product {item.ProductId} is not available in requested quantity");
+        }
+        
+        return new ValidationResult(errors);
+    }
+    
+    private bool IsProductAvailable(ProductId productId, Quantity quantity)
+    {
+        // Implementation would check inventory
+        return true; // Simplified for example
+    }
+}
+
+public class ValidationResult
+{
+    public bool IsValid => !Errors.Any();
+    public List<string> Errors { get; }
+    
+    public ValidationResult(List<string> errors)
+    {
+        Errors = errors ?? new List<string>();
+    }
+}
+```
+
+**Key Characteristics:**
+
+| Building Block | Identity | Mutability | Lifecycle | Responsibility |
+|----------------|----------|------------|-----------|----------------|
+| **Entity** | Has identity | Mutable | Long-lived | Business logic with identity |
+| **Value Object** | No identity | Immutable | Short-lived | Encapsulate values |
+| **Aggregate** | Has identity | Mutable | Long-lived | Consistency boundary |
+| **Domain Service** | No identity | Stateless | Per operation | Cross-cutting business logic |
+
+**Best Practices:**
+
+1. **Entities**: Focus on identity and business rules
+2. **Value Objects**: Make them immutable and comparable
+3. **Aggregates**: Keep them small and focused
+4. **Domain Services**: Use sparingly, prefer methods on entities
+5. **Consistency**: Maintain invariants within aggregates
+6. **Encapsulation**: Hide internal state and expose behavior
+
+These building blocks work together to create a rich, expressive domain model that accurately represents business concepts and rules.
+
+---
+
+### What is the difference between Entities and Value Objects in DDD?
+
+**Answer:**
+
+Entities and Value Objects are fundamental building blocks in Domain-Driven Design, but they serve different purposes and have distinct characteristics. Understanding their differences is crucial for creating effective domain models.
+
+**Key Differences:**
+
+| Aspect | Entity | Value Object |
+|--------|--------|--------------|
+| **Identity** | Has unique identity | No identity, defined by attributes |
+| **Equality** | Compared by identity | Compared by value |
+| **Mutability** | Mutable | Immutable |
+| **Lifecycle** | Long-lived, persists over time | Short-lived, can be recreated |
+| **Tracking** | Tracked by ID | Not tracked individually |
+
+**1. Entities - Identity Matters**
+
+Entities are objects with a distinct identity that persists over time. Their identity is more important than their attributes.
+
+```csharp
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    public Customer(CustomerId id, string name, string email)
+    {
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Email = email ?? throw new ArgumentNullException(nameof(email));
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    public void UpdateEmail(string newEmail)
+    {
+        Email = newEmail ?? throw new ArgumentNullException(nameof(newEmail));
+    }
+    
+    public void ChangeName(string newName)
+    {
+        Name = newName ?? throw new ArgumentNullException(nameof(newName));
+    }
+    
+    // Identity-based equality
+    public override bool Equals(object obj)
+    {
+        if (obj is not Customer other) return false;
+        return Id.Equals(other.Id);
+    }
+    
+    public override int GetHashCode() => Id.GetHashCode();
+}
+
+// Usage
+var customer1 = new Customer(new CustomerId(1), "John Doe", "john@example.com");
+var customer2 = new Customer(new CustomerId(1), "Jane Smith", "jane@example.com");
+
+// These are considered the same entity (same ID)
+Console.WriteLine(customer1.Equals(customer2)); // True
+Console.WriteLine(customer1 == customer2); // True (if operator overloaded)
+```
+
+**2. Value Objects - Value Matters**
+
+Value objects are defined by their attributes rather than identity. They are immutable and compared by value.
+
+```csharp
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    // Value-based equality
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+    
+    public static Money operator *(Money money, decimal multiplier)
+    {
+        return new Money(money.Amount * multiplier, money.Currency);
+    }
+}
+
+public class Address : ValueObject
+{
+    public string Street { get; }
+    public string City { get; }
+    public string State { get; }
+    public string ZipCode { get; }
+    public string Country { get; }
+    
+    public Address(string street, string city, string state, string zipCode, string country)
+    {
+        Street = street ?? throw new ArgumentNullException(nameof(street));
+        City = city ?? throw new ArgumentNullException(nameof(city));
+        State = state ?? throw new ArgumentNullException(nameof(state));
+        ZipCode = zipCode ?? throw new ArgumentNullException(nameof(zipCode));
+        Country = country ?? throw new ArgumentNullException(nameof(country));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Street;
+        yield return City;
+        yield return State;
+        yield return ZipCode;
+        yield return Country;
+    }
+}
+
+// Usage
+var money1 = new Money(100, "USD");
+var money2 = new Money(100, "USD");
+var money3 = new Money(100, "EUR");
+
+Console.WriteLine(money1.Equals(money2)); // True - same value
+Console.WriteLine(money1.Equals(money3)); // False - different currency
+
+// Value objects can be recreated
+var newMoney = new Money(200, "USD"); // Creates new instance
+```
+
+**3. Practical Examples**
+
+**Entity Example - Order:**
+
+```csharp
+public class Order : Entity<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public Money Total { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Address ShippingAddress { get; private set; } // Value Object
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId, Address shippingAddress)
+    {
+        Id = id;
+        CustomerId = customerId;
+        ShippingAddress = shippingAddress; // Value Object
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        // Business logic for adding items
+        var item = new OrderItem(productId, quantity, unitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+    }
+    
+    public void UpdateShippingAddress(Address newAddress)
+    {
+        // Can replace the entire value object
+        ShippingAddress = newAddress;
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+```
+
+**Value Object Example - OrderItem:**
+
+```csharp
+public class OrderItem : ValueObject
+{
+    public ProductId ProductId { get; }
+    public Quantity Quantity { get; }
+    public Money UnitPrice { get; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return ProductId;
+        yield return Quantity;
+        yield return UnitPrice;
+    }
+    
+    public OrderItem WithIncreasedQuantity(Quantity additionalQuantity)
+    {
+        // Return new instance instead of mutating
+        return new OrderItem(ProductId, new Quantity(Quantity.Value + additionalQuantity.Value), UnitPrice);
+    }
+}
+```
+
+**4. When to Use Each**
+
+**Use Entities when:**
+- The object has a distinct identity
+- You need to track the object over time
+- The object can change its attributes but remains the same
+- You need to reference the object from other parts of the system
+
+```csharp
+// Customer is an entity - we track them by ID
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    
+    // Customer can change name/email but remains the same customer
+    public void UpdateProfile(string newName, string newEmail)
+    {
+        Name = newName;
+        Email = newEmail;
+    }
+}
+```
+
+**Use Value Objects when:**
+- The object is defined by its attributes
+- The object is immutable
+- You don't need to track individual instances
+- The object represents a concept or measurement
+
+```csharp
+// Money is a value object - defined by amount and currency
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    // Money is immutable - operations return new instances
+    public Money Add(Money other)
+    {
+        if (Currency != other.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(Amount + other.Amount, Currency);
+    }
+}
+```
+
+**5. Common Mistakes**
+
+**❌ Wrong: Treating Value Objects as Entities**
+
+```csharp
+// BAD: Giving identity to something that should be a value object
+public class Money : Entity<MoneyId>
+{
+    public MoneyId Id { get; set; } // Unnecessary identity
+    public decimal Amount { get; set; }
+    public string Currency { get; set; }
+}
+```
+
+**❌ Wrong: Making Entities Mutable in Wrong Ways**
+
+```csharp
+// BAD: Exposing setters that break encapsulation
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; set; } // Should be private set
+    public string Name { get; set; }   // Should be private set
+    public string Email { get; set; }  // Should be private set
+}
+```
+
+**✅ Correct: Proper Separation**
+
+```csharp
+// GOOD: Entity with proper encapsulation
+public class Customer : Entity<CustomerId>
+{
+    public CustomerId Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    
+    public void UpdateEmail(string newEmail)
+    {
+        // Business logic for email validation
+        if (string.IsNullOrWhiteSpace(newEmail))
+            throw new ArgumentException("Email cannot be empty");
+            
+        Email = newEmail;
+    }
+}
+
+// GOOD: Value object that's immutable
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
+    }
+    
+    // Operations return new instances
+    public Money Add(Money other) => new Money(Amount + other.Amount, Currency);
+}
+```
+
+**Key Takeaways:**
+
+1. **Entities** have identity and are mutable
+2. **Value Objects** have no identity and are immutable
+3. **Entities** are tracked by ID, **Value Objects** by value
+4. **Entities** can change attributes, **Value Objects** are replaced
+5. **Entities** are long-lived, **Value Objects** can be recreated
+6. Use **Entities** for things that have identity, **Value Objects** for concepts and measurements
+
+---
+
+### Explain the concept of Aggregates in DDD and how they maintain consistency.
+
+**Answer:**
+
+Aggregates are one of the most important tactical patterns in Domain-Driven Design. They define consistency boundaries and ensure that business rules are maintained within a cluster of related objects.
+
+**What are Aggregates?**
+
+An Aggregate is a cluster of related objects that are treated as a unit for the purpose of data changes. It has one Aggregate Root that serves as the entry point and controls access to all objects within the aggregate.
+
+**Key Characteristics:**
+
+1. **Consistency Boundary**: All business rules within an aggregate are enforced
+2. **Single Entry Point**: Only the aggregate root can be referenced from outside
+3. **Transactional Consistency**: Changes to an aggregate are atomic
+4. **Invariant Enforcement**: Business rules are maintained within the aggregate
+
+**Example: Order Aggregate**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    // Private collection - only accessible through aggregate root
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId) : base(id)
+    {
+        Id = id;
+        CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    // Business operations that maintain invariants
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        if (quantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void RemoveItem(ProductId productId)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot remove items from a confirmed order");
+            
+        var item = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (item != null)
+        {
+            _items.Remove(item);
+            RecalculateTotal();
+        }
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        // Business rule: Minimum order amount
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+    
+    public void Ship()
+    {
+        if (Status != OrderStatus.Confirmed)
+            throw new InvalidOperationException("Only confirmed orders can be shipped");
+            
+        Status = OrderStatus.Shipped;
+        AddDomainEvent(new OrderShippedEvent(Id, CustomerId));
+    }
+    
+    // Private method to maintain consistency
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+// OrderItem is part of the Order aggregate
+public class OrderItem : Entity<OrderItemId>
+{
+    public ProductId ProductId { get; private set; }
+    public Quantity Quantity { get; private set; }
+    public Money UnitPrice { get; private set; }
+    public Money Total => UnitPrice * Quantity.Value;
+    
+    public OrderItem(ProductId productId, Quantity quantity, Money unitPrice) 
+        : base(new OrderItemId(Guid.NewGuid()))
+    {
+        ProductId = productId ?? throw new ArgumentNullException(nameof(productId));
+        Quantity = quantity ?? throw new ArgumentNullException(nameof(quantity));
+        UnitPrice = unitPrice ?? throw new ArgumentNullException(nameof(unitPrice));
+    }
+    
+    public void IncreaseQuantity(Quantity additionalQuantity)
+    {
+        if (additionalQuantity.Value <= 0)
+            throw new ArgumentException("Additional quantity must be positive");
+            
+        Quantity = new Quantity(Quantity.Value + additionalQuantity.Value);
+    }
+    
+    public void UpdateQuantity(Quantity newQuantity)
+    {
+        if (newQuantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        Quantity = newQuantity;
+    }
+}
+```
+
+**Consistency Rules and Invariants:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    // Invariant: Order total must always equal sum of item totals
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+    
+    // Invariant: Cannot add items to confirmed orders
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+        // ... rest of implementation
+    }
+    
+    // Invariant: Cannot confirm empty orders
+    public void Confirm()
+    {
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+        // ... rest of implementation
+    }
+    
+    // Invariant: Order total must be positive
+    private void ValidateTotal()
+    {
+        if (Total.Amount < 0)
+            throw new InvalidOperationException("Order total cannot be negative");
+    }
+}
+```
+
+**Aggregate Boundaries:**
+
+```csharp
+// ✅ GOOD: Order and OrderItem are in the same aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    private readonly List<OrderItem> _items = new();
+    // OrderItem is part of Order aggregate
+}
+
+// ❌ BAD: Order and Customer in the same aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    public Customer Customer { get; set; } // Customer should be separate aggregate
+}
+
+// ✅ GOOD: Order references Customer by ID
+public class Order : AggregateRoot<OrderId>
+{
+    public CustomerId CustomerId { get; private set; } // Reference to another aggregate
+}
+```
+
+**Repository Pattern with Aggregates:**
+
+```csharp
+public interface IOrderRepository
+{
+    Task<Order> GetByIdAsync(OrderId id);
+    Task SaveAsync(Order order);
+    Task DeleteAsync(OrderId id);
+}
+
+public class OrderRepository : IOrderRepository
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task<Order> GetByIdAsync(OrderId id)
+    {
+        var orderEntity = await _context.Orders
+            .Include(o => o.Items) // Load entire aggregate
+            .FirstOrDefaultAsync(o => o.Id == id.Value);
+            
+        if (orderEntity == null)
+            return null;
+            
+        return MapToDomain(orderEntity);
+    }
+    
+    public async Task SaveAsync(Order order)
+    {
+        var orderEntity = MapToEntity(order);
+        
+        // Save entire aggregate as a unit
+        if (_context.Entry(orderEntity).State == EntityState.Detached)
+            _context.Orders.Add(orderEntity);
+        else
+            _context.Orders.Update(orderEntity);
+            
+        await _context.SaveChangesAsync();
+    }
+    
+    private Order MapToDomain(OrderEntity entity)
+    {
+        var order = new Order(new OrderId(entity.Id), new CustomerId(entity.CustomerId));
+        
+        foreach (var itemEntity in entity.Items)
+        {
+            order.AddItem(
+                new ProductId(itemEntity.ProductId),
+                new Quantity(itemEntity.Quantity),
+                new Money(itemEntity.UnitPrice, "USD")
+            );
+        }
+        
+        return order;
+    }
+}
+```
+
+**Domain Events in Aggregates:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Publish domain event
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    public void Cancel()
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Publish domain event
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId));
+    }
+}
+
+// Domain event
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public Money Total { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId, Money total)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Total = total;
+        ConfirmedAt = DateTime.UtcNow;
+    }
+}
+```
+
+**Best Practices for Aggregates:**
+
+1. **Keep Aggregates Small**: Small aggregates are easier to understand and maintain
+2. **Single Responsibility**: Each aggregate should have one clear responsibility
+3. **Consistency Boundaries**: Define clear boundaries for business rules
+4. **Reference by ID**: Reference other aggregates by ID, not by object
+5. **Eventual Consistency**: Use domain events for cross-aggregate communication
+
+```csharp
+// ✅ GOOD: Small, focused aggregate
+public class Order : AggregateRoot<OrderId>
+{
+    // Only order-related business logic
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice) { }
+    public void Confirm() { }
+    public void Cancel() { }
+}
+
+// ❌ BAD: Large aggregate with too many responsibilities
+public class Order : AggregateRoot<OrderId>
+{
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice) { }
+    public void Confirm() { }
+    public void Cancel() { }
+    public void ProcessPayment() { } // Should be separate aggregate
+    public void UpdateInventory() { } // Should be separate aggregate
+    public void SendNotification() { } // Should be separate aggregate
+}
+```
+
+**Key Benefits:**
+
+1. **Consistency**: Business rules are enforced within the aggregate
+2. **Encapsulation**: Internal state is protected
+3. **Performance**: Can load entire aggregate in one transaction
+4. **Simplicity**: Clear boundaries make the system easier to understand
+5. **Maintainability**: Changes to business rules are localized
+
+Aggregates are essential for maintaining data consistency and enforcing business rules in complex domains. They provide a clear structure for organizing related objects and ensure that the system remains in a valid state at all times.
+
 ---
 
 ## DevOps and CI/CD
