@@ -3,6 +3,9 @@
 ## Table of Contents
 
 ### [C# and .NET Fundamentals](#c-and-net-fundamentals)
+- [What is the CLR, and why is it important?](#what-is-the-clr-and-why-is-it-important)
+- [What is CIL (Common Intermediate Language)?](#what-is-cil-common-intermediate-language)
+- [What is the difference between managed and unmanaged code?](#what-is-the-difference-between-managed-and-unmanaged-code)
 - [Explain the difference between value types and reference types in C#](#explain-the-difference-between-value-types-and-reference-types-in-c)
 - [What is the difference between string and StringBuilder? When would you use each?](#what-is-the-difference-between-string-and-stringbuilder-when-would-you-use-each)
 - [Explain the concepts of boxing and unboxing with performance implications](#explain-the-concepts-of-boxing-and-unboxing-with-performance-implications)
@@ -186,6 +189,773 @@
 ---
 
 ## C# and .NET Fundamentals
+
+### What is the CLR, and why is it important?
+
+**Answer:**
+
+The **CLR (Common Language Runtime)** is the execution engine of the .NET platform that provides a managed execution environment for .NET applications. It's a crucial component that sits between your .NET code and the underlying operating system.
+
+**Key Components of the CLR:**
+
+1. **Just-In-Time (JIT) Compiler**
+   - Converts CIL (Common Intermediate Language) to native machine code
+   - Optimizes code for the specific platform at runtime
+   - Enables cross-platform execution
+
+2. **Garbage Collector (GC)**
+   - Automatically manages memory allocation and deallocation
+   - Prevents memory leaks and dangling pointers
+   - Performs automatic cleanup of unused objects
+
+3. **Type System**
+   - Enforces type safety and prevents type-related errors
+   - Provides metadata about types, methods, and assemblies
+   - Enables reflection and dynamic type inspection
+
+4. **Security System**
+   - Implements Code Access Security (CAS)
+   - Validates code permissions and execution rights
+   - Provides sandboxing capabilities
+
+5. **Exception Handling**
+   - Provides structured exception handling across languages
+   - Ensures consistent error handling behavior
+   - Supports stack unwinding and cleanup
+
+**Why the CLR is Important:**
+
+1. **Language Interoperability**
+   ```csharp
+   // C# code can use VB.NET assemblies and vice versa
+   using VBProject;
+   
+   public class CSharpClass
+   {
+       public void UseVBNetClass()
+       {
+           var vbClass = new VBProject.VBNetClass();
+           vbClass.DoSomething(); // Seamless interop
+       }
+   }
+   ```
+
+2. **Memory Management**
+   ```csharp
+   public class MemoryExample
+   {
+       public void DemonstrateGC()
+       {
+           // No need to manually free memory
+           var largeObject = new byte[1000000];
+           // GC automatically handles cleanup when object goes out of scope
+       }
+   }
+   ```
+
+3. **Type Safety**
+   ```csharp
+   public class TypeSafetyExample
+   {
+       public void DemonstrateTypeSafety()
+       {
+           int number = 42;
+           // string text = number; // Compile-time error - type safety enforced
+           string text = number.ToString(); // Explicit conversion required
+       }
+   }
+   ```
+
+4. **Cross-Platform Execution**
+   ```csharp
+   // Same C# code runs on Windows, Linux, macOS
+   public class CrossPlatformExample
+   {
+       public void PlatformIndependentCode()
+       {
+           Console.WriteLine($"Running on: {Environment.OSVersion}");
+           // Works on any platform with .NET runtime
+       }
+   }
+   ```
+
+5. **Performance Optimization**
+   ```csharp
+   public class PerformanceExample
+   {
+       public void JITOptimization()
+       {
+           // JIT compiler optimizes this code for the specific CPU
+           for (int i = 0; i < 1000000; i++)
+           {
+               // Hot code gets optimized during execution
+               ProcessData(i);
+           }
+       }
+   }
+   ```
+
+**CLR Execution Process:**
+
+1. **Compilation**: Source code → CIL (Common Intermediate Language)
+2. **Loading**: CLR loads assemblies and metadata
+3. **JIT Compilation**: CIL → Native machine code
+4. **Execution**: Native code runs with CLR services
+5. **Garbage Collection**: Automatic memory management
+
+**CLR Versions and Evolution:**
+
+| .NET Version | CLR Version | Key Features |
+|--------------|-------------|--------------|
+| .NET Framework 1.0 | CLR 1.0 | Initial release |
+| .NET Framework 2.0 | CLR 2.0 | Generics, partial classes |
+| .NET Framework 4.0 | CLR 4.0 | Dynamic language runtime |
+| .NET Core 1.0 | CoreCLR | Cross-platform, modular |
+| .NET 5+ | CoreCLR | Unified platform |
+
+**Benefits of CLR:**
+
+1. **Automatic Memory Management**: No manual memory allocation/deallocation
+2. **Exception Safety**: Structured exception handling
+3. **Security**: Code access security and validation
+4. **Performance**: JIT compilation and optimization
+5. **Interoperability**: Language and platform independence
+6. **Reliability**: Type safety and runtime checks
+
+**CLR vs Native Code:**
+
+```csharp
+// CLR Managed Code
+public class ManagedExample
+{
+    public void ManagedMethod()
+    {
+        // Automatic memory management
+        var list = new List<int>();
+        list.Add(1);
+        // GC handles cleanup automatically
+    }
+}
+
+// Unmanaged Code (P/Invoke)
+public class UnmanagedExample
+{
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetCurrentProcess();
+    
+    public void UnmanagedMethod()
+    {
+        // Manual memory management required
+        IntPtr handle = GetCurrentProcess();
+        // Must manually free resources
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **CLR** is the execution engine that runs .NET applications
+2. **Provides** memory management, type safety, and security
+3. **Enables** language interoperability and cross-platform execution
+4. **Optimizes** performance through JIT compilation
+5. **Essential** for the .NET ecosystem and managed code execution
+
+---
+
+### What is CIL (Common Intermediate Language)?
+
+**Answer:**
+
+**CIL (Common Intermediate Language)**, also known as **MSIL (Microsoft Intermediate Language)**, is the intermediate language that all .NET languages compile to. It's a platform-agnostic, object-oriented assembly language that serves as the bridge between high-level .NET languages and the Common Language Runtime (CLR).
+
+**Key Characteristics of CIL:**
+
+1. **Platform Independent**: CIL code can run on any platform with a .NET runtime
+2. **Language Agnostic**: All .NET languages compile to the same CIL format
+3. **Object-Oriented**: Supports classes, inheritance, polymorphism, and interfaces
+4. **Stack-Based**: Uses a stack-based execution model
+5. **Strongly Typed**: Enforces type safety at the intermediate language level
+
+**CIL Compilation Process:**
+
+```
+Source Code (C#) → CIL → Native Code (JIT)
+Source Code (VB.NET) → CIL → Native Code (JIT)
+Source Code (F#) → CIL → Native Code (JIT)
+```
+
+**Example: C# to CIL Translation**
+
+**C# Source Code:**
+```csharp
+public class Calculator
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+    
+    public static void Main()
+    {
+        var calc = new Calculator();
+        int result = calc.Add(5, 3);
+        Console.WriteLine(result);
+    }
+}
+```
+
+**Equivalent CIL Code:**
+```cil
+.class public auto ansi beforefieldinit Calculator
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance int32 Add(int32 a, int32 b) cil managed
+  {
+    .maxstack 2
+    .locals init (int32 V_0)
+    IL_0000: ldarg.1      // Load first argument (a)
+    IL_0001: ldarg.2      // Load second argument (b)
+    IL_0002: add          // Add the two values
+    IL_0003: stloc.0      // Store result in local variable
+    IL_0004: ldloc.0      // Load result
+    IL_0005: ret          // Return the result
+  }
+  
+  .method public hidebysig static void Main() cil managed
+  {
+    .entrypoint
+    .maxstack 2
+    .locals init (class Calculator V_0, int32 V_1)
+    IL_0000: newobj instance void Calculator::.ctor()
+    IL_0005: stloc.0
+    IL_0006: ldloc.0
+    IL_0007: ldc.i4.5
+    IL_0008: ldc.i4.3
+    IL_0009: callvirt instance int32 Calculator::Add(int32, int32)
+    IL_000e: stloc.1
+    IL_000f: ldloc.1
+    IL_0010: call void [mscorlib]System.Console::WriteLine(int32)
+    IL_0015: ret
+  }
+}
+```
+
+**CIL Instruction Types:**
+
+1. **Load Instructions**
+   ```cil
+   ldarg.0    // Load argument 0 (this)
+   ldarg.1    // Load argument 1
+   ldloc.0    // Load local variable 0
+   ldc.i4.5   // Load constant integer 5
+   ```
+
+2. **Store Instructions**
+   ```cil
+   stloc.0    // Store to local variable 0
+   starg.1    // Store to argument 1
+   ```
+
+3. **Arithmetic Instructions**
+   ```cil
+   add        // Addition
+   sub        // Subtraction
+   mul        // Multiplication
+   div        // Division
+   ```
+
+4. **Control Flow Instructions**
+   ```cil
+   br         // Unconditional branch
+   brtrue     // Branch if true
+   brfalse    // Branch if false
+   ret        // Return
+   ```
+
+5. **Object Instructions**
+   ```cil
+   newobj     // Create new object
+   call       // Call method
+   callvirt   // Call virtual method
+   ```
+
+**CIL Metadata:**
+
+CIL assemblies contain rich metadata that describes:
+
+```csharp
+// C# code with attributes
+[Serializable]
+public class Person
+{
+    [Required]
+    public string Name { get; set; }
+    
+    [Range(0, 120)]
+    public int Age { get; set; }
+}
+```
+
+**CIL Metadata includes:**
+- Type definitions and inheritance hierarchies
+- Method signatures and implementations
+- Field definitions and properties
+- Custom attributes and annotations
+- Assembly references and dependencies
+
+**Benefits of CIL:**
+
+1. **Language Interoperability**
+   ```csharp
+   // C# can inherit from VB.NET classes
+   public class CSharpClass : VBProject.VBNetBaseClass
+   {
+       // Seamless inheritance across languages
+   }
+   ```
+
+2. **Platform Independence**
+   ```csharp
+   // Same CIL runs on Windows, Linux, macOS
+   public class CrossPlatformClass
+   {
+       public void PlatformIndependentMethod()
+       {
+           // CIL ensures consistent behavior
+       }
+   }
+   ```
+
+3. **Optimization Opportunities**
+   ```csharp
+   public class OptimizationExample
+   {
+       public void OptimizedMethod()
+       {
+           // JIT compiler can optimize CIL based on runtime conditions
+           for (int i = 0; i < 1000000; i++)
+           {
+               // Hot code gets aggressive optimization
+           }
+       }
+   }
+   ```
+
+4. **Security and Verification**
+   ```csharp
+   public class SecurityExample
+   {
+       public void SafeMethod()
+       {
+           // CIL enforces type safety and security policies
+           object obj = new string("test");
+           // Type safety prevents dangerous operations
+       }
+   }
+   ```
+
+**CIL vs Native Code:**
+
+| Aspect | CIL | Native Code |
+|--------|-----|-------------|
+| **Platform** | Platform-independent | Platform-specific |
+| **Execution** | JIT compiled | Direct execution |
+| **Size** | Larger (intermediate) | Smaller (optimized) |
+| **Startup** | Slower (JIT overhead) | Faster (no compilation) |
+| **Optimization** | Runtime optimization | Compile-time optimization |
+
+**Tools for Working with CIL:**
+
+1. **ILDASM (IL Disassembler)**
+   ```bash
+   ildasm MyAssembly.dll
+   ```
+
+2. **ILASM (IL Assembler)**
+   ```bash
+   ilasm MyAssembly.il
+   ```
+
+3. **Reflection**
+   ```csharp
+   public class CILInspection
+   {
+       public void InspectAssembly()
+       {
+           Assembly assembly = Assembly.LoadFrom("MyAssembly.dll");
+           foreach (Type type in assembly.GetTypes())
+           {
+               Console.WriteLine($"Type: {type.Name}");
+               foreach (MethodInfo method in type.GetMethods())
+               {
+                   Console.WriteLine($"  Method: {method.Name}");
+               }
+           }
+       }
+   }
+   ```
+
+**CIL in Modern .NET:**
+
+```csharp
+// C# 9.0 features compile to CIL
+public record Person(string Name, int Age);
+
+public class ModernCILExample
+{
+    public void DemonstrateModernFeatures()
+    {
+        // Records, pattern matching, etc. all compile to CIL
+        var person = new Person("John", 30);
+        var result = person switch
+        {
+            Person("John", var age) when age > 25 => "Adult John",
+            _ => "Other person"
+        };
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **CIL** is the intermediate language all .NET languages compile to
+2. **Platform-independent** and language-agnostic
+3. **Stack-based** execution model with rich metadata
+4. **Enables** language interoperability and cross-platform execution
+5. **JIT compiled** to native code for optimal performance
+6. **Essential** for understanding .NET's execution model
+
+---
+
+### What is the difference between managed and unmanaged code?
+
+**Answer:**
+
+The distinction between **managed** and **unmanaged** code is fundamental to understanding how .NET applications work and how they interact with system resources and external libraries.
+
+**Managed Code:**
+
+Managed code is code that runs under the control of the **Common Language Runtime (CLR)**. The CLR provides automatic memory management, type safety, and other services.
+
+**Characteristics of Managed Code:**
+
+1. **Automatic Memory Management**
+   ```csharp
+   public class ManagedExample
+   {
+       public void ManagedMethod()
+       {
+           // Memory automatically allocated
+           var list = new List<int>();
+           list.Add(1);
+           list.Add(2);
+           // Memory automatically freed by Garbage Collector
+       }
+   }
+   ```
+
+2. **Type Safety**
+   ```csharp
+   public class TypeSafetyExample
+   {
+       public void SafeOperations()
+       {
+           int number = 42;
+           // string text = number; // Compile-time error
+           string text = number.ToString(); // Explicit conversion
+           
+           // Runtime type checking
+           object obj = "Hello";
+           if (obj is string str)
+           {
+               Console.WriteLine(str.ToUpper()); // Safe operation
+           }
+       }
+   }
+   ```
+
+3. **Exception Handling**
+   ```csharp
+   public class ExceptionHandlingExample
+   {
+       public void ManagedExceptionHandling()
+       {
+           try
+           {
+               int result = Divide(10, 0);
+           }
+           catch (DivideByZeroException ex)
+           {
+               // Structured exception handling
+               Console.WriteLine($"Error: {ex.Message}");
+           }
+       }
+       
+       private int Divide(int a, int b)
+       {
+           return a / b; // Throws managed exception
+       }
+   }
+   ```
+
+4. **Security**
+   ```csharp
+   public class SecurityExample
+   {
+       public void SecureOperation()
+       {
+           // Code Access Security (CAS) applies
+           // CLR validates permissions before execution
+           File.WriteAllText("test.txt", "Hello World");
+       }
+   }
+   ```
+
+**Unmanaged Code:**
+
+Unmanaged code runs directly on the operating system without the CLR's management. It's typically written in languages like C, C++, or assembly.
+
+**Characteristics of Unmanaged Code:**
+
+1. **Manual Memory Management**
+   ```c
+   // C code example
+   #include <stdlib.h>
+   
+   void unmanaged_memory_example() {
+       // Manual memory allocation
+       int* numbers = malloc(100 * sizeof(int));
+       
+       // Use the memory
+       for (int i = 0; i < 100; i++) {
+           numbers[i] = i;
+       }
+       
+       // Manual memory deallocation (must not forget!)
+       free(numbers);
+   }
+   ```
+
+2. **Direct System Access**
+   ```c
+   // C code - direct system calls
+   #include <windows.h>
+   
+   void direct_system_access() {
+       // Direct Windows API call
+       HANDLE file = CreateFile(
+           L"test.txt",
+           GENERIC_WRITE,
+           0,
+           NULL,
+           CREATE_ALWAYS,
+           FILE_ATTRIBUTE_NORMAL,
+           NULL
+       );
+       
+       if (file != INVALID_HANDLE_VALUE) {
+           // Use the file handle
+           CloseHandle(file); // Manual cleanup
+       }
+   }
+   ```
+
+3. **No Automatic Exception Handling**
+   ```c
+   // C code - manual error handling
+   int divide_numbers(int a, int b) {
+       if (b == 0) {
+           // Manual error handling - no exceptions
+           return -1; // Error code
+       }
+       return a / b;
+   }
+   ```
+
+**Interop Between Managed and Unmanaged Code:**
+
+1. **P/Invoke (Platform Invoke)**
+   ```csharp
+   public class PInvokeExample
+   {
+       // Import unmanaged Windows API
+       [DllImport("kernel32.dll", SetLastError = true)]
+       public static extern IntPtr GetCurrentProcess();
+       
+       [DllImport("user32.dll")]
+       public static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+       
+       public void CallUnmanagedCode()
+       {
+           // Call unmanaged function from managed code
+           IntPtr process = GetCurrentProcess();
+           MessageBox(IntPtr.Zero, "Hello from unmanaged code!", "Message", 0);
+       }
+   }
+   ```
+
+2. **COM Interop**
+   ```csharp
+   public class COMInteropExample
+   {
+       public void UseCOMObject()
+       {
+           // Create COM object from managed code
+           var excel = new Microsoft.Office.Interop.Excel.Application();
+           excel.Visible = true;
+           
+           // Use COM object
+           var workbook = excel.Workbooks.Add();
+           var worksheet = workbook.ActiveSheet;
+           worksheet.Cells[1, 1] = "Hello from COM!";
+           
+           // Cleanup (important for COM objects)
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+           System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+       }
+   }
+   ```
+
+3. **C++/CLI (Managed C++)**
+   ```cpp
+   // C++/CLI code - can mix managed and unmanaged
+   #include <iostream>
+   #include <msclr/marshal_cppstd.h>
+   
+   using namespace System;
+   using namespace msclr::interop;
+   
+   public ref class MixedCode
+   {
+   public:
+       void ManagedMethod()
+       {
+           Console::WriteLine("This is managed C++");
+           UnmanagedMethod(); // Call unmanaged code
+       }
+       
+   private:
+       void UnmanagedMethod()
+       {
+           std::cout << "This is unmanaged C++" << std::endl;
+       }
+   };
+   ```
+
+**Performance Comparison:**
+
+| Aspect | Managed Code | Unmanaged Code |
+|--------|--------------|----------------|
+| **Memory Management** | Automatic (GC) | Manual |
+| **Type Safety** | Enforced | Manual |
+| **Exception Handling** | Structured | Manual |
+| **Performance** | Slightly slower | Faster |
+| **Security** | CLR security | Manual |
+| **Development Speed** | Faster | Slower |
+| **Debugging** | Easier | Harder |
+
+**Memory Management Comparison:**
+
+```csharp
+// Managed Code - Automatic
+public class ManagedMemoryExample
+{
+    public void AutomaticMemoryManagement()
+    {
+        var largeArray = new byte[1000000];
+        // GC automatically handles cleanup
+        // No memory leaks (unless circular references)
+    }
+}
+
+// Unmanaged Code - Manual
+public class UnmanagedMemoryExample
+{
+    public void ManualMemoryManagement()
+    {
+        IntPtr ptr = Marshal.AllocHGlobal(1000000);
+        try
+        {
+            // Use the memory
+            Marshal.WriteByte(ptr, 0, 255);
+        }
+        finally
+        {
+            // Must manually free memory
+            Marshal.FreeHGlobal(ptr);
+        }
+    }
+}
+```
+
+**When to Use Each:**
+
+**Use Managed Code when:**
+- Building business applications
+- Rapid development is important
+- Memory safety is critical
+- Cross-platform compatibility needed
+- Team productivity is priority
+
+**Use Unmanaged Code when:**
+- Maximum performance is required
+- Direct hardware access needed
+- Interfacing with legacy systems
+- Real-time systems
+- System-level programming
+
+**Best Practices:**
+
+1. **Prefer Managed Code**
+   ```csharp
+   // Good - Use managed alternatives
+   public class BestPractices
+   {
+       public void PreferManaged()
+       {
+           // Use FileStream instead of P/Invoke
+           using (var file = new FileStream("test.txt", FileMode.Create))
+           {
+               // Managed file operations
+           }
+       }
+   }
+   ```
+
+2. **Minimize Interop**
+   ```csharp
+   // Minimize calls across managed/unmanaged boundary
+   public class InteropOptimization
+   {
+       [DllImport("native.dll")]
+       private static extern void ProcessData(IntPtr data, int count);
+       
+       public void OptimizedInterop()
+       {
+           var data = new byte[1000];
+           // Process in batches to minimize interop calls
+           for (int i = 0; i < data.Length; i += 100)
+           {
+               fixed (byte* ptr = &data[i])
+               {
+                   ProcessData((IntPtr)ptr, 100);
+               }
+           }
+       }
+   }
+   ```
+
+**Key Takeaways:**
+
+1. **Managed Code** runs under CLR control with automatic services
+2. **Unmanaged Code** runs directly on the OS without CLR management
+3. **Managed Code** provides safety, productivity, and cross-platform support
+4. **Unmanaged Code** provides maximum performance and direct system access
+5. **Interop** allows mixing both approaches when needed
+6. **Choose** based on requirements: safety vs performance, productivity vs control
+
+---
 
 ### Explain the difference between value types and reference types in C#.
 
@@ -22179,6 +22949,2231 @@ public class Order : AggregateRoot<OrderId>
 5. **Maintainability**: Changes to business rules are localized
 
 Aggregates are essential for maintaining data consistency and enforcing business rules in complex domains. They provide a clear structure for organizing related objects and ensure that the system remains in a valid state at all times.
+
+---
+
+### What are Domain Services and when should you use them?
+
+**Answer:**
+
+Domain Services are stateless services that contain business logic that doesn't naturally belong to entities or value objects. They represent operations that involve multiple domain objects or complex business rules that span across different aggregates.
+
+**When to Use Domain Services:**
+
+1. **Operations involving multiple aggregates**
+2. **Complex business logic that doesn't fit in entities**
+3. **Domain calculations that require external data**
+4. **Business rules that span multiple domain objects**
+
+**Example: Order Pricing Service**
+
+```csharp
+public interface IDomainService
+{
+}
+
+public class OrderPricingService : IDomainService
+{
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IProductRepository _productRepository;
+    
+    public OrderPricingService(ICustomerRepository customerRepository, IProductRepository productRepository)
+    {
+        _customerRepository = customerRepository;
+        _productRepository = productRepository;
+    }
+    
+    public Money CalculateOrderTotal(Order order)
+    {
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var customer = _customerRepository.GetById(order.CustomerId);
+        
+        // Apply customer-specific discount
+        var customerDiscount = CalculateCustomerDiscount(customer, baseTotal);
+        
+        // Apply bulk order discount
+        var bulkDiscount = CalculateBulkDiscount(order.Items.Count(), baseTotal);
+        
+        // Apply seasonal discount
+        var seasonalDiscount = CalculateSeasonalDiscount(baseTotal);
+        
+        var totalDiscount = customerDiscount + bulkDiscount + seasonalDiscount;
+        return baseTotal - totalDiscount;
+    }
+    
+    private Money CalculateCustomerDiscount(Customer customer, Money baseTotal)
+    {
+        var discountPercentage = customer.Status switch
+        {
+            CustomerStatus.VIP => 15m,
+            CustomerStatus.Premium => 10m,
+            CustomerStatus.Regular => 5m,
+            _ => 0m
+        };
+        
+        return baseTotal * (discountPercentage / 100);
+    }
+    
+    private Money CalculateBulkDiscount(int itemCount, Money baseTotal)
+    {
+        var discountPercentage = itemCount switch
+        {
+            >= 20 => 10m,
+            >= 10 => 5m,
+            _ => 0m
+        };
+        
+        return baseTotal * (discountPercentage / 100);
+    }
+    
+    private Money CalculateSeasonalDiscount(Money baseTotal)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var isHolidaySeason = currentMonth == 12 || currentMonth == 1; // December or January
+        
+        return isHolidaySeason ? baseTotal * 0.05m : new Money(0, baseTotal.Currency);
+    }
+}
+```
+
+**Example: Order Validation Service**
+
+```csharp
+public class OrderValidationService : IDomainService
+{
+    private readonly IInventoryService _inventoryService;
+    private readonly ICustomerService _customerService;
+    
+    public OrderValidationService(IInventoryService inventoryService, ICustomerService customerService)
+    {
+        _inventoryService = inventoryService;
+        _customerService = customerService;
+    }
+    
+    public ValidationResult ValidateOrder(Order order)
+    {
+        var errors = new List<string>();
+        
+        // Validate customer
+        var customerValidation = ValidateCustomer(order.CustomerId);
+        errors.AddRange(customerValidation.Errors);
+        
+        // Validate inventory
+        var inventoryValidation = ValidateInventory(order.Items);
+        errors.AddRange(inventoryValidation.Errors);
+        
+        // Validate business rules
+        var businessRuleValidation = ValidateBusinessRules(order);
+        errors.AddRange(businessRuleValidation.Errors);
+        
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateCustomer(CustomerId customerId)
+    {
+        var customer = _customerService.GetCustomer(customerId);
+        var errors = new List<string>();
+        
+        if (customer == null)
+            errors.Add("Customer not found");
+        else if (customer.Status == CustomerStatus.Suspended)
+            errors.Add("Customer account is suspended");
+        else if (customer.Status == CustomerStatus.Closed)
+            errors.Add("Customer account is closed");
+            
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateInventory(IEnumerable<OrderItem> items)
+    {
+        var errors = new List<string>();
+        
+        foreach (var item in items)
+        {
+            var availableQuantity = _inventoryService.GetAvailableQuantity(item.ProductId);
+            if (availableQuantity < item.Quantity.Value)
+            {
+                errors.Add($"Insufficient inventory for product {item.ProductId}. Available: {availableQuantity}, Requested: {item.Quantity.Value}");
+            }
+        }
+        
+        return new ValidationResult(errors);
+    }
+    
+    private ValidationResult ValidateBusinessRules(Order order)
+    {
+        var errors = new List<string>();
+        
+        // Business rule: Minimum order amount
+        if (order.Total.Amount < 10)
+            errors.Add("Minimum order amount is $10");
+            
+        // Business rule: Maximum items per order
+        if (order.Items.Count() > 50)
+            errors.Add("Maximum 50 items per order");
+            
+        // Business rule: No orders on weekends for certain products
+        if (IsWeekend() && HasRestrictedProducts(order.Items))
+            errors.Add("Orders with restricted products cannot be placed on weekends");
+            
+        return new ValidationResult(errors);
+    }
+    
+    private bool IsWeekend()
+    {
+        var dayOfWeek = DateTime.Now.DayOfWeek;
+        return dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday;
+    }
+    
+    private bool HasRestrictedProducts(IEnumerable<OrderItem> items)
+    {
+        var restrictedProductIds = new[] { "ALCOHOL", "TOBACCO" };
+        return items.Any(item => restrictedProductIds.Contains(item.ProductId.Value));
+    }
+}
+
+public class ValidationResult
+{
+    public bool IsValid => !Errors.Any();
+    public List<string> Errors { get; }
+    
+    public ValidationResult(List<string> errors)
+    {
+        Errors = errors ?? new List<string>();
+    }
+}
+```
+
+**Example: Shipping Cost Calculation Service**
+
+```csharp
+public class ShippingCostCalculationService : IDomainService
+{
+    private readonly IShippingRateRepository _shippingRateRepository;
+    private readonly IAddressValidationService _addressValidationService;
+    
+    public ShippingCostCalculationService(
+        IShippingRateRepository shippingRateRepository,
+        IAddressValidationService addressValidationService)
+    {
+        _shippingRateRepository = shippingRateRepository;
+        _addressValidationService = addressValidationService;
+    }
+    
+    public Money CalculateShippingCost(Order order, Address shippingAddress)
+    {
+        // Validate address
+        if (!_addressValidationService.IsValidAddress(shippingAddress))
+            throw new InvalidOperationException("Invalid shipping address");
+        
+        // Get shipping rates
+        var shippingRates = _shippingRateRepository.GetRatesForAddress(shippingAddress);
+        
+        // Calculate package weight and dimensions
+        var packageInfo = CalculatePackageInfo(order.Items);
+        
+        // Find best shipping option
+        var bestRate = FindBestShippingRate(shippingRates, packageInfo);
+        
+        return bestRate.Cost;
+    }
+    
+    private PackageInfo CalculatePackageInfo(IEnumerable<OrderItem> items)
+    {
+        var totalWeight = items.Sum(item => item.Product.Weight * item.Quantity.Value);
+        var totalVolume = items.Sum(item => item.Product.Volume * item.Quantity.Value);
+        
+        return new PackageInfo(totalWeight, totalVolume);
+    }
+    
+    private ShippingRate FindBestShippingRate(IEnumerable<ShippingRate> rates, PackageInfo packageInfo)
+    {
+        var applicableRates = rates.Where(rate => 
+            rate.MaxWeight >= packageInfo.Weight && 
+            rate.MaxVolume >= packageInfo.Volume);
+            
+        return applicableRates.OrderBy(rate => rate.Cost.Amount).First();
+    }
+}
+
+public class PackageInfo
+{
+    public decimal Weight { get; }
+    public decimal Volume { get; }
+    
+    public PackageInfo(decimal weight, decimal volume)
+    {
+        Weight = weight;
+        Volume = volume;
+    }
+}
+```
+
+**Domain Service vs Application Service:**
+
+```csharp
+// Domain Service - contains business logic
+public class OrderPricingService : IDomainService
+{
+    public Money CalculateOrderTotal(Order order)
+    {
+        // Pure business logic
+        var baseTotal = order.Items.Sum(item => item.Total);
+        var discount = CalculateDiscount(order);
+        return baseTotal - discount;
+    }
+    
+    private Money CalculateDiscount(Order order)
+    {
+        // Complex business rules for discount calculation
+        // This is domain logic, not application logic
+    }
+}
+
+// Application Service - orchestrates domain operations
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly OrderPricingService _pricingService;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> CreateOrderAsync(CreateOrderCommand command)
+    {
+        // Application logic - orchestration
+        var order = new Order(command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(item.ProductId, item.Quantity, item.UnitPrice);
+        }
+        
+        // Use domain service for business logic
+        var total = _pricingService.CalculateOrderTotal(order);
+        order.SetTotal(total);
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        return order.Id;
+    }
+}
+```
+
+**Best Practices for Domain Services:**
+
+1. **Keep them stateless**: Domain services should not maintain state
+2. **Use sparingly**: Prefer methods on entities when possible
+3. **Single responsibility**: Each service should have one clear purpose
+4. **Pure business logic**: Don't mix infrastructure concerns
+5. **Testable**: Should be easy to unit test
+
+```csharp
+// ✅ Good: Stateless domain service
+public class TaxCalculationService : IDomainService
+{
+    public Money CalculateTax(Order order, Address shippingAddress)
+    {
+        // Pure business logic for tax calculation
+        var taxRate = GetTaxRateForAddress(shippingAddress);
+        return order.Total * taxRate;
+    }
+    
+    private decimal GetTaxRateForAddress(Address address)
+    {
+        // Business logic for determining tax rate
+        return address.State switch
+        {
+            "CA" => 0.0875m,
+            "NY" => 0.08m,
+            "TX" => 0.0625m,
+            _ => 0.05m
+        };
+    }
+}
+
+// ❌ Bad: Domain service with infrastructure concerns
+public class BadTaxCalculationService : IDomainService
+{
+    private readonly HttpClient _httpClient; // Infrastructure concern
+    
+    public async Task<Money> CalculateTaxAsync(Order order, Address address)
+    {
+        // This mixes domain logic with infrastructure
+        var response = await _httpClient.GetAsync($"https://tax-api.com/rate/{address.State}");
+        var taxRate = await response.Content.ReadAsStringAsync();
+        return order.Total * decimal.Parse(taxRate);
+    }
+}
+```
+
+**When NOT to Use Domain Services:**
+
+1. **Simple operations**: Use entity methods instead
+2. **Infrastructure concerns**: Use application services
+3. **Cross-cutting concerns**: Use application services or middleware
+4. **Data access**: Use repositories
+
+```csharp
+// ❌ Don't use domain service for simple operations
+public class BadOrderService : IDomainService
+{
+    public void UpdateOrderStatus(Order order, OrderStatus status)
+    {
+        order.UpdateStatus(status); // This should be a method on Order entity
+    }
+}
+
+// ✅ Use entity method instead
+public class Order : AggregateRoot<OrderId>
+{
+    public void UpdateStatus(OrderStatus status)
+    {
+        // Business logic for status update
+        if (Status == OrderStatus.Shipped && status == OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot revert shipped order to draft");
+            
+        Status = status;
+    }
+}
+```
+
+**Key Takeaways:**
+
+1. **Domain Services** contain business logic that doesn't belong to entities or value objects
+2. **Use them sparingly** - prefer entity methods when possible
+3. **Keep them stateless** and focused on business logic
+4. **Don't mix infrastructure concerns** - keep them pure
+5. **Test them thoroughly** as they contain important business rules
+
+---
+
+### What are Domain Events and how do you implement them in .NET?
+
+**Answer:**
+
+Domain Events are a way to capture something important that happened in the domain. They represent business events that other parts of the system might be interested in, enabling loose coupling between different parts of the domain.
+
+**Key Characteristics:**
+
+1. **Business Meaning**: Represent something important that happened
+2. **Immutable**: Once created, they cannot be changed
+3. **Past Tense**: Named as things that have already happened
+4. **Rich Information**: Contain all necessary data for event handlers
+
+**Basic Domain Event Implementation:**
+
+```csharp
+public abstract class DomainEvent
+{
+    public Guid Id { get; }
+    public DateTime OccurredOn { get; }
+    public string EventType { get; }
+    
+    protected DomainEvent()
+    {
+        Id = Guid.NewGuid();
+        OccurredOn = DateTime.UtcNow;
+        EventType = GetType().Name;
+    }
+}
+
+// Example domain events
+public class OrderConfirmedEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public Money Total { get; }
+    public List<OrderItem> Items { get; }
+    
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId, Money total, List<OrderItem> items)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Total = total;
+        Items = items;
+    }
+}
+
+public class OrderCancelledEvent : DomainEvent
+{
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
+    public string Reason { get; }
+    
+    public OrderCancelledEvent(OrderId orderId, CustomerId customerId, string reason)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        Reason = reason;
+    }
+}
+
+public class PaymentProcessedEvent : DomainEvent
+{
+    public PaymentId PaymentId { get; }
+    public OrderId OrderId { get; }
+    public Money Amount { get; }
+    public PaymentStatus Status { get; }
+    
+    public PaymentProcessedEvent(PaymentId paymentId, OrderId orderId, Money amount, PaymentStatus status)
+    {
+        PaymentId = paymentId;
+        OrderId = orderId;
+        Amount = amount;
+        Status = status;
+    }
+}
+```
+
+**Domain Event Handler Interface:**
+
+```csharp
+public interface IDomainEventHandler<in TDomainEvent> where TDomainEvent : DomainEvent
+{
+    Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken = default);
+}
+
+// Generic handler interface
+public interface IDomainEventHandler
+{
+    Task Handle(DomainEvent domainEvent, CancellationToken cancellationToken = default);
+    bool CanHandle(DomainEvent domainEvent);
+}
+```
+
+**Event Handler Implementations:**
+
+```csharp
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IEmailService _emailService;
+    private readonly IInventoryService _inventoryService;
+    private readonly ILogger<OrderConfirmedEventHandler> _logger;
+    
+    public OrderConfirmedEventHandler(
+        IEmailService emailService,
+        IInventoryService inventoryService,
+        ILogger<OrderConfirmedEventHandler> logger)
+    {
+        _emailService = emailService;
+        _inventoryService = inventoryService;
+        _logger = logger;
+    }
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Processing order confirmation for order {OrderId}", domainEvent.OrderId);
+        
+        try
+        {
+            // Send confirmation email
+            await _emailService.SendOrderConfirmationAsync(
+                domainEvent.CustomerId, 
+                domainEvent.OrderId, 
+                domainEvent.Total);
+            
+            // Reserve inventory
+            foreach (var item in domainEvent.Items)
+            {
+                await _inventoryService.ReserveInventoryAsync(
+                    item.ProductId, 
+                    item.Quantity);
+            }
+            
+            _logger.LogInformation("Successfully processed order confirmation for order {OrderId}", domainEvent.OrderId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to process order confirmation for order {OrderId}", domainEvent.OrderId);
+            throw;
+        }
+    }
+}
+
+public class OrderCancelledEventHandler : IDomainEventHandler<OrderCancelledEvent>
+{
+    private readonly IEmailService _emailService;
+    private readonly IInventoryService _inventoryService;
+    private readonly IPaymentService _paymentService;
+    
+    public async Task Handle(OrderCancelledEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        // Send cancellation email
+        await _emailService.SendOrderCancellationAsync(
+            domainEvent.CustomerId, 
+            domainEvent.OrderId, 
+            domainEvent.Reason);
+        
+        // Release reserved inventory
+        // Note: This would need to get the order items from somewhere
+        // In a real implementation, you might include them in the event
+        
+        // Process refund if payment was made
+        await _paymentService.ProcessRefundAsync(domainEvent.OrderId);
+    }
+}
+
+public class PaymentProcessedEventHandler : IDomainEventHandler<PaymentProcessedEvent>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IShippingService _shippingService;
+    
+    public async Task Handle(PaymentProcessedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        if (domainEvent.Status == PaymentStatus.Successful)
+        {
+            // Update order status
+            var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId);
+            order.MarkAsPaid();
+            await _orderRepository.SaveAsync(order);
+            
+            // Initiate shipping
+            await _shippingService.CreateShipmentAsync(domainEvent.OrderId);
+        }
+        else
+        {
+            // Handle failed payment
+            var order = await _orderRepository.GetByIdAsync(domainEvent.OrderId);
+            order.MarkPaymentFailed();
+            await _orderRepository.SaveAsync(order);
+        }
+    }
+}
+```
+
+**Domain Event Dispatcher:**
+
+```csharp
+public interface IDomainEventDispatcher
+{
+    Task DispatchAsync(DomainEvent domainEvent, CancellationToken cancellationToken = default);
+    Task DispatchAsync(IEnumerable<DomainEvent> domainEvents, CancellationToken cancellationToken = default);
+}
+
+public class DomainEventDispatcher : IDomainEventDispatcher
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<DomainEventDispatcher> _logger;
+    
+    public DomainEventDispatcher(IServiceProvider serviceProvider, ILogger<DomainEventDispatcher> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+    
+    public async Task DispatchAsync(DomainEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Dispatching domain event {EventType} with ID {EventId}", 
+            domainEvent.EventType, domainEvent.Id);
+        
+        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
+        var handlers = _serviceProvider.GetServices(handlerType);
+        
+        var tasks = handlers.Select(handler => 
+        {
+            var handleMethod = handler.GetType().GetMethod("Handle");
+            var task = (Task)handleMethod.Invoke(handler, new object[] { domainEvent, cancellationToken });
+            return task;
+        });
+        
+        await Task.WhenAll(tasks);
+        
+        _logger.LogInformation("Successfully dispatched domain event {EventType} with ID {EventId}", 
+            domainEvent.EventType, domainEvent.Id);
+    }
+    
+    public async Task DispatchAsync(IEnumerable<DomainEvent> domainEvents, CancellationToken cancellationToken = default)
+    {
+        var tasks = domainEvents.Select(domainEvent => DispatchAsync(domainEvent, cancellationToken));
+        await Task.WhenAll(tasks);
+    }
+}
+```
+
+**Integration with Aggregates:**
+
+```csharp
+public abstract class AggregateRoot<TId> : Entity<TId> where TId : ValueObject
+{
+    private readonly List<DomainEvent> _domainEvents = new();
+    
+    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    
+    protected void AddDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+    
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Raise domain event
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total, _items.ToList()));
+    }
+    
+    public void Cancel(string reason)
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Raise domain event
+        AddDomainEvent(new OrderCancelledEvent(Id, CustomerId, reason));
+    }
+}
+```
+
+**Event Publishing in Application Layer:**
+
+```csharp
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    private readonly IUnitOfWork _unitOfWork;
+    
+    public async Task<OrderId> ConfirmOrderAsync(OrderId orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+            throw new OrderNotFoundException(orderId);
+            
+        order.Confirm();
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events after successful save
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+        
+        return order.Id;
+    }
+}
+```
+
+**Event Store Implementation:**
+
+```csharp
+public interface IEventStore
+{
+    Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion);
+}
+
+public class EventStore : IEventStore
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion)
+    {
+        var eventEntities = events.Select((domainEvent, index) => new DomainEventEntity
+        {
+            Id = domainEvent.Id,
+            AggregateId = aggregateId,
+            EventType = domainEvent.EventType,
+            EventData = JsonSerializer.Serialize(domainEvent),
+            Version = expectedVersion + index + 1,
+            OccurredOn = domainEvent.OccurredOn
+        });
+        
+        _context.DomainEvents.AddRange(eventEntities);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId)
+    {
+        var eventEntities = await _context.DomainEvents
+            .Where(e => e.AggregateId == aggregateId)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    private DomainEvent DeserializeEvent(DomainEventEntity eventEntity)
+    {
+        var eventType = Type.GetType(eventEntity.EventType);
+        return (DomainEvent)JsonSerializer.Deserialize(eventEntity.EventData, eventType);
+    }
+}
+
+public class DomainEventEntity
+{
+    public Guid Id { get; set; }
+    public Guid AggregateId { get; set; }
+    public string EventType { get; set; }
+    public string EventData { get; set; }
+    public int Version { get; set; }
+    public DateTime OccurredOn { get; set; }
+}
+```
+
+**Best Practices:**
+
+1. **Immutable Events**: Domain events should be immutable
+2. **Rich Information**: Include all necessary data for event handlers
+3. **Past Tense Naming**: Use past tense for event names
+4. **Single Responsibility**: Each event should represent one business occurrence
+5. **Async Handling**: Use async/await for event handlers
+6. **Error Handling**: Implement proper error handling in event handlers
+7. **Idempotency**: Make event handlers idempotent when possible
+
+**Benefits:**
+
+1. **Loose Coupling**: Reduces coupling between different parts of the system
+2. **Extensibility**: Easy to add new event handlers without changing existing code
+3. **Audit Trail**: Provides a complete history of domain events
+4. **Integration**: Enables integration between different bounded contexts
+5. **Testing**: Makes it easier to test business logic in isolation
+
+Domain Events are a powerful pattern for creating loosely coupled, extensible systems that can evolve over time while maintaining business integrity.
+
+---
+
+### What is the difference between Domain Models and Data Transfer Objects (DTOs)?
+
+**Answer:**
+
+Domain Models and Data Transfer Objects (DTOs) serve different purposes in a software system. Understanding their differences is crucial for maintaining clean architecture and proper separation of concerns.
+
+**Key Differences:**
+
+| Aspect | Domain Models | DTOs |
+|--------|---------------|------|
+| **Purpose** | Represent business concepts and rules | Transfer data between layers |
+| **Business Logic** | Contains business logic and rules | No business logic |
+| **Validation** | Domain validation and invariants | Data format validation |
+| **Lifecycle** | Long-lived, persistent | Short-lived, transient |
+| **Coupling** | Tightly coupled to business domain | Loosely coupled, generic |
+| **Immutability** | Can be mutable (entities) or immutable (value objects) | Usually immutable |
+
+**Domain Models:**
+
+Domain models represent business concepts and contain business logic. They are the heart of the domain-driven design.
+
+```csharp
+// Domain Model - Order Entity
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    public Order(OrderId id, CustomerId customerId)
+    {
+        Id = id;
+        CustomerId = customerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+    }
+    
+    // Business logic
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        if (quantity.Value <= 0)
+            throw new ArgumentException("Quantity must be positive");
+            
+        var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
+        if (existingItem != null)
+        {
+            existingItem.IncreaseQuantity(quantity);
+        }
+        else
+        {
+            _items.Add(new OrderItem(productId, quantity, unitPrice));
+        }
+        
+        RecalculateTotal();
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        // Business rule: Minimum order amount
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+}
+
+// Domain Model - Value Object
+public class Money : ValueObject
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+    
+    public Money(decimal amount, string currency)
+    {
+        if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+        if (string.IsNullOrWhiteSpace(currency)) 
+            throw new ArgumentException("Currency is required");
+            
+        Amount = amount;
+        Currency = currency.ToUpperInvariant();
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Amount;
+        yield return Currency;
+    }
+    
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException("Cannot add different currencies");
+            
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+}
+```
+
+**DTOs (Data Transfer Objects):**
+
+DTOs are simple objects used to transfer data between different layers of the application.
+
+```csharp
+// DTO for creating an order
+public class CreateOrderDto
+{
+    public int CustomerId { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderItemDto
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+}
+
+// DTO for order response
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+// DTO for order summary
+public class OrderSummaryDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+```
+
+**Mapping Between Domain Models and DTOs:**
+
+```csharp
+public class OrderMapper
+{
+    public static OrderDto ToDto(Order order)
+    {
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            Currency = order.Total.Currency,
+            CreatedAt = order.CreatedAt,
+            Items = order.Items.Select(ToItemDto).ToList()
+        };
+    }
+    
+    public static OrderItemDto ToItemDto(OrderItem item)
+    {
+        return new OrderItemDto
+        {
+            ProductId = item.ProductId.Value,
+            Quantity = item.Quantity.Value,
+            UnitPrice = item.UnitPrice.Amount
+        };
+    }
+    
+    public static Order ToDomain(CreateOrderDto dto)
+    {
+        var order = new Order(new OrderId(dto.CustomerId), new CustomerId(dto.CustomerId));
+        
+        foreach (var itemDto in dto.Items)
+        {
+            order.AddItem(
+                new ProductId(itemDto.ProductId),
+                new Quantity(itemDto.Quantity),
+                new Money(itemDto.UnitPrice, "USD")
+            );
+        }
+        
+        return order;
+    }
+}
+```
+
+**Usage in Application Layer:**
+
+```csharp
+public class OrderApplicationService
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly OrderMapper _mapper;
+    
+    public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+    {
+        // Convert DTO to domain model
+        var order = OrderMapper.ToDomain(createOrderDto);
+        
+        // Business logic is handled by the domain model
+        order.Confirm();
+        
+        // Save domain model
+        await _orderRepository.SaveAsync(order);
+        
+        // Convert back to DTO for response
+        return OrderMapper.ToDto(order);
+    }
+    
+    public async Task<OrderDto> GetOrderAsync(int orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(new OrderId(orderId));
+        if (order == null)
+            throw new OrderNotFoundException(orderId);
+            
+        return OrderMapper.ToDto(order);
+    }
+    
+    public async Task<List<OrderSummaryDto>> GetOrderSummariesAsync(int customerId)
+    {
+        var orders = await _orderRepository.GetByCustomerIdAsync(new CustomerId(customerId));
+        
+        return orders.Select(order => new OrderSummaryDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            CreatedAt = order.CreatedAt
+        }).ToList();
+    }
+}
+```
+
+**API Controller Usage:**
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly OrderApplicationService _orderService;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] CreateOrderDto createOrderDto)
+    {
+        try
+        {
+            var order = await _orderService.CreateOrderAsync(createOrderDto);
+            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        try
+        {
+            var order = await _orderService.GetOrderAsync(id);
+            return Ok(order);
+        }
+        catch (OrderNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<List<OrderSummaryDto>>> GetCustomerOrders(int customerId)
+    {
+        var orders = await _orderService.GetOrderSummariesAsync(customerId);
+        return Ok(orders);
+    }
+}
+```
+
+**Validation Differences:**
+
+```csharp
+// Domain Model Validation (Business Rules)
+public class Order : AggregateRoot<OrderId>
+{
+    public void Confirm()
+    {
+        // Business rule validation
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        if (Total.Amount < 10)
+            throw new InvalidOperationException("Minimum order amount is $10");
+            
+        Status = OrderStatus.Confirmed;
+    }
+}
+
+// DTO Validation (Data Format)
+public class CreateOrderDto
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Customer ID must be positive")]
+    public int CustomerId { get; set; }
+    
+    [Required]
+    [MinLength(1, ErrorMessage = "Order must have at least one item")]
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderItemDto
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Product ID must be positive")]
+    public int ProductId { get; set; }
+    
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be positive")]
+    public int Quantity { get; set; }
+    
+    [Required]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Unit price must be positive")]
+    public decimal UnitPrice { get; set; }
+}
+```
+
+**When to Use Each:**
+
+**Use Domain Models when:**
+- Representing business concepts
+- Implementing business logic and rules
+- Maintaining business invariants
+- Modeling the core domain
+
+**Use DTOs when:**
+- Transferring data between layers
+- Exposing data through APIs
+- Serializing/deserializing data
+- Reducing coupling between layers
+
+**Common Mistakes:**
+
+```csharp
+// ❌ BAD: DTO with business logic
+public class OrderDto
+{
+    public int Id { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    
+    public void Confirm() // Business logic in DTO
+    {
+        if (Status != "Draft")
+            throw new InvalidOperationException("Cannot confirm non-draft order");
+        Status = "Confirmed";
+    }
+}
+
+// ❌ BAD: Domain model used as DTO
+public class Order : AggregateRoot<OrderId>
+{
+    public int Id { get; set; } // Should be OrderId
+    public int CustomerId { get; set; } // Should be CustomerId
+    public string Status { get; set; } // Should be OrderStatus enum
+    public decimal Total { get; set; } // Should be Money value object
+}
+
+// ✅ GOOD: Proper separation
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    
+    public void Confirm() { /* Business logic */ }
+}
+
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    // No business logic
+}
+```
+
+**Key Takeaways:**
+
+1. **Domain Models** contain business logic and represent business concepts
+2. **DTOs** are simple data containers for transferring data between layers
+3. **Domain Models** are long-lived and persistent
+4. **DTOs** are short-lived and transient
+5. **Use mapping** to convert between domain models and DTOs
+6. **Keep them separate** to maintain clean architecture
+7. **Domain Models** enforce business rules, **DTOs** handle data format validation
+
+---
+
+### How do you implement the CQRS (Command Query Responsibility Segregation) pattern?
+
+**Answer:**
+
+CQRS (Command Query Responsibility Segregation) is a pattern that separates read and write operations by using different models for commands (writes) and queries (reads). This allows each side to be optimized independently.
+
+**Core Concepts:**
+
+1. **Commands**: Operations that change state (writes)
+2. **Queries**: Operations that read data (reads)
+3. **Command Handlers**: Process commands and update the domain
+4. **Query Handlers**: Process queries and return data
+5. **Separate Models**: Different models for commands and queries
+
+**Basic CQRS Implementation:**
+
+```csharp
+// Command and Query base classes
+public interface ICommand
+{
+}
+
+public interface ICommandHandler<in TCommand> where TCommand : ICommand
+{
+    Task Handle(TCommand command, CancellationToken cancellationToken = default);
+}
+
+public interface IQuery<TResult>
+{
+}
+
+public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery<TResult>
+{
+    Task<TResult> Handle(TQuery query, CancellationToken cancellationToken = default);
+}
+
+// Mediator interface
+public interface IMediator
+{
+    Task<TResult> Send<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
+    Task Send(ICommand command, CancellationToken cancellationToken = default);
+}
+```
+
+**Command Implementation:**
+
+```csharp
+// Commands
+public record CreateOrderCommand(CustomerId CustomerId, List<OrderItemDto> Items) : ICommand;
+
+public record ConfirmOrderCommand(OrderId OrderId) : ICommand;
+
+public record CancelOrderCommand(OrderId OrderId, string Reason) : ICommand;
+
+public record AddOrderItemCommand(OrderId OrderId, ProductId ProductId, Quantity Quantity, Money UnitPrice) : ICommand;
+
+// Command Handlers
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(CreateOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = new Order(new OrderId(Guid.NewGuid()), command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(
+                new ProductId(item.ProductId),
+                new Quantity(item.Quantity),
+                new Money(item.UnitPrice, "USD")
+            );
+        }
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+
+public class ConfirmOrderCommandHandler : ICommandHandler<ConfirmOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(ConfirmOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(command.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(command.OrderId);
+            
+        order.Confirm();
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+
+public class CancelOrderCommandHandler : ICommandHandler<CancelOrderCommand>
+{
+    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher _eventDispatcher;
+    
+    public async Task Handle(CancelOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(command.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(command.OrderId);
+            
+        order.Cancel(command.Reason);
+        
+        await _orderRepository.SaveAsync(order);
+        await _unitOfWork.CommitAsync();
+        
+        // Dispatch domain events
+        await _eventDispatcher.DispatchAsync(order.DomainEvents);
+        order.ClearDomainEvents();
+    }
+}
+```
+
+**Query Implementation:**
+
+```csharp
+// Queries
+public record GetOrderQuery(OrderId OrderId) : IQuery<OrderDto>;
+
+public record GetOrdersByCustomerQuery(CustomerId CustomerId) : IQuery<List<OrderSummaryDto>>;
+
+public record GetOrderHistoryQuery(OrderId OrderId) : IQuery<List<OrderHistoryDto>>;
+
+public record SearchOrdersQuery(string SearchTerm, int Page, int PageSize) : IQuery<SearchOrdersResult>;
+
+// Query DTOs
+public class OrderDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItemDto> Items { get; set; }
+}
+
+public class OrderSummaryDto
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+public class OrderHistoryDto
+{
+    public DateTime Timestamp { get; set; }
+    public string Action { get; set; }
+    public string Description { get; set; }
+}
+
+public class SearchOrdersResult
+{
+    public List<OrderSummaryDto> Orders { get; set; }
+    public int TotalCount { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+}
+
+// Query Handlers
+public class GetOrderQueryHandler : IQueryHandler<GetOrderQuery, OrderDto>
+{
+    private readonly IOrderRepository _orderRepository;
+    
+    public async Task<OrderDto> Handle(GetOrderQuery query, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(query.OrderId);
+        if (order == null)
+            throw new OrderNotFoundException(query.OrderId);
+            
+        return new OrderDto
+        {
+            Id = order.Id.Value,
+            CustomerId = order.CustomerId.Value,
+            Status = order.Status.ToString(),
+            Total = order.Total.Amount,
+            Currency = order.Total.Currency,
+            CreatedAt = order.CreatedAt,
+            Items = order.Items.Select(item => new OrderItemDto
+            {
+                ProductId = item.ProductId.Value,
+                Quantity = item.Quantity.Value,
+                UnitPrice = item.UnitPrice.Amount
+            }).ToList()
+        };
+    }
+}
+
+public class GetOrdersByCustomerQueryHandler : IQueryHandler<GetOrdersByCustomerQuery, List<OrderSummaryDto>>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task<List<OrderSummaryDto>> Handle(GetOrdersByCustomerQuery query, CancellationToken cancellationToken = default)
+    {
+        var orders = await _orderReadRepository.GetByCustomerIdAsync(query.CustomerId);
+        
+        return orders.Select(order => new OrderSummaryDto
+        {
+            Id = order.Id,
+            CustomerId = order.CustomerId,
+            Status = order.Status,
+            Total = order.Total,
+            CreatedAt = order.CreatedAt
+        }).ToList();
+    }
+}
+
+public class SearchOrdersQueryHandler : IQueryHandler<SearchOrdersQuery, SearchOrdersResult>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task<SearchOrdersResult> Handle(SearchOrdersQuery query, CancellationToken cancellationToken = default)
+    {
+        var result = await _orderReadRepository.SearchAsync(query.SearchTerm, query.Page, query.PageSize);
+        
+        return new SearchOrdersResult
+        {
+            Orders = result.Orders.Select(order => new OrderSummaryDto
+            {
+                Id = order.Id,
+                CustomerId = order.CustomerId,
+                Status = order.Status,
+                Total = order.Total,
+                CreatedAt = order.CreatedAt
+            }).ToList(),
+            TotalCount = result.TotalCount,
+            Page = query.Page,
+            PageSize = query.PageSize
+        };
+    }
+}
+```
+
+**Separate Read and Write Models:**
+
+```csharp
+// Write Model (Domain)
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    // Business logic and invariants
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        // Business logic...
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        AddDomainEvent(new OrderConfirmedEvent(Id, CustomerId, Total));
+    }
+}
+
+// Read Model (Optimized for queries)
+public class OrderReadModel
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public string CustomerName { get; set; }
+    public string Status { get; set; }
+    public decimal Total { get; set; }
+    public string Currency { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ConfirmedAt { get; set; }
+    public DateTime? ShippedAt { get; set; }
+    public string ShippingAddress { get; set; }
+    public List<OrderItemReadModel> Items { get; set; }
+}
+
+public class OrderItemReadModel
+{
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal Total { get; set; }
+}
+
+// Read Repository
+public interface IOrderReadRepository
+{
+    Task<OrderReadModel> GetByIdAsync(int orderId);
+    Task<List<OrderReadModel>> GetByCustomerIdAsync(int customerId);
+    Task<SearchResult<OrderReadModel>> SearchAsync(string searchTerm, int page, int pageSize);
+}
+
+public class OrderReadRepository : IOrderReadRepository
+{
+    private readonly ReadDbContext _context;
+    
+    public async Task<OrderReadModel> GetByIdAsync(int orderId)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .Where(o => o.Id == orderId)
+            .Select(o => new OrderReadModel
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                Status = o.Status,
+                Total = o.Total,
+                Currency = o.Currency,
+                CreatedAt = o.CreatedAt,
+                ConfirmedAt = o.ConfirmedAt,
+                ShippedAt = o.ShippedAt,
+                ShippingAddress = o.ShippingAddress,
+                Items = o.Items.Select(item => new OrderItemReadModel
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    Total = item.Total
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+    }
+    
+    public async Task<List<OrderReadModel>> GetByCustomerIdAsync(int customerId)
+    {
+        return await _context.Orders
+            .Where(o => o.CustomerId == customerId)
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new OrderReadModel
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                Status = o.Status,
+                Total = o.Total,
+                Currency = o.Currency,
+                CreatedAt = o.CreatedAt,
+                ConfirmedAt = o.ConfirmedAt,
+                ShippedAt = o.ShippedAt
+            })
+            .ToListAsync();
+    }
+}
+```
+
+**Event-Driven Updates to Read Model:**
+
+```csharp
+// Event handler to update read model
+public class OrderConfirmedEventHandler : IDomainEventHandler<OrderConfirmedEvent>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task Handle(OrderConfirmedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        // Update read model when domain event occurs
+        await _orderReadRepository.UpdateOrderStatusAsync(
+            domainEvent.OrderId.Value, 
+            "Confirmed", 
+            DateTime.UtcNow);
+    }
+}
+
+public class OrderCancelledEventHandler : IDomainEventHandler<OrderCancelledEvent>
+{
+    private readonly IOrderReadRepository _orderReadRepository;
+    
+    public async Task Handle(OrderCancelledEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _orderReadRepository.UpdateOrderStatusAsync(
+            domainEvent.OrderId.Value, 
+            "Cancelled", 
+            DateTime.UtcNow);
+    }
+}
+```
+
+**API Controller Usage:**
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IMediator _mediator;
+    
+    [HttpPost]
+    public async Task<ActionResult<OrderId>> CreateOrder([FromBody] CreateOrderCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpPost("{id}/confirm")]
+    public async Task<ActionResult> ConfirmOrder(int id)
+    {
+        var command = new ConfirmOrderCommand(new OrderId(id));
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpPost("{id}/cancel")]
+    public async Task<ActionResult> CancelOrder(int id, [FromBody] CancelOrderRequest request)
+    {
+        var command = new CancelOrderCommand(new OrderId(id), request.Reason);
+        await _mediator.Send(command);
+        return Ok();
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    {
+        var query = new GetOrderQuery(new OrderId(id));
+        var order = await _mediator.Send(query);
+        return Ok(order);
+    }
+    
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<List<OrderSummaryDto>>> GetCustomerOrders(int customerId)
+    {
+        var query = new GetOrdersByCustomerQuery(new CustomerId(customerId));
+        var orders = await _mediator.Send(query);
+        return Ok(orders);
+    }
+    
+    [HttpGet("search")]
+    public async Task<ActionResult<SearchOrdersResult>> SearchOrders(
+        [FromQuery] string searchTerm, 
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 10)
+    {
+        var query = new SearchOrdersQuery(searchTerm, page, pageSize);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+}
+```
+
+**Benefits of CQRS:**
+
+1. **Separation of Concerns**: Commands and queries are handled separately
+2. **Optimization**: Each side can be optimized independently
+3. **Scalability**: Read and write operations can be scaled separately
+4. **Flexibility**: Different models for different use cases
+5. **Performance**: Read models can be denormalized for better query performance
+6. **Maintainability**: Clear separation makes the code easier to understand and maintain
+
+**When to Use CQRS:**
+
+- Complex domains with different read and write requirements
+- High-performance applications with many reads
+- Systems where read and write models differ significantly
+- Applications that need to scale reads and writes independently
+- Systems with complex reporting requirements
+
+**Best Practices:**
+
+1. **Start Simple**: Begin with a single model and separate when needed
+2. **Event-Driven Updates**: Use domain events to keep read models in sync
+3. **Eventual Consistency**: Accept that read models might be slightly behind
+4. **Proper Error Handling**: Handle failures in command and query processing
+5. **Testing**: Test commands and queries separately
+6. **Documentation**: Document the separation and synchronization strategy
+
+CQRS is a powerful pattern that can significantly improve the performance and maintainability of complex applications when applied appropriately.
+
+---
+
+### What is Event Sourcing and how does it relate to DDD?
+
+**Answer:**
+
+Event Sourcing is a pattern where the state of an application is determined by a sequence of events that have occurred, rather than by the current state alone. It's closely related to Domain-Driven Design and provides a powerful way to capture business events and maintain a complete audit trail.
+
+**Core Concepts:**
+
+1. **Events as Source of Truth**: The event store is the primary source of truth
+2. **Event Store**: Persistent storage for all domain events
+3. **Aggregate Reconstruction**: Rebuild aggregate state by replaying events
+4. **Event Stream**: Chronological sequence of events for an aggregate
+5. **Snapshots**: Periodic snapshots to optimize reconstruction
+
+**Basic Event Sourcing Implementation:**
+
+```csharp
+// Base event class
+public abstract class DomainEvent
+{
+    public Guid Id { get; }
+    public Guid AggregateId { get; }
+    public int Version { get; }
+    public DateTime OccurredOn { get; }
+    public string EventType { get; }
+    
+    protected DomainEvent(Guid aggregateId, int version)
+    {
+        Id = Guid.NewGuid();
+        AggregateId = aggregateId;
+        Version = version;
+        OccurredOn = DateTime.UtcNow;
+        EventType = GetType().Name;
+    }
+}
+
+// Order events
+public class OrderCreatedEvent : DomainEvent
+{
+    public CustomerId CustomerId { get; }
+    public DateTime CreatedAt { get; }
+    
+    public OrderCreatedEvent(Guid aggregateId, int version, CustomerId customerId, DateTime createdAt)
+        : base(aggregateId, version)
+    {
+        CustomerId = customerId;
+        CreatedAt = createdAt;
+    }
+}
+
+public class OrderItemAddedEvent : DomainEvent
+{
+    public ProductId ProductId { get; }
+    public Quantity Quantity { get; }
+    public Money UnitPrice { get; }
+    
+    public OrderItemAddedEvent(Guid aggregateId, int version, ProductId productId, Quantity quantity, Money unitPrice)
+        : base(aggregateId, version)
+    {
+        ProductId = productId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+    }
+}
+
+public class OrderConfirmedEvent : DomainEvent
+{
+    public Money Total { get; }
+    public DateTime ConfirmedAt { get; }
+    
+    public OrderConfirmedEvent(Guid aggregateId, int version, Money total, DateTime confirmedAt)
+        : base(aggregateId, version)
+    {
+        Total = total;
+        ConfirmedAt = confirmedAt;
+    }
+}
+
+public class OrderCancelledEvent : DomainEvent
+{
+    public string Reason { get; }
+    public DateTime CancelledAt { get; }
+    
+    public OrderCancelledEvent(Guid aggregateId, int version, string reason, DateTime cancelledAt)
+        : base(aggregateId, version)
+    {
+        Reason = reason;
+        CancelledAt = cancelledAt;
+    }
+}
+```
+
+**Event-Sourced Aggregate:**
+
+```csharp
+public class Order : AggregateRoot<OrderId>
+{
+    public OrderId Id { get; private set; }
+    public CustomerId CustomerId { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public Money Total { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+    
+    // Constructor for creating new orders
+    public Order(OrderId id, CustomerId customerId)
+    {
+        Id = id;
+        CustomerId = customerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = DateTime.UtcNow;
+        
+        // Raise event
+        RaiseEvent(new OrderCreatedEvent(id.Value, 1, customerId, CreatedAt));
+    }
+    
+    // Constructor for rebuilding from events
+    private Order()
+    {
+        // Used by event sourcing
+    }
+    
+    public void AddItem(ProductId productId, Quantity quantity, Money unitPrice)
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Cannot add items to a confirmed order");
+            
+        var item = new OrderItem(productId, quantity, unitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+        
+        // Raise event
+        RaiseEvent(new OrderItemAddedEvent(Id.Value, Version + 1, productId, quantity, unitPrice));
+    }
+    
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Draft)
+            throw new InvalidOperationException("Order is not in draft status");
+            
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Cannot confirm an empty order");
+            
+        Status = OrderStatus.Confirmed;
+        
+        // Raise event
+        RaiseEvent(new OrderConfirmedEvent(Id.Value, Version + 1, Total, DateTime.UtcNow));
+    }
+    
+    public void Cancel(string reason)
+    {
+        if (Status == OrderStatus.Shipped)
+            throw new InvalidOperationException("Cannot cancel a shipped order");
+            
+        Status = OrderStatus.Cancelled;
+        
+        // Raise event
+        RaiseEvent(new OrderCancelledEvent(Id.Value, Version + 1, reason, DateTime.UtcNow));
+    }
+    
+    private void RecalculateTotal()
+    {
+        Total = _items.Aggregate(new Money(0, "USD"), (sum, item) => sum + item.Total);
+    }
+    
+    // Event application methods
+    private void Apply(OrderCreatedEvent @event)
+    {
+        Id = new OrderId(@event.AggregateId);
+        CustomerId = @event.CustomerId;
+        Status = OrderStatus.Draft;
+        Total = new Money(0, "USD");
+        CreatedAt = @event.CreatedAt;
+    }
+    
+    private void Apply(OrderItemAddedEvent @event)
+    {
+        var item = new OrderItem(@event.ProductId, @event.Quantity, @event.UnitPrice);
+        _items.Add(item);
+        RecalculateTotal();
+    }
+    
+    private void Apply(OrderConfirmedEvent @event)
+    {
+        Status = OrderStatus.Confirmed;
+    }
+    
+    private void Apply(OrderCancelledEvent @event)
+    {
+        Status = OrderStatus.Cancelled;
+    }
+}
+```
+
+**Event Store Interface and Implementation:**
+
+```csharp
+public interface IEventStore
+{
+    Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion);
+    Task<IEnumerable<DomainEvent>> GetEventsAsync(DateTime from, DateTime to);
+}
+
+public class EventStore : IEventStore
+{
+    private readonly EventStoreDbContext _context;
+    private readonly IEventSerializer _eventSerializer;
+    
+    public async Task SaveEventsAsync(Guid aggregateId, IEnumerable<DomainEvent> events, int expectedVersion)
+    {
+        var eventEntities = events.Select((domainEvent, index) => new EventEntity
+        {
+            Id = domainEvent.Id,
+            AggregateId = aggregateId,
+            EventType = domainEvent.EventType,
+            EventData = _eventSerializer.Serialize(domainEvent),
+            Version = expectedVersion + index + 1,
+            OccurredOn = domainEvent.OccurredOn
+        });
+        
+        _context.Events.AddRange(eventEntities);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.AggregateId == aggregateId)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(Guid aggregateId, int fromVersion)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.AggregateId == aggregateId && e.Version > fromVersion)
+            .OrderBy(e => e.Version)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    public async Task<IEnumerable<DomainEvent>> GetEventsAsync(DateTime from, DateTime to)
+    {
+        var eventEntities = await _context.Events
+            .Where(e => e.OccurredOn >= from && e.OccurredOn <= to)
+            .OrderBy(e => e.OccurredOn)
+            .ToListAsync();
+            
+        return eventEntities.Select(DeserializeEvent);
+    }
+    
+    private DomainEvent DeserializeEvent(EventEntity eventEntity)
+    {
+        var eventType = Type.GetType(eventEntity.EventType);
+        return (DomainEvent)_eventSerializer.Deserialize(eventEntity.EventData, eventType);
+    }
+}
+
+public class EventEntity
+{
+    public Guid Id { get; set; }
+    public Guid AggregateId { get; set; }
+    public string EventType { get; set; }
+    public string EventData { get; set; }
+    public int Version { get; set; }
+    public DateTime OccurredOn { get; set; }
+}
+```
+
+**Event-Sourced Repository:**
+
+```csharp
+public interface IEventSourcedRepository<TAggregate> where TAggregate : AggregateRoot
+{
+    Task<TAggregate> GetByIdAsync(Guid id);
+    Task SaveAsync(TAggregate aggregate);
+}
+
+public class EventSourcedOrderRepository : IEventSourcedRepository<Order>
+{
+    private readonly IEventStore _eventStore;
+    private readonly ISnapshotStore _snapshotStore;
+    
+    public async Task<Order> GetByIdAsync(Guid id)
+    {
+        // Try to get from snapshot first
+        var snapshot = await _snapshotStore.GetSnapshotAsync<Order>(id);
+        var fromVersion = 0;
+        
+        if (snapshot != null)
+        {
+            fromVersion = snapshot.Version;
+        }
+        
+        // Get events from the snapshot version
+        var events = await _eventStore.GetEventsAsync(id, fromVersion);
+        
+        // Reconstruct aggregate
+        var order = new Order();
+        
+        // Apply snapshot if available
+        if (snapshot != null)
+        {
+            order.RestoreFromSnapshot(snapshot);
+        }
+        
+        // Apply events
+        foreach (var @event in events)
+        {
+            order.ApplyEvent(@event);
+        }
+        
+        return order;
+    }
+    
+    public async Task SaveAsync(Order aggregate)
+    {
+        var events = aggregate.GetUncommittedEvents();
+        var expectedVersion = aggregate.Version - events.Count();
+        
+        await _eventStore.SaveEventsAsync(aggregate.Id.Value, events, expectedVersion);
+        
+        // Create snapshot if needed
+        if (ShouldCreateSnapshot(aggregate))
+        {
+            var snapshot = aggregate.CreateSnapshot();
+            await _snapshotStore.SaveSnapshotAsync(aggregate.Id.Value, snapshot);
+        }
+        
+        aggregate.MarkEventsAsCommitted();
+    }
+    
+    private bool ShouldCreateSnapshot(Order aggregate)
+    {
+        // Create snapshot every 100 events
+        return aggregate.Version % 100 == 0;
+    }
+}
+```
+
+**Snapshot Implementation:**
+
+```csharp
+public interface ISnapshotStore
+{
+    Task<TSnapshot> GetSnapshotAsync<TSnapshot>(Guid aggregateId) where TSnapshot : class;
+    Task SaveSnapshotAsync<TSnapshot>(Guid aggregateId, TSnapshot snapshot) where TSnapshot : class;
+}
+
+public class OrderSnapshot
+{
+    public Guid AggregateId { get; set; }
+    public int Version { get; set; }
+    public CustomerId CustomerId { get; set; }
+    public OrderStatus Status { get; set; }
+    public Money Total { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<OrderItem> Items { get; set; }
+    public DateTime SnapshotDate { get; set; }
+}
+
+public class Order : AggregateRoot<OrderId>
+{
+    // ... existing code ...
+    
+    public OrderSnapshot CreateSnapshot()
+    {
+        return new OrderSnapshot
+        {
+            AggregateId = Id.Value,
+            Version = Version,
+            CustomerId = CustomerId,
+            Status = Status,
+            Total = Total,
+            CreatedAt = CreatedAt,
+            Items = _items.ToList(),
+            SnapshotDate = DateTime.UtcNow
+        };
+    }
+    
+    public void RestoreFromSnapshot(OrderSnapshot snapshot)
+    {
+        Id = new OrderId(snapshot.AggregateId);
+        CustomerId = snapshot.CustomerId;
+        Status = snapshot.Status;
+        Total = snapshot.Total;
+        CreatedAt = snapshot.CreatedAt;
+        _items.Clear();
+        _items.AddRange(snapshot.Items);
+        Version = snapshot.Version;
+    }
+}
+```
+
+**Event Sourcing with CQRS:**
+
+```csharp
+// Command side - uses event sourcing
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
+{
+    private readonly IEventSourcedRepository<Order> _orderRepository;
+    
+    public async Task Handle(CreateOrderCommand command, CancellationToken cancellationToken = default)
+    {
+        var order = new Order(new OrderId(Guid.NewGuid()), command.CustomerId);
+        
+        foreach (var item in command.Items)
+        {
+            order.AddItem(
+                new ProductId(item.ProductId),
+                new Quantity(item.Quantity),
+                new Money(item.UnitPrice, "USD")
+            );
+        }
+        
+        await _orderRepository.SaveAsync(order);
+    }
+}
+
+// Query side - uses read models updated by events
+public class OrderReadModelUpdater : IDomainEventHandler<OrderCreatedEvent>
+{
+    private readonly IOrderReadRepository _readRepository;
+    
+    public async Task Handle(OrderCreatedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _readRepository.CreateOrderAsync(new OrderReadModel
+        {
+            Id = domainEvent.AggregateId,
+            CustomerId = domainEvent.CustomerId.Value,
+            Status = "Draft",
+            Total = 0,
+            CreatedAt = domainEvent.CreatedAt
+        });
+    }
+}
+
+public class OrderItemAddedEventHandler : IDomainEventHandler<OrderItemAddedEvent>
+{
+    private readonly IOrderReadRepository _readRepository;
+    
+    public async Task Handle(OrderItemAddedEvent domainEvent, CancellationToken cancellationToken = default)
+    {
+        await _readRepository.AddOrderItemAsync(domainEvent.AggregateId, new OrderItemReadModel
+        {
+            ProductId = domainEvent.ProductId.Value,
+            Quantity = domainEvent.Quantity.Value,
+            UnitPrice = domainEvent.UnitPrice.Amount
+        });
+    }
+}
+```
+
+**Benefits of Event Sourcing:**
+
+1. **Complete Audit Trail**: Every change is recorded as an event
+2. **Temporal Queries**: Can query the state at any point in time
+3. **Debugging**: Easy to understand what happened and when
+4. **Compliance**: Meets regulatory requirements for audit trails
+5. **Replay Capability**: Can replay events to rebuild state
+6. **Integration**: Events can be used for integration between systems
+7. **Analytics**: Rich data for business intelligence and analytics
+
+**Challenges of Event Sourcing:**
+
+1. **Complexity**: More complex than traditional CRUD
+2. **Event Schema Evolution**: Need to handle changes to event structure
+3. **Performance**: Rebuilding aggregates from events can be slow
+4. **Storage**: Can require more storage space
+5. **Learning Curve**: Team needs to understand the pattern
+
+**When to Use Event Sourcing:**
+
+- Systems requiring complete audit trails
+- Complex business domains with rich event models
+- Systems where temporal queries are important
+- Applications with compliance requirements
+- Systems that need to replay events for analysis
+- Integration scenarios where events are valuable
+
+**Best Practices:**
+
+1. **Event Design**: Design events to be meaningful and immutable
+2. **Snapshot Strategy**: Use snapshots to optimize performance
+3. **Event Versioning**: Plan for event schema evolution
+4. **Error Handling**: Handle event processing failures gracefully
+5. **Testing**: Test event sourcing thoroughly with event replay
+6. **Documentation**: Document event schemas and processing logic
+
+Event Sourcing is a powerful pattern that provides significant benefits for complex domains, especially when combined with DDD and CQRS. It's particularly valuable for systems that need complete audit trails and temporal querying capabilities.
 
 ---
 
