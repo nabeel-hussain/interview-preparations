@@ -373,6 +373,44 @@ class ValidationError extends Error {
 - Result pattern
 - Global error handling
 
+### 1.18 Event Methods (preventDefault, stopPropagation)
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#212-explain-preventdefault-stoppropagation-and-stopimmediatepropagation-in-event-handlers-when-would-you-use-each)
+
+| Method | Prevents Default | Stops Bubbling | Stops Other Listeners |
+|--------|------------------|----------------|----------------------|
+| `preventDefault()` | ✅ | ❌ | ❌ |
+| `stopPropagation()` | ❌ | ✅ | ❌ |
+| `stopImmediatePropagation()` | ❌ | ✅ | ✅ |
+
+**Common Use Cases:**
+```javascript
+// Form handling
+function handleSubmit(event) {
+  event.preventDefault(); // Prevent page reload
+  // Custom form logic
+}
+
+// Event delegation
+function handleClick(event) {
+  if (event.target.matches('.delete-btn')) {
+    event.stopPropagation(); // Don't trigger parent
+    deleteItem(event.target.dataset.id);
+  }
+}
+
+// Drag and drop
+function handleDrop(event) {
+  event.preventDefault(); // Prevent default drop
+  event.stopPropagation(); // Stop bubbling
+  // Custom drop logic
+}
+```
+
+**When to use:**
+- **preventDefault()**: Custom form handling, keyboard shortcuts, drag/drop
+- **stopPropagation()**: Event delegation, nested click handlers
+- **stopImmediatePropagation()**: Priority event handling, preventing multiple handlers
+
 ---
 
 ## 2. TypeScript Advanced Topics
@@ -1226,6 +1264,7 @@ function Component() {
 - **Async/Await**: Promise-based, try/catch error handling
 - **Web APIs**: Fetch, localStorage, sessionStorage, IndexedDB
 - **DOM**: Event delegation, bubbling/capturing
+- **Event Methods**: preventDefault(), stopPropagation(), stopImmediatePropagation()
 - **Regex**: Pattern matching, validation, string methods
 
 ### TypeScript Essentials

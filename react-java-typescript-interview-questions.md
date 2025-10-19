@@ -2321,6 +2321,300 @@ async function processItems(items) {
 }
 ```
 
+### 2.12. Explain preventDefault, stopPropagation, and stopImmediatePropagation in event handlers. When would you use each?
+
+These are methods available on event objects that control how events behave in the DOM.
+
+**preventDefault():**
+Prevents the default action that the browser would normally take for this event.
+
+```javascript
+// Prevent form submission
+function handleSubmit(event) {
+  event.preventDefault();
+  // Custom form handling logic
+  console.log('Form submitted with custom logic');
+}
+
+// Prevent link navigation
+function handleLinkClick(event) {
+  event.preventDefault();
+  // Custom navigation logic
+  router.push('/custom-route');
+}
+
+// Prevent context menu
+function handleRightClick(event) {
+  event.preventDefault();
+  // Show custom context menu
+  showCustomMenu(event.clientX, event.clientY);
+}
+
+// Prevent text selection
+function handleMouseDown(event) {
+  event.preventDefault();
+  // Custom drag behavior
+  startDragging(event);
+}
+```
+
+**stopPropagation():**
+Stops the event from bubbling up to parent elements.
+
+```javascript
+// Stop event from reaching parent elements
+function handleButtonClick(event) {
+  event.stopPropagation();
+  console.log('Button clicked, parent won\'t receive this event');
+}
+
+// Example with nested elements
+function App() {
+  const handleParentClick = () => {
+    console.log('Parent clicked');
+  };
+  
+  const handleChildClick = (event) => {
+    event.stopPropagation();
+    console.log('Child clicked, parent won\'t be notified');
+  };
+  
+  return (
+    <div onClick={handleParentClick}>
+      <button onClick={handleChildClick}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+**stopImmediatePropagation():**
+Stops the event from bubbling up AND prevents other event listeners on the same element from being called.
+
+```javascript
+// Multiple listeners on same element
+element.addEventListener('click', function(event) {
+  console.log('First listener');
+  event.stopImmediatePropagation();
+  console.log('Second listener will NOT be called');
+});
+
+element.addEventListener('click', function(event) {
+  console.log('Second listener'); // This won't execute
+});
+
+// Practical example - preventing multiple handlers
+function handleFormSubmit(event) {
+  event.stopImmediatePropagation();
+  
+  // Prevent other submit handlers from running
+  if (isSubmitting) {
+    return;
+  }
+  
+  isSubmitting = true;
+  submitForm();
+}
+```
+
+**Comparison Table:**
+
+| Method | Prevents Default Action | Stops Bubbling | Stops Other Listeners |
+|--------|------------------------|----------------|----------------------|
+| `preventDefault()` | ✅ | ❌ | ❌ |
+| `stopPropagation()` | ❌ | ✅ | ❌ |
+| `stopImmediatePropagation()` | ❌ | ✅ | ✅ |
+
+**Common Use Cases:**
+
+1. **Form Handling:**
+```javascript
+function handleFormSubmit(event) {
+  event.preventDefault(); // Prevent page reload
+  
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData.entries());
+  
+  // Custom validation
+  if (!validateForm(data)) {
+    return;
+  }
+  
+  // Submit via AJAX
+  submitForm(data);
+}
+
+// Prevent form submission on Enter key in textarea
+function handleTextareaKeyDown(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    // Custom behavior instead of form submission
+    addNewLine();
+  }
+}
+```
+
+2. **Custom Navigation:**
+```javascript
+function handleNavigation(event) {
+  event.preventDefault();
+  
+  const href = event.target.getAttribute('href');
+  
+  // Check if user is logged in
+  if (!isAuthenticated() && href.startsWith('/protected')) {
+    showLoginModal();
+    return;
+  }
+  
+  // Custom navigation logic
+  navigateTo(href);
+}
+```
+
+3. **Drag and Drop:**
+```javascript
+function handleDragStart(event) {
+  event.preventDefault(); // Prevent default drag behavior
+  
+  const draggedElement = event.target;
+  draggedElement.classList.add('dragging');
+  
+  // Set drag data
+  event.dataTransfer.setData('text/plain', draggedElement.id);
+}
+
+function handleDrop(event) {
+  event.preventDefault(); // Prevent default drop behavior
+  event.stopPropagation(); // Stop bubbling
+  
+  const data = event.dataTransfer.getData('text/plain');
+  const dropZone = event.target;
+  
+  // Custom drop logic
+  moveElement(data, dropZone);
+}
+```
+
+4. **Event Delegation with Selective Handling:**
+```javascript
+// Handle clicks on dynamically added buttons
+document.addEventListener('click', function(event) {
+  if (event.target.matches('.delete-btn')) {
+    event.stopPropagation(); // Don't trigger parent click handlers
+    
+    const itemId = event.target.dataset.itemId;
+    deleteItem(itemId);
+  }
+  
+  if (event.target.matches('.edit-btn')) {
+    event.stopImmediatePropagation(); // Don't trigger other click handlers
+    
+    const itemId = event.target.dataset.itemId;
+    editItem(itemId);
+  }
+});
+```
+
+5. **Keyboard Shortcuts:**
+```javascript
+function handleKeyDown(event) {
+  // Prevent default browser shortcuts
+  if (event.ctrlKey && event.key === 's') {
+    event.preventDefault();
+    saveDocument();
+  }
+  
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeModal();
+  }
+  
+  // Prevent arrow keys from scrolling in certain contexts
+  if (event.target.matches('.no-scroll')) {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      event.preventDefault();
+      // Custom navigation logic
+    }
+  }
+}
+```
+
+6. **File Upload Customization:**
+```javascript
+function handleFileDrop(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  const files = event.dataTransfer.files;
+  
+  // Custom file validation
+  const validFiles = Array.from(files).filter(file => {
+    return file.type.startsWith('image/') && file.size < 5 * 1024 * 1024;
+  });
+  
+  if (validFiles.length !== files.length) {
+    showError('Some files are invalid');
+    return;
+  }
+  
+  uploadFiles(validFiles);
+}
+
+// Prevent default drag behaviors on drop zone
+function handleDragOver(event) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
+}
+```
+
+**Best Practices:**
+
+1. **Use preventDefault() for custom behavior:**
+```javascript
+// ✅ Good - prevent default and implement custom logic
+function handleCustomSubmit(event) {
+  event.preventDefault();
+  // Custom submission logic
+}
+
+// ❌ Bad - prevent default without alternative
+function handleSubmit(event) {
+  event.preventDefault();
+  // No alternative behavior provided
+}
+```
+
+2. **Use stopPropagation() sparingly:**
+```javascript
+// ✅ Good - prevent parent from handling child events
+function handleButtonClick(event) {
+  event.stopPropagation();
+  // Button-specific logic
+}
+
+// ❌ Bad - overuse can break event delegation
+function handleAllClicks(event) {
+  event.stopPropagation(); // Breaks parent event handlers
+}
+```
+
+3. **Use stopImmediatePropagation() for priority handling:**
+```javascript
+// ✅ Good - ensure only one handler runs
+function handlePriorityClick(event) {
+  event.stopImmediatePropagation();
+  // Critical logic that must run first
+}
+```
+
+**Summary:**
+- **preventDefault()**: Prevents browser's default action (form submission, link navigation, etc.)
+- **stopPropagation()**: Stops event from bubbling to parent elements
+- **stopImmediatePropagation()**: Stops bubbling AND prevents other listeners on same element
+- Use them judiciously to implement custom behaviors while maintaining good event handling practices
+
 ---
 
 ## 3. TypeScript Advanced Topics
