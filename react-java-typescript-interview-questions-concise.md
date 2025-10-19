@@ -123,8 +123,32 @@ const boundFunc = func.bind(context);
 | `Promise.allSettled()` | Waits for all to settle | Independent operations |
 | `Promise.any()` | First to resolve, fails if all reject | Fallback strategies |
 
-### 1.6 Garbage Collection
-> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#16-explain-how-garbage-collection-works-in-javascript-what-patterns-can-lead-to-memory-leaks)
+### 1.6 var, let, const Differences
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#16-explain-the-differences-between-var-let-and-const-when-should-you-use-each)
+
+| Feature | var | let | const |
+|---------|-----|-----|-------|
+| Scope | Function-scoped | Block-scoped | Block-scoped |
+| Hoisting | Hoisted + initialized | Hoisted (TDZ) | Hoisted (TDZ) |
+| Re-declaration | ✅ Allowed | ❌ Not allowed | ❌ Not allowed |
+| Re-assignment | ✅ Allowed | ✅ Allowed | ❌ Not allowed |
+
+**When to use:**
+- **const**: Default choice for all variables
+- **let**: When you need to reassign
+- **var**: Avoid in modern JavaScript
+
+```javascript
+// ✅ Modern approach
+const API_URL = 'https://api.example.com';
+let isLoading = false;
+
+// ❌ Avoid var
+var oldStyle = 'avoid this';
+```
+
+### 1.7 Garbage Collection
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#17-explain-how-garbage-collection-works-in-javascript-what-patterns-can-lead-to-memory-leaks)
 
 **Mark and Sweep Algorithm:**
 1. Mark all reachable objects
@@ -137,6 +161,217 @@ const boundFunc = func.bind(context);
 - Event listeners not removed
 - Timers not cleared
 - Circular references
+
+### 1.8 ES6+ Features
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#21-explain-arrow-functions-and-their-differences-from-regular-functions-when-should-you-use-each)
+
+**Arrow Functions:**
+```javascript
+// Arrow function
+const add = (a, b) => a + b;
+
+// Regular function
+function add(a, b) { return a + b; }
+```
+
+**Key Differences:**
+- **this binding**: Arrow functions use lexical `this`
+- **arguments object**: Not available in arrow functions
+- **Constructor**: Arrow functions can't be constructors
+- **Hoisting**: Arrow functions are not hoisted
+
+### 1.9 Destructuring & Spread/Rest
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#22-explain-destructuring-assignment-provide-examples-of-object-and-array-destructuring-with-practical-use-cases)
+
+**Array Destructuring:**
+```javascript
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+const [a, , c] = [1, 2, 3]; // Skip elements
+```
+
+**Object Destructuring:**
+```javascript
+const { name, age, ...other } = user;
+const { name: userName } = user; // Rename
+```
+
+**Spread/Rest:**
+```javascript
+// Spread - expand
+const combined = [...arr1, ...arr2];
+const newObj = { ...obj1, ...obj2 };
+
+// Rest - collect
+function sum(...numbers) { return numbers.reduce((a, b) => a + b, 0); }
+```
+
+### 1.10 Template Literals
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#24-explain-template-literals-and-tagged-template-literals-provide-practical-examples)
+
+```javascript
+// String interpolation
+const message = `Hello ${name}, you are ${age} years old.`;
+
+// Multi-line strings
+const html = `
+  <div>
+    <h1>${title}</h1>
+  </div>
+`;
+
+// Tagged templates
+function sql(strings, ...values) {
+  return strings.reduce((query, string, i) => {
+    return query + string + (values[i] || '');
+  }, '');
+}
+```
+
+### 1.11 ES6 Modules
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#25-explain-es6-modules-importexport-compare-with-commonjs-and-discuss-module-bundling)
+
+**Export/Import:**
+```javascript
+// Named exports
+export const PI = 3.14159;
+export function add(a, b) { return a + b; }
+
+// Default export
+export default function subtract(a, b) { return a - b; }
+
+// Import
+import { PI, add } from './math.js';
+import subtract from './math.js';
+import * as math from './math.js';
+```
+
+**Dynamic Import:**
+```javascript
+const { add, subtract } = await import('./math.js');
+```
+
+### 1.12 Async/Await
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#26-explain-asyncawait-syntax-and-how-it-relates-to-promises-what-are-the-benefits-and-potential-pitfalls)
+
+**Benefits:**
+- More readable than Promise chains
+- Better error handling with try/catch
+- Easier debugging
+
+**Common Pitfalls:**
+```javascript
+// ❌ Sequential (slow)
+const user = await fetchUser(1);
+const posts = await fetchPosts(1);
+
+// ✅ Parallel (fast)
+const [user, posts] = await Promise.all([
+  fetchUser(1),
+  fetchPosts(1)
+]);
+```
+
+### 1.13 Web APIs
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#27-explain-the-fetch-api-and-how-it-differs-from-xmlhttprequest-provide-examples-of-common-use-cases)
+
+**Fetch API:**
+```javascript
+// GET request
+const response = await fetch('/api/users');
+const users = await response.json();
+
+// POST request
+const response = await fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(userData)
+});
+```
+
+**vs XMLHttpRequest:**
+- Promise-based vs callback-based
+- Simpler API
+- Better error handling
+- Built-in JSON parsing
+
+### 1.14 Browser Storage
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#28-explain-localstorage-sessionstorage-and-indexeddb-when-would-you-use-each)
+
+| Storage | Persistence | Size Limit | Data Type | Use Case |
+|---------|-------------|------------|-----------|----------|
+| **localStorage** | Survives restart | ~5-10MB | Strings | User preferences |
+| **sessionStorage** | Tab session only | ~5-10MB | Strings | Form data |
+| **IndexedDB** | Survives restart | ~50MB+ | Any structured | Offline data |
+
+### 1.15 DOM Manipulation
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#29-explain-dom-manipulation-and-event-handling-what-are-event-delegation-bubbling-and-capturing)
+
+**Event Delegation:**
+```javascript
+// Instead of adding listeners to each button
+document.addEventListener('click', (event) => {
+  if (event.target.matches('.button')) {
+    handleClick(event);
+  }
+});
+```
+
+**Event Bubbling vs Capturing:**
+- **Bubbling**: Event goes from target to root (default)
+- **Capturing**: Event goes from root to target
+
+### 1.16 Regular Expressions
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#210-explain-regular-expressions-in-javascript-provide-examples-of-common-patterns-and-use-cases)
+
+**Common Patterns:**
+```javascript
+// Email validation
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Phone number
+const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+
+// Password (8+ chars, 1 uppercase, 1 lowercase, 1 number)
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+```
+
+**String Methods:**
+- `test()`: Returns boolean
+- `exec()`: Returns match details
+- `match()`: Returns array of matches
+- `replace()`: Replaces matches
+- `search()`: Returns index of first match
+
+### 1.17 Error Handling
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#211-explain-error-handling-in-javascript-compare-different-error-handling-strategies-and-when-to-use-each)
+
+**Try-Catch:**
+```javascript
+try {
+  const result = riskyOperation();
+} catch (error) {
+  console.error('Error:', error.message);
+} finally {
+  console.log('Always runs');
+}
+```
+
+**Custom Error Classes:**
+```javascript
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+```
+
+**Error Handling Strategies:**
+- Defensive programming
+- Error boundaries (React)
+- Result pattern
+- Global error handling
 
 ---
 
@@ -406,6 +641,106 @@ class ErrorBoundary extends React.Component {
 - Don't catch errors in event handlers
 - Don't catch errors in async code
 - Don't catch errors during SSR
+
+### 3.8 React 19 Features
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#316-what-are-the-new-features-in-react-19-how-do-they-improve-developer-experience-and-performance)
+
+**New Features:**
+- **React Compiler**: Automatic memoization
+- **Actions & useActionState**: Server actions with state management
+- **use() Hook**: Direct promise unwrapping
+- **Document Metadata**: Built-in Title, Meta, Link components
+- **Ref as Prop**: Pass refs as regular props
+
+```javascript
+// React Compiler - automatic optimization
+function ExpensiveComponent({ items, filter }) {
+  // Automatically memoized
+  const filteredItems = items.filter(item => item.category === filter);
+  return <div>{filteredItems.length}</div>;
+}
+
+// useActionState
+const [state, formAction, isPending] = useActionState(updateUser, {});
+```
+
+### 3.9 React DevTools
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#317-how-do-you-use-react-devtools-for-debugging-and-performance-optimization)
+
+**Key Features:**
+- **Components Tab**: Inspect component tree, props, state
+- **Profiler Tab**: Record performance sessions, identify slow components
+- **Real-time editing**: Modify props/state during development
+
+**Debugging Techniques:**
+- Component state debugging
+- Props inspection
+- Context value monitoring
+- Performance profiling
+
+### 3.10 Bundle Analysis
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#318-how-do-you-analyze-and-optimize-react-bundle-size-what-tools-and-techniques-do-you-use)
+
+**Tools:**
+- **Webpack Bundle Analyzer**: Visual bundle analysis
+- **Source Map Explorer**: Bundle size breakdown
+- **Bundlephobia**: Package size checking
+
+**Optimization Techniques:**
+- Code splitting (route-based, component-based)
+- Tree shaking
+- Dynamic imports
+- Vendor chunk splitting
+
+```javascript
+// Route-based splitting
+const Home = lazy(() => import('./pages/Home'));
+
+// Component-based splitting
+const HeavyChart = lazy(() => import('./HeavyChart'));
+```
+
+### 3.11 React Security
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#319-what-are-the-key-security-considerations-when-building-react-applications-how-do-you-prevent-common-vulnerabilities)
+
+**XSS Prevention:**
+```javascript
+// ✅ Safe - sanitize HTML
+import DOMPurify from 'dompurify';
+const cleanHTML = DOMPurify.sanitize(userInput);
+
+// ✅ Safe - use textContent
+return <div>{userInput}</div>;
+```
+
+**Security Best Practices:**
+- Input validation and sanitization
+- CSRF protection with tokens
+- Secure token storage
+- Content Security Policy (CSP)
+- Environment variable security
+- Dependency auditing
+
+### 3.12 Webpack vs Vite
+> 📖 [Detailed explanation](./react-java-typescript-interview-questions.md#320-compare-webpack-and-vite-for-react-development-what-are-the-advantages-and-disadvantages-of-each)
+
+| Feature | Webpack | Vite |
+|---------|---------|------|
+| Development Server | Bundles everything | Native ES modules |
+| Build Speed | Slower | Faster |
+| Configuration | Complex | Simple |
+| Plugin Ecosystem | Mature | Growing |
+| Bundle Size | Larger | Smaller |
+
+**Choose Webpack when:**
+- Complex build requirements
+- Legacy browser support
+- Micro-frontend architecture
+
+**Choose Vite when:**
+- Fast development experience
+- Modern applications
+- Minimal configuration needed
 
 ---
 
@@ -886,6 +1221,12 @@ function Component() {
 - **Closures**: Function + Lexical Environment
 - **`this`**: Context-dependent, use `.bind()`, `.call()`, `.apply()`
 - **Promises**: `.all()`, `.race()`, `.allSettled()`, `.any()`
+- **var/let/const**: Block scope, hoisting, TDZ
+- **ES6+**: Arrow functions, destructuring, spread/rest, modules
+- **Async/Await**: Promise-based, try/catch error handling
+- **Web APIs**: Fetch, localStorage, sessionStorage, IndexedDB
+- **DOM**: Event delegation, bubbling/capturing
+- **Regex**: Pattern matching, validation, string methods
 
 ### TypeScript Essentials
 - **Types**: `string`, `number`, `boolean`, `object`, `array`
@@ -898,6 +1239,11 @@ function Component() {
 - **Performance**: `React.memo`, `useMemo`, `useCallback`
 - **Lifecycle**: Mount → Update → Unmount
 - **State Management**: Local state → Context → Redux
+- **React 19**: Compiler, Actions, use() hook, Document metadata
+- **DevTools**: Component inspection, Profiler, Performance debugging
+- **Bundle Analysis**: Webpack Bundle Analyzer, Code splitting, Tree shaking
+- **Security**: XSS prevention, CSRF protection, Input validation
+- **Build Tools**: Webpack vs Vite comparison
 
 ### System Design Essentials
 - **Architecture**: Component-based, modular

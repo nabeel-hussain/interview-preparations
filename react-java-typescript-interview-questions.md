@@ -7,85 +7,103 @@
     - [1.3. How does prototypal inheritance differ from classical inheritance? Explain the prototype chain and how you would implement inheritance in modern JavaScript.](#13-how-does-prototypal-inheritance-differ-from-classical-inheritance-explain-the-prototype-chain-and-how-you-would-implement-inheritance-in-modern-javascript)
     - [1.4. Explain the different ways `this` can be bound in JavaScript. What are the differences between `.call()`, `.apply()`, and `.bind()`?](#14-explain-the-different-ways-this-can-be-bound-in-javascript-what-are-the-differences-between-call-apply-and-bind)
     - [1.5. What's the difference between Promise.all(), Promise.race(), Promise.allSettled(), and Promise.any()? When would you use each?](#15-whats-the-difference-between-promiseall-promiserace-promiseallsettled-and-promiseany-when-would-you-use-each)
-    - [1.6. Explain how garbage collection works in JavaScript. What patterns can lead to memory leaks?](#16-explain-how-garbage-collection-works-in-javascript-what-patterns-can-lead-to-memory-leaks)
-  - [2. TypeScript Advanced Topics](#2-typescript-advanced-topics)
-    - [2.1. Explain the difference between `type` and `interface`. When would you choose one over the other?](#21-explain-the-difference-between-type-and-interface-when-would-you-choose-one-over-the-other)
-    - [2.2. What are generics and why are they useful? Provide an example of a generic function that demonstrates type safety.](#22-what-are-generics-and-why-are-they-useful-provide-an-example-of-a-generic-function-that-demonstrates-type-safety)
-    - [2.3. Explain how Partial, Pick, Omit, and Record utility types work. When would you use conditional types?](#23-explain-how-partial-pick-omit-and-record-utility-types-work-when-would-you-use-conditional-types)
-    - [2.4. What are type guards? Implement a custom type guard function and explain how TypeScript narrows types.](#24-what-are-type-guards-implement-a-custom-type-guard-function-and-explain-how-typescript-narrows-types)
-    - [2.5. Explain mapped types and template literal types. Provide a practical example where these would be beneficial.](#25-explain-mapped-types-and-template-literal-types-provide-a-practical-example-where-these-would-be-beneficial)
-    - [2.6. How does TypeScript's type inference work? What are the limitations, and when should you explicitly type things?](#26-how-does-typescripts-type-inference-work-what-are-the-limitations-and-when-should-you-explicitly-type-things)
-  - [3. React Architecture \& Patterns](#3-react-architecture--patterns)
-    - [3.1. Explain the React component lifecycle in function components. How do useEffect dependencies work, and what are common pitfalls?](#31-explain-the-react-component-lifecycle-in-function-components-how-do-useeffect-dependencies-work-and-what-are-common-pitfalls)
-    - [3.2. Compare different state management solutions (Context API, Redux, Zustand, Jotai). When would you choose each?](#32-compare-different-state-management-solutions-context-api-redux-zustand-jotai-when-would-you-choose-each)
-    - [3.3. Explain React.memo, useMemo, and useCallback. What's the difference, and when should each be used?](#33-explain-reactmemo-usememo-and-usecallback-whats-the-difference-and-when-should-each-be-used)
-    - [3.4. What are the rules of hooks? Design a custom hook for handling form state with validation.](#34-what-are-the-rules-of-hooks-design-a-custom-hook-for-handling-form-state-with-validation)
-    - [3.5. Explain React 18's concurrent features (useTransition, useDeferredValue, Suspense). How do they improve user experience?](#35-explain-react-18s-concurrent-features-usetransition-usedeferredvalue-suspense-how-do-they-improve-user-experience)
-    - [3.6. Explain how React's reconciliation algorithm works. What is the significance of keys in lists?](#36-explain-how-reacts-reconciliation-algorithm-works-what-is-the-significance-of-keys-in-lists)
-    - [3.7. What are Error Boundaries and their limitations? How would you implement error handling in a React application?](#37-what-are-error-boundaries-and-their-limitations-how-would-you-implement-error-handling-in-a-react-application)
-    - [3.8. Explain the difference between Server Components and Client Components. What are the trade-offs?](#38-explain-the-difference-between-server-components-and-client-components-what-are-the-trade-offs)
-    - [3.9. What's the difference between useEffect and useLayoutEffect? When would you use each?](#39-whats-the-difference-between-useeffect-and-uselayouteffect-when-would-you-use-each)
-    - [3.10. When should you use useState vs useReducer? Provide examples of each.](#310-when-should-you-use-usestate-vs-usereducer-provide-examples-of-each)
-    - [3.11. Explain the Context API in detail. How do you avoid performance issues with Context?](#311-explain-the-context-api-in-detail-how-do-you-avoid-performance-issues-with-context)
-    - [3.12. How do you implement routing in React applications? Compare different routing solutions.](#312-how-do-you-implement-routing-in-react-applications-compare-different-routing-solutions)
-    - [3.13. What are React Portals and when would you use them?](#313-what-are-react-portals-and-when-would-you-use-them)
-    - [3.14. Provide a comprehensive overview of all React hooks in table format with brief descriptions and use cases.](#314-provide-a-comprehensive-overview-of-all-react-hooks-in-table-format-with-brief-descriptions-and-use-cases)
-    - [3.15. How do you use refs for DOM interaction in React? What are the different types of refs?](#315-how-do-you-use-refs-for-dom-interaction-in-react-what-are-the-different-types-of-refs)
-  - [4. System Design \& Architecture](#4-system-design--architecture)
-    - [4.1. How would you design a reusable, accessible component library? What principles would you follow?](#41-how-would-you-design-a-reusable-accessible-component-library-what-principles-would-you-follow)
-      - [4.1.1. Core Design Principles](#411-core-design-principles)
-      - [4.1.2. Accessibility (a11y) Principles](#412-accessibility-a11y-principles)
-      - [4.1.3. TypeScript Integration](#413-typescript-integration)
-      - [4.1.4. Styling Strategy](#414-styling-strategy)
-      - [4.1.5. Documentation \& Testing](#415-documentation--testing)
-      - [4.1.6. Performance Considerations](#416-performance-considerations)
-    - [4.2. Explain different strategies for code splitting in React. How would you implement route-based code splitting?](#42-explain-different-strategies-for-code-splitting-in-react-how-would-you-implement-route-based-code-splitting)
-      - [4.2.1. Code Splitting Strategies](#421-code-splitting-strategies)
-      - [4.2.2. Advanced Code Splitting Patterns](#422-advanced-code-splitting-patterns)
-      - [4.2.3. Webpack Configuration for Code Splitting](#423-webpack-configuration-for-code-splitting)
-      - [4.2.4. Performance Monitoring](#424-performance-monitoring)
-      - [4.2.5. Best Practices](#425-best-practices)
-    - [4.3. What's your approach to testing React applications? How do you balance unit, integration, and e2e tests?](#43-whats-your-approach-to-testing-react-applications-how-do-you-balance-unit-integration-and-e2e-tests)
-      - [4.3.1. Testing Pyramid Structure](#431-testing-pyramid-structure)
-      - [4.3.2. Unit Testing](#432-unit-testing)
-      - [4.3.3. Integration Testing](#433-integration-testing)
-      - [4.3.4. End-to-End Testing](#434-end-to-end-testing)
-      - [4.3.5. Testing Configuration](#435-testing-configuration)
-      - [4.3.6. Testing Best Practices](#436-testing-best-practices)
-      - [4.3.7. Continuous Integration](#437-continuous-integration)
-    - [4.4. How would you implement authentication in a React SPA? Discuss token management, refresh strategies, and protected routes.](#44-how-would-you-implement-authentication-in-a-react-spa-discuss-token-management-refresh-strategies-and-protected-routes)
-      - [4.4.1. Authentication Architecture](#441-authentication-architecture)
-      - [4.4.2. Token Management](#442-token-management)
-      - [4.4.3. Protected Routes](#443-protected-routes)
-      - [4.4.4. Advanced Security Features](#444-advanced-security-features)
-      - [4.4.5. Security Best Practices](#445-security-best-practices)
-      - [4.4.6. Error Handling and User Experience](#446-error-handling-and-user-experience)
-    - [4.5. Design a robust data fetching layer for a React application. How would you handle caching, error states, and optimistic updates?](#45-design-a-robust-data-fetching-layer-for-a-react-application-how-would-you-handle-caching-error-states-and-optimistic-updates)
-      - [4.5.1. Core Data Fetching Architecture](#451-core-data-fetching-architecture)
-      - [4.5.2. Advanced Caching with React Query](#452-advanced-caching-with-react-query)
-      - [4.5.3. Optimistic Updates](#453-optimistic-updates)
-      - [4.5.4. Error Handling and Retry Logic](#454-error-handling-and-retry-logic)
-      - [4.5.5. Real-time Data with WebSockets](#455-real-time-data-with-websockets)
-      - [4.5.6. Offline Support and Background Sync](#456-offline-support-and-background-sync)
-      - [4.5.7. Performance Optimization](#457-performance-optimization)
-  - [5. Coding Challenges](#5-coding-challenges)
-    - [5.1. Implement a Debounce Function](#51-implement-a-debounce-function)
-    - [5.2. Build a Custom useIntersectionObserver Hook](#52-build-a-custom-useintersectionobserver-hook)
-    - [5.3. Create a Higher-Order Component](#53-create-a-higher-order-component)
-    - [5.4. Implement a Virtual Scroll List](#54-implement-a-virtual-scroll-list)
-    - [5.5. Build a Form Builder](#55-build-a-form-builder)
-  - [6. Behavioral \& Scenario-Based](#6-behavioral--scenario-based)
-    - [6.1. Your React application is experiencing slow rendering. Walk through your debugging process.](#61-your-react-application-is-experiencing-slow-rendering-walk-through-your-debugging-process)
-    - [6.2. How would you approach migrating a large JavaScript codebase to TypeScript?](#62-how-would-you-approach-migrating-a-large-javascript-codebase-to-typescript)
-    - [6.3. You're building a dashboard with real-time updates, complex filtering, and must support 1000+ concurrent users. Describe your architecture.](#63-youre-building-a-dashboard-with-real-time-updates-complex-filtering-and-must-support-1000-concurrent-users-describe-your-architecture)
-    - [6.4. What do you look for during code reviews? How do you balance perfectionism with pragmatism?](#64-what-do-you-look-for-during-code-reviews-how-do-you-balance-perfectionism-with-pragmatism)
-    - [6.5. How do you identify and prioritize technical debt? Give an example of when you advocated for refactoring.](#65-how-do-you-identify-and-prioritize-technical-debt-give-an-example-of-when-you-advocated-for-refactoring)
-  - [7. Best Practices \& Patterns](#7-best-practices--patterns)
-    - [7.1. What are your preferred patterns for handling side effects in React?](#71-what-are-your-preferred-patterns-for-handling-side-effects-in-react)
-    - [7.2. How do you ensure type safety when working with external APIs?](#72-how-do-you-ensure-type-safety-when-working-with-external-apis)
-    - [7.3. What's your approach to styling in React applications? (CSS Modules, Styled Components, Tailwind, etc.)](#73-whats-your-approach-to-styling-in-react-applications-css-modules-styled-components-tailwind-etc)
-    - [7.4. How do you handle internationalization (i18n) and accessibility (a11y) in React apps?](#74-how-do-you-handle-internationalization-i18n-and-accessibility-a11y-in-react-apps)
-    - [7.5. What tools and processes do you use for maintaining code quality? (ESLint, Prettier, Husky, CI/CD, etc.)](#75-what-tools-and-processes-do-you-use-for-maintaining-code-quality-eslint-prettier-husky-cicd-etc)
+    - [1.6. Explain the differences between var, let, and const. When should you use each?](#16-explain-the-differences-between-var-let-and-const-when-should-you-use-each)
+    - [1.7. Explain how garbage collection works in JavaScript. What patterns can lead to memory leaks?](#17-explain-how-garbage-collection-works-in-javascript-what-patterns-can-lead-to-memory-leaks)
+  - [2. ES6+ Features and Modern JavaScript](#2-es6-features-and-modern-javascript)
+    - [2.1. Explain arrow functions and their differences from regular functions. When should you use each?](#21-explain-arrow-functions-and-their-differences-from-regular-functions-when-should-you-use-each)
+    - [2.2. Explain destructuring assignment. Provide examples of object and array destructuring with practical use cases.](#22-explain-destructuring-assignment-provide-examples-of-object-and-array-destructuring-with-practical-use-cases)
+    - [2.3. Explain the spread and rest operators. When would you use each?](#23-explain-the-spread-and-rest-operators-when-would-you-use-each)
+    - [2.4. Explain template literals and tagged template literals. Provide practical examples.](#24-explain-template-literals-and-tagged-template-literals-provide-practical-examples)
+    - [2.5. Explain ES6 modules (import/export). Compare with CommonJS and discuss module bundling.](#25-explain-es6-modules-importexport-compare-with-commonjs-and-discuss-module-bundling)
+    - [2.6. Explain async/await syntax and how it relates to Promises. What are the benefits and potential pitfalls?](#26-explain-asyncawait-syntax-and-how-it-relates-to-promises-what-are-the-benefits-and-potential-pitfalls)
+    - [2.7. Explain the Fetch API and how it differs from XMLHttpRequest. Provide examples of common use cases.](#27-explain-the-fetch-api-and-how-it-differs-from-xmlhttprequest-provide-examples-of-common-use-cases)
+    - [2.8. Explain localStorage, sessionStorage, and IndexedDB. When would you use each?](#28-explain-localstorage-sessionstorage-and-indexeddb-when-would-you-use-each)
+    - [2.9. Explain DOM manipulation and event handling. What are event delegation, bubbling, and capturing?](#29-explain-dom-manipulation-and-event-handling-what-are-event-delegation-bubbling-and-capturing)
+    - [2.10. Explain Regular Expressions in JavaScript. Provide examples of common patterns and use cases.](#210-explain-regular-expressions-in-javascript-provide-examples-of-common-patterns-and-use-cases)
+    - [2.11. Explain error handling in JavaScript. Compare different error handling strategies and when to use each.](#211-explain-error-handling-in-javascript-compare-different-error-handling-strategies-and-when-to-use-each)
+  - [3. TypeScript Advanced Topics](#3-typescript-advanced-topics)
+    - [3.1. Explain the difference between `type` and `interface`. When would you choose one over the other?](#31-explain-the-difference-between-type-and-interface-when-would-you-choose-one-over-the-other)
+    - [3.2. What are generics and why are they useful? Provide an example of a generic function that demonstrates type safety.](#32-what-are-generics-and-why-are-they-useful-provide-an-example-of-a-generic-function-that-demonstrates-type-safety)
+    - [3.3. Explain how Partial, Pick, Omit, and Record utility types work. When would you use conditional types?](#33-explain-how-partial-pick-omit-and-record-utility-types-work-when-would-you-use-conditional-types)
+    - [3.4. What are type guards? Implement a custom type guard function and explain how TypeScript narrows types.](#34-what-are-type-guards-implement-a-custom-type-guard-function-and-explain-how-typescript-narrows-types)
+    - [3.5. Explain mapped types and template literal types. Provide a practical example where these would be beneficial.](#35-explain-mapped-types-and-template-literal-types-provide-a-practical-example-where-these-would-be-beneficial)
+    - [3.6. How does TypeScript's type inference work? What are the limitations, and when should you explicitly type things?](#36-how-does-typescripts-type-inference-work-what-are-the-limitations-and-when-should-you-explicitly-type-things)
+  - [4. React Architecture \& Patterns](#4-react-architecture--patterns)
+    - [4.1. Explain the React component lifecycle in function components. How do useEffect dependencies work, and what are common pitfalls?](#41-explain-the-react-component-lifecycle-in-function-components-how-do-useeffect-dependencies-work-and-what-are-common-pitfalls)
+    - [4.2. Compare different state management solutions (Context API, Redux, Zustand, Jotai). When would you choose each?](#42-compare-different-state-management-solutions-context-api-redux-zustand-jotai-when-would-you-choose-each)
+    - [4.3. Explain React.memo, useMemo, and useCallback. What's the difference, and when should each be used?](#43-explain-reactmemo-usememo-and-usecallback-whats-the-difference-and-when-should-each-be-used)
+    - [4.4. What are the rules of hooks? Design a custom hook for handling form state with validation.](#44-what-are-the-rules-of-hooks-design-a-custom-hook-for-handling-form-state-with-validation)
+    - [4.5. Explain React 18's concurrent features (useTransition, useDeferredValue, Suspense). How do they improve user experience?](#45-explain-react-18s-concurrent-features-usetransition-usedeferredvalue-suspense-how-do-they-improve-user-experience)
+    - [4.6. Explain how React's reconciliation algorithm works. What is the significance of keys in lists?](#46-explain-how-reacts-reconciliation-algorithm-works-what-is-the-significance-of-keys-in-lists)
+    - [4.7. What are Error Boundaries and their limitations? How would you implement error handling in a React application?](#47-what-are-error-boundaries-and-their-limitations-how-would-you-implement-error-handling-in-a-react-application)
+    - [4.8. Explain the difference between Server Components and Client Components. What are the trade-offs?](#48-explain-the-difference-between-server-components-and-client-components-what-are-the-trade-offs)
+    - [4.9. What's the difference between useEffect and useLayoutEffect? When would you use each?](#49-whats-the-difference-between-useeffect-and-uselayouteffect-when-would-you-use-each)
+    - [4.10. When should you use useState vs useReducer? Provide examples of each.](#410-when-should-you-use-usestate-vs-usereducer-provide-examples-of-each)
+    - [4.11. Explain the Context API in detail. How do you avoid performance issues with Context?](#411-explain-the-context-api-in-detail-how-do-you-avoid-performance-issues-with-context)
+    - [4.12. How do you implement routing in React applications? Compare different routing solutions.](#412-how-do-you-implement-routing-in-react-applications-compare-different-routing-solutions)
+    - [4.13. What are React Portals and when would you use them?](#413-what-are-react-portals-and-when-would-you-use-them)
+    - [4.14. Provide a comprehensive overview of all React hooks in table format with brief descriptions and use cases.](#414-provide-a-comprehensive-overview-of-all-react-hooks-in-table-format-with-brief-descriptions-and-use-cases)
+    - [4.15. How do you use refs for DOM interaction in React? What are the different types of refs?](#415-how-do-you-use-refs-for-dom-interaction-in-react-what-are-the-different-types-of-refs)
+    - [4.16. What are the new features in React 19? How do they improve developer experience and performance?](#416-what-are-the-new-features-in-react-19-how-do-they-improve-developer-experience-and-performance)
+    - [4.17. How do you use React DevTools for debugging and performance optimization?](#417-how-do-you-use-react-devtools-for-debugging-and-performance-optimization)
+    - [4.18. How do you analyze and optimize React bundle size? What tools and techniques do you use?](#418-how-do-you-analyze-and-optimize-react-bundle-size-what-tools-and-techniques-do-you-use)
+    - [4.19. What are the key security considerations when building React applications? How do you prevent common vulnerabilities?](#419-what-are-the-key-security-considerations-when-building-react-applications-how-do-you-prevent-common-vulnerabilities)
+    - [4.20. Compare Webpack and Vite for React development. What are the advantages and disadvantages of each?](#420-compare-webpack-and-vite-for-react-development-what-are-the-advantages-and-disadvantages-of-each)
+  - [5. System Design \& Architecture](#5-system-design--architecture)
+    - [5.1. How would you design a reusable, accessible component library? What principles would you follow?](#51-how-would-you-design-a-reusable-accessible-component-library-what-principles-would-you-follow)
+      - [5.1.1. Core Design Principles](#511-core-design-principles)
+      - [5.1.2. Accessibility (a11y) Principles](#512-accessibility-a11y-principles)
+      - [5.1.3. TypeScript Integration](#513-typescript-integration)
+      - [5.1.4. Styling Strategy](#514-styling-strategy)
+      - [5.1.5. Documentation \& Testing](#515-documentation--testing)
+      - [5.1.6. Performance Considerations](#516-performance-considerations)
+    - [5.2. Explain different strategies for code splitting in React. How would you implement route-based code splitting?](#52-explain-different-strategies-for-code-splitting-in-react-how-would-you-implement-route-based-code-splitting)
+      - [5.2.1. Code Splitting Strategies](#521-code-splitting-strategies)
+      - [5.2.2. Advanced Code Splitting Patterns](#522-advanced-code-splitting-patterns)
+      - [5.2.3. Webpack Configuration for Code Splitting](#523-webpack-configuration-for-code-splitting)
+      - [5.2.4. Performance Monitoring](#524-performance-monitoring)
+      - [5.2.5. Best Practices](#525-best-practices)
+    - [5.3. What's your approach to testing React applications? How do you balance unit, integration, and e2e tests?](#53-whats-your-approach-to-testing-react-applications-how-do-you-balance-unit-integration-and-e2e-tests)
+      - [5.3.1. Testing Pyramid Structure](#531-testing-pyramid-structure)
+      - [5.3.2. Unit Testing](#532-unit-testing)
+      - [5.3.3. Integration Testing](#533-integration-testing)
+      - [5.3.4. End-to-End Testing](#534-end-to-end-testing)
+      - [5.3.5. Testing Configuration](#535-testing-configuration)
+      - [5.3.6. Testing Best Practices](#536-testing-best-practices)
+      - [5.3.7. Continuous Integration](#537-continuous-integration)
+    - [5.4. How would you implement authentication in a React SPA? Discuss token management, refresh strategies, and protected routes.](#54-how-would-you-implement-authentication-in-a-react-spa-discuss-token-management-refresh-strategies-and-protected-routes)
+      - [5.4.1. Authentication Architecture](#541-authentication-architecture)
+      - [5.4.2. Token Management](#542-token-management)
+      - [5.4.3. Protected Routes](#543-protected-routes)
+      - [5.4.4. Advanced Security Features](#544-advanced-security-features)
+      - [5.4.5. Security Best Practices](#545-security-best-practices)
+      - [5.4.6. Error Handling and User Experience](#546-error-handling-and-user-experience)
+    - [5.5. Design a robust data fetching layer for a React application. How would you handle caching, error states, and optimistic updates?](#55-design-a-robust-data-fetching-layer-for-a-react-application-how-would-you-handle-caching-error-states-and-optimistic-updates)
+      - [5.5.1. Core Data Fetching Architecture](#551-core-data-fetching-architecture)
+      - [5.5.2. Advanced Caching with React Query](#552-advanced-caching-with-react-query)
+      - [5.5.3. Optimistic Updates](#553-optimistic-updates)
+      - [5.5.4. Error Handling and Retry Logic](#554-error-handling-and-retry-logic)
+      - [5.5.5. Real-time Data with WebSockets](#555-real-time-data-with-websockets)
+      - [5.5.6. Offline Support and Background Sync](#556-offline-support-and-background-sync)
+      - [5.5.7. Performance Optimization](#557-performance-optimization)
+  - [6. Coding Challenges](#6-coding-challenges)
+    - [6.1. Implement a Debounce Function](#61-implement-a-debounce-function)
+    - [6.2. Build a Custom useIntersectionObserver Hook](#62-build-a-custom-useintersectionobserver-hook)
+    - [6.3. Create a Higher-Order Component](#63-create-a-higher-order-component)
+    - [6.4. Implement a Virtual Scroll List](#64-implement-a-virtual-scroll-list)
+    - [6.5. Build a Form Builder](#65-build-a-form-builder)
+  - [7. Behavioral \& Scenario-Based](#7-behavioral--scenario-based)
+    - [7.1. Your React application is experiencing slow rendering. Walk through your debugging process.](#71-your-react-application-is-experiencing-slow-rendering-walk-through-your-debugging-process)
+    - [7.2. How would you approach migrating a large JavaScript codebase to TypeScript?](#72-how-would-you-approach-migrating-a-large-javascript-codebase-to-typescript)
+    - [7.3. You're building a dashboard with real-time updates, complex filtering, and must support 1000+ concurrent users. Describe your architecture.](#73-youre-building-a-dashboard-with-real-time-updates-complex-filtering-and-must-support-1000-concurrent-users-describe-your-architecture)
+    - [7.4. What do you look for during code reviews? How do you balance perfectionism with pragmatism?](#74-what-do-you-look-for-during-code-reviews-how-do-you-balance-perfectionism-with-pragmatism)
+    - [7.5. How do you identify and prioritize technical debt? Give an example of when you advocated for refactoring.](#75-how-do-you-identify-and-prioritize-technical-debt-give-an-example-of-when-you-advocated-for-refactoring)
+  - [8. Best Practices \& Patterns](#8-best-practices--patterns)
+    - [8.1. What are your preferred patterns for handling side effects in React?](#81-what-are-your-preferred-patterns-for-handling-side-effects-in-react)
+    - [8.2. How do you ensure type safety when working with external APIs?](#82-how-do-you-ensure-type-safety-when-working-with-external-apis)
+    - [8.3. What's your approach to styling in React applications? (CSS Modules, Styled Components, Tailwind, etc.)](#83-whats-your-approach-to-styling-in-react-applications-css-modules-styled-components-tailwind-etc)
+    - [8.4. How do you handle internationalization (i18n) and accessibility (a11y) in React apps?](#84-how-do-you-handle-internationalization-i18n-and-accessibility-a11y-in-react-apps)
+    - [8.5. What tools and processes do you use for maintaining code quality? (ESLint, Prettier, Husky, CI/CD, etc.)](#85-what-tools-and-processes-do-you-use-for-maintaining-code-quality-eslint-prettier-husky-cicd-etc)
 
 
 ## 1. JavaScript Core Concepts
@@ -759,7 +777,206 @@ class RetryStrategy {
 }
 ```
 
-### 1.6. Explain how garbage collection works in JavaScript. What patterns can lead to memory leaks?
+### 1.6. Explain the differences between var, let, and const. When should you use each?
+
+**Answer:**
+The three variable declaration keywords in JavaScript have different scoping rules, hoisting behavior, and mutability characteristics.
+
+**Key Differences:**
+
+| Feature | var | let | const |
+|---------|-----|-----|-------|
+| Scope | Function-scoped | Block-scoped | Block-scoped |
+| Hoisting | Hoisted and initialized with undefined | Hoisted but not initialized (TDZ) | Hoisted but not initialized (TDZ) |
+| Re-declaration | Allowed | Not allowed | Not allowed |
+| Re-assignment | Allowed | Allowed | Not allowed |
+| Temporal Dead Zone | No | Yes | Yes |
+
+**1. Scope Differences:**
+```javascript
+// var - function scoped
+function example() {
+  if (true) {
+    var functionScoped = 'I am function scoped';
+  }
+  console.log(functionScoped); // Works - accessible outside block
+}
+
+// let/const - block scoped
+function example() {
+  if (true) {
+    let blockScoped = 'I am block scoped';
+    const alsoBlockScoped = 'I am also block scoped';
+  }
+  console.log(blockScoped); // ReferenceError: blockScoped is not defined
+  console.log(alsoBlockScoped); // ReferenceError: alsoBlockScoped is not defined
+}
+```
+
+**2. Hoisting Behavior:**
+```javascript
+// var - hoisted and initialized with undefined
+console.log(varVariable); // undefined (not ReferenceError)
+var varVariable = 'Hello';
+
+// let/const - hoisted but in Temporal Dead Zone
+console.log(letVariable); // ReferenceError: Cannot access 'letVariable' before initialization
+let letVariable = 'Hello';
+
+console.log(constVariable); // ReferenceError: Cannot access 'constVariable' before initialization
+const constVariable = 'Hello';
+```
+
+**3. Re-declaration:**
+```javascript
+// var - allows re-declaration
+var name = 'John';
+var name = 'Jane'; // No error
+console.log(name); // 'Jane'
+
+// let - does not allow re-declaration
+let age = 25;
+let age = 30; // SyntaxError: Identifier 'age' has already been declared
+
+// const - does not allow re-declaration
+const city = 'NYC';
+const city = 'LA'; // SyntaxError: Identifier 'city' has already been declared
+```
+
+**4. Re-assignment:**
+```javascript
+// var and let - allow re-assignment
+var count = 0;
+count = 1; // Works
+
+let total = 10;
+total = 20; // Works
+
+// const - does not allow re-assignment
+const PI = 3.14159;
+PI = 3.14; // TypeError: Assignment to constant variable
+```
+
+**5. Temporal Dead Zone (TDZ):**
+```javascript
+// TDZ for let and const
+function tdzExample() {
+  console.log(typeof x); // ReferenceError: Cannot access 'x' before initialization
+  let x = 10;
+}
+
+// var does not have TDZ
+function noTdzExample() {
+  console.log(typeof y); // 'undefined'
+  var y = 10;
+}
+```
+
+**When to Use Each:**
+
+**Use `const` by default:**
+```javascript
+// ✅ Use const for values that won't change
+const API_URL = 'https://api.example.com';
+const MAX_RETRIES = 3;
+const user = { name: 'John', age: 30 };
+
+// const with objects/arrays - you can modify contents
+const users = [];
+users.push({ name: 'Jane' }); // Works - modifying array contents
+// users = []; // Error - cannot reassign the array reference
+
+const config = { theme: 'dark' };
+config.theme = 'light'; // Works - modifying object properties
+// config = {}; // Error - cannot reassign the object reference
+```
+
+**Use `let` when you need to reassign:**
+```javascript
+// ✅ Use let when value needs to change
+let currentUser = null;
+let isLoading = false;
+let counter = 0;
+
+// In loops
+for (let i = 0; i < 10; i++) {
+  setTimeout(() => console.log(i), 100); // Each i is block-scoped
+}
+
+// In conditionals
+let result;
+if (condition) {
+  result = 'success';
+} else {
+  result = 'failure';
+}
+```
+
+**Avoid `var` (legacy):**
+```javascript
+// ❌ Avoid var in modern JavaScript
+var oldStyle = 'avoid this';
+
+// Problems with var:
+// 1. Function scoping can be confusing
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100); // Prints 3, 3, 3
+}
+
+// 2. Hoisting can lead to unexpected behavior
+console.log(hoisted); // undefined (not ReferenceError)
+var hoisted = 'I am hoisted';
+
+// 3. Re-declaration can cause bugs
+var name = 'John';
+// ... 100 lines later ...
+var name = 'Jane'; // Accidentally overwrites previous declaration
+```
+
+**Modern Best Practices:**
+```javascript
+// ✅ Modern approach
+const DEFAULT_CONFIG = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000
+};
+
+function processData(data) {
+  const results = [];
+  let hasErrors = false;
+  
+  for (const item of data) {
+    try {
+      const processed = transformItem(item);
+      results.push(processed);
+    } catch (error) {
+      hasErrors = true;
+      console.error('Processing error:', error);
+    }
+  }
+  
+  return { results, hasErrors };
+}
+
+// ✅ Use const for function declarations
+const calculateTotal = (items) => {
+  return items.reduce((sum, item) => sum + item.price, 0);
+};
+
+// ✅ Use const for imported modules
+import { useState, useEffect } from 'react';
+const MyComponent = () => {
+  const [count, setCount] = useState(0);
+  // ...
+};
+```
+
+**Summary:**
+- **const**: Use by default for all variables that won't be reassigned
+- **let**: Use when you need to reassign the variable
+- **var**: Avoid in modern JavaScript due to confusing scoping and hoisting behavior
+
+### 1.7. Explain how garbage collection works in JavaScript. What patterns can lead to memory leaks?
 
 **Answer:**
 JavaScript uses automatic garbage collection to manage memory, freeing up memory that is no longer referenced by the program.
@@ -980,9 +1197,1135 @@ function logMemoryUsage() {
 
 ---
 
-## 2. TypeScript Advanced Topics
+## 2. ES6+ Features and Modern JavaScript
 
-### 2.1. Explain the difference between `type` and `interface`. When would you choose one over the other?
+### 2.1. Explain arrow functions and their differences from regular functions. When should you use each?
+
+Arrow functions are a concise syntax for writing function expressions in ES6. Here are the key differences:
+
+**Syntax Differences:**
+```javascript
+// Regular function
+function add(a, b) {
+  return a + b;
+}
+
+// Arrow function
+const add = (a, b) => a + b;
+
+// Multiple parameters
+const multiply = (a, b) => {
+  return a * b;
+};
+
+// Single parameter (parentheses optional)
+const square = x => x * x;
+
+// No parameters
+const getTime = () => new Date();
+```
+
+**Key Differences:**
+
+1. **`this` Binding:**
+```javascript
+const obj = {
+  name: 'John',
+  regularFunction: function() {
+    console.log(this.name); // 'John' - this refers to obj
+  },
+  arrowFunction: () => {
+    console.log(this.name); // undefined - this refers to global/window
+  }
+};
+
+obj.regularFunction(); // 'John'
+obj.arrowFunction(); // undefined
+```
+
+2. **Arguments Object:**
+```javascript
+function regularFunction() {
+  console.log(arguments); // Has arguments object
+}
+
+const arrowFunction = () => {
+  console.log(arguments); // ReferenceError: arguments is not defined
+};
+```
+
+3. **Constructor Usage:**
+```javascript
+function RegularConstructor() {
+  this.name = 'test';
+}
+
+const ArrowConstructor = () => {
+  this.name = 'test';
+};
+
+new RegularConstructor(); // Works
+new ArrowConstructor(); // TypeError: ArrowConstructor is not a constructor
+```
+
+4. **Hoisting:**
+```javascript
+// Regular functions are hoisted
+console.log(regularFunc()); // Works - 'Hello'
+
+function regularFunc() {
+  return 'Hello';
+}
+
+// Arrow functions are not hoisted
+console.log(arrowFunc()); // ReferenceError: Cannot access 'arrowFunc' before initialization
+
+const arrowFunc = () => 'Hello';
+```
+
+**When to Use Each:**
+
+**Use Arrow Functions When:**
+- Writing short, simple functions
+- Working with array methods (map, filter, reduce)
+- Need lexical `this` binding
+- Writing functional programming style code
+
+```javascript
+// Great for array methods
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+const evens = numbers.filter(n => n % 2 === 0);
+const sum = numbers.reduce((acc, n) => acc + n, 0);
+```
+
+**Use Regular Functions When:**
+- Need `this` to be dynamically bound
+- Need access to `arguments` object
+- Creating constructors
+- Need function hoisting
+- Writing methods in objects/classes
+
+```javascript
+// Object methods should use regular functions
+const calculator = {
+  value: 0,
+  add: function(num) {
+    this.value += num;
+    return this;
+  },
+  multiply: function(num) {
+    this.value *= num;
+    return this;
+  }
+};
+```
+
+### 2.2. Explain destructuring assignment. Provide examples of object and array destructuring with practical use cases.
+
+Destructuring assignment allows you to extract values from arrays or properties from objects into distinct variables.
+
+**Array Destructuring:**
+```javascript
+// Basic array destructuring
+const colors = ['red', 'green', 'blue'];
+const [first, second, third] = colors;
+console.log(first); // 'red'
+console.log(second); // 'green'
+console.log(third); // 'blue'
+
+// Skip elements
+const [primary, , tertiary] = colors;
+console.log(primary); // 'red'
+console.log(tertiary); // 'blue'
+
+// Default values
+const [a, b, c, d = 'yellow'] = colors;
+console.log(d); // 'yellow'
+
+// Rest operator
+const [head, ...tail] = colors;
+console.log(head); // 'red'
+console.log(tail); // ['green', 'blue']
+
+// Swap variables
+let x = 1, y = 2;
+[x, y] = [y, x];
+console.log(x, y); // 2, 1
+```
+
+**Object Destructuring:**
+```javascript
+const user = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  address: {
+    city: 'New York',
+    country: 'USA'
+  }
+};
+
+// Basic object destructuring
+const { name, email, id } = user;
+console.log(name); // 'John Doe'
+
+// Rename variables
+const { name: userName, email: userEmail } = user;
+console.log(userName); // 'John Doe'
+
+// Default values
+const { name, age = 25 } = user;
+console.log(age); // 25
+
+// Nested destructuring
+const { address: { city, country } } = user;
+console.log(city); // 'New York'
+
+// Rest operator
+const { id, ...userInfo } = user;
+console.log(userInfo); // { name: 'John Doe', email: 'john@example.com', address: {...} }
+```
+
+**Practical Use Cases:**
+
+1. **Function Parameters:**
+```javascript
+// Instead of passing many parameters
+function createUser(name, email, age, city, country) {
+  // ...
+}
+
+// Use object destructuring
+function createUser({ name, email, age = 18, address: { city, country } }) {
+  return { name, email, age, city, country };
+}
+
+createUser({
+  name: 'John',
+  email: 'john@example.com',
+  address: { city: 'NYC', country: 'USA' }
+});
+```
+
+2. **API Response Handling:**
+```javascript
+async function fetchUser(id) {
+  const response = await fetch(`/api/users/${id}`);
+  const { data: user, status, message } = await response.json();
+  
+  if (status === 'success') {
+    const { name, email, profile: { avatar, bio } } = user;
+    return { name, email, avatar, bio };
+  }
+  throw new Error(message);
+}
+```
+
+3. **React Props:**
+```javascript
+function UserCard({ user: { name, email, avatar }, onEdit, onDelete }) {
+  return (
+    <div>
+      <img src={avatar} alt={name} />
+      <h3>{name}</h3>
+      <p>{email}</p>
+      <button onClick={onEdit}>Edit</button>
+      <button onClick={onDelete}>Delete</button>
+    </div>
+  );
+}
+```
+
+4. **Array Methods:**
+```javascript
+const users = [
+  { id: 1, name: 'John', role: 'admin' },
+  { id: 2, name: 'Jane', role: 'user' }
+];
+
+// Destructure in map
+const userNames = users.map(({ name }) => name);
+
+// Destructure in filter
+const admins = users.filter(({ role }) => role === 'admin');
+```
+
+### 2.3. Explain the spread and rest operators. When would you use each?
+
+The spread (`...`) and rest (`...`) operators use the same syntax but serve different purposes depending on context.
+
+**Spread Operator (`...`):**
+Expands an iterable (array, string, object) into individual elements.
+
+**Array Spread:**
+```javascript
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+
+// Combine arrays
+const combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+
+// Add elements
+const withExtra = [...arr1, 4, 5]; // [1, 2, 3, 4, 5]
+
+// Clone array
+const cloned = [...arr1]; // [1, 2, 3] - shallow copy
+
+// Convert string to array
+const chars = [...'hello']; // ['h', 'e', 'l', 'l', 'o']
+
+// Function arguments
+function sum(a, b, c) {
+  return a + b + c;
+}
+const numbers = [1, 2, 3];
+console.log(sum(...numbers)); // 6
+```
+
+**Object Spread:**
+```javascript
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3, d: 4 };
+
+// Combine objects
+const combined = { ...obj1, ...obj2 }; // { a: 1, b: 2, c: 3, d: 4 }
+
+// Override properties
+const updated = { ...obj1, b: 10 }; // { a: 1, b: 10 }
+
+// Clone object
+const cloned = { ...obj1 }; // { a: 1, b: 2 } - shallow copy
+
+// Add properties
+const withExtra = { ...obj1, e: 5 }; // { a: 1, b: 2, e: 5 }
+```
+
+**Rest Operator (`...`):**
+Collects multiple elements into a single variable.
+
+**Function Parameters:**
+```javascript
+// Collect remaining arguments
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3, 4)); // 10
+
+// Mix with regular parameters
+function greet(greeting, ...names) {
+  return `${greeting} ${names.join(', ')}!`;
+}
+
+console.log(greet('Hello', 'John', 'Jane', 'Bob')); // "Hello John, Jane, Bob!"
+```
+
+**Array Destructuring:**
+```javascript
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(second); // 2
+console.log(rest); // [3, 4, 5]
+
+// Skip elements
+const [a, , ...remaining] = [1, 2, 3, 4, 5];
+console.log(a); // 1
+console.log(remaining); // [3, 4, 5]
+```
+
+**Object Destructuring:**
+```javascript
+const { name, ...otherProps } = { name: 'John', age: 30, city: 'NYC' };
+console.log(name); // 'John'
+console.log(otherProps); // { age: 30, city: 'NYC' }
+```
+
+**Practical Use Cases:**
+
+1. **Array Manipulation:**
+```javascript
+// Remove duplicates
+const unique = [...new Set([1, 2, 2, 3, 3, 4])]; // [1, 2, 3, 4]
+
+// Insert at specific position
+function insertAt(array, index, ...items) {
+  return [...array.slice(0, index), ...items, ...array.slice(index)];
+}
+
+const result = insertAt([1, 2, 5], 2, 3, 4); // [1, 2, 3, 4, 5]
+```
+
+2. **Object Updates:**
+```javascript
+// Immutable updates
+const updateUser = (user, updates) => ({ ...user, ...updates });
+
+const user = { name: 'John', age: 30 };
+const updated = updateUser(user, { age: 31, city: 'NYC' });
+// { name: 'John', age: 31, city: 'NYC' }
+```
+
+3. **React State Updates:**
+```javascript
+// Add item to array
+const addItem = (items, newItem) => [...items, newItem];
+
+// Remove item from array
+const removeItem = (items, id) => items.filter(item => item.id !== id);
+
+// Update object in array
+const updateItem = (items, id, updates) => 
+  items.map(item => item.id === id ? { ...item, ...updates } : item);
+```
+
+4. **API Calls:**
+```javascript
+// Merge query parameters
+const buildUrl = (baseUrl, ...params) => {
+  const queryString = params.join('&');
+  return `${baseUrl}?${queryString}`;
+};
+
+const url = buildUrl('/api/users', 'page=1', 'limit=10', 'sort=name');
+```
+
+### 2.4. Explain template literals and tagged template literals. Provide practical examples.
+
+Template literals are string literals that allow embedded expressions and multi-line strings.
+
+**Basic Template Literals:**
+```javascript
+const name = 'John';
+const age = 30;
+
+// String interpolation
+const message = `Hello, my name is ${name} and I am ${age} years old.`;
+
+// Multi-line strings
+const html = `
+  <div class="user-card">
+    <h2>${name}</h2>
+    <p>Age: ${age}</p>
+  </div>
+`;
+
+// Expressions
+const price = 19.99;
+const total = `Total: $${(price * 1.08).toFixed(2)}`;
+```
+
+**Tagged Template Literals:**
+```javascript
+function myTag(strings, ...values) {
+  return strings.reduce((result, string, i) => {
+    return result + string + (values[i] || '');
+  }, '');
+}
+
+const name = 'John';
+const result = myTag`Hello ${name}, you are ${30} years old.`;
+
+// Practical example: SQL query builder
+function sql(strings, ...values) {
+  return strings.reduce((query, string, i) => {
+    const value = values[i];
+    const escaped = typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value;
+    return query + string + (escaped || '');
+  }, '');
+}
+
+const userId = 123;
+const query = sql`SELECT * FROM users WHERE id = ${userId}`;
+```
+
+### 2.5. Explain ES6 modules (import/export). Compare with CommonJS and discuss module bundling.
+
+ES6 modules provide a standardized way to organize and share code between files.
+
+**Export Syntax:**
+```javascript
+// Named exports
+export const PI = 3.14159;
+export function add(a, b) { return a + b; }
+export class Calculator { multiply(a, b) { return a * b; } }
+
+// Default export
+export default function subtract(a, b) { return a - b; }
+
+// Mixed exports
+export const VERSION = '1.0.0';
+export default class MathUtils { static divide(a, b) { return a / b; } }
+```
+
+**Import Syntax:**
+```javascript
+// Named imports
+import { PI, add, Calculator } from './math.js';
+
+// Default import
+import subtract from './math.js';
+
+// Mixed imports
+import MathUtils, { VERSION } from './math.js';
+
+// Namespace import
+import * as math from './math.js';
+
+// Dynamic import
+const { add, subtract } = await import('./math.js');
+```
+
+**CommonJS vs ES6 Modules:**
+```javascript
+// CommonJS
+const fs = require('fs');
+module.exports = { readFile: fs.readFile };
+
+// ES6 Modules
+import fs from 'fs';
+export { readFile: fs.readFile };
+```
+
+**Module Bundling:**
+```javascript
+// Code splitting
+const Home = lazy(() => import('./components/Home'));
+const About = lazy(() => import('./components/About'));
+
+// Tree shaking (only used exports are bundled)
+import { debounce } from 'lodash-es'; // Only debounce is bundled
+import _ from 'lodash'; // Entire library bundled
+```
+
+### 2.6. Explain async/await syntax and how it relates to Promises. What are the benefits and potential pitfalls?
+
+Async/await is syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code.
+
+**Basic Syntax:**
+```javascript
+// Promise-based
+function fetchUser(id) {
+  return fetch(`/api/users/${id}`)
+    .then(response => response.json())
+    .then(user => {
+      console.log(user);
+      return user;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      throw error;
+    });
+}
+
+// Async/await equivalent
+async function fetchUser(id) {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    const user = await response.json();
+    console.log(user);
+    return user;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+```
+
+**Key Benefits:**
+- **Readability:** Easier to read than promise chains
+- **Error Handling:** Better error handling with try/catch
+- **Debugging:** Easier to debug with stack traces
+
+**Common Pitfalls:**
+```javascript
+// ❌ Sequential (slow)
+async function fetchSequential() {
+  const user = await fetchUser(1);     // Wait 100ms
+  const posts = await fetchPosts(1);   // Wait 200ms
+  const comments = await fetchComments(1); // Wait 150ms
+  // Total: 450ms
+}
+
+// ✅ Parallel (fast)
+async function fetchParallel() {
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(1),      // All start simultaneously
+    fetchPosts(1),     // All start simultaneously
+    fetchComments(1)   // All start simultaneously
+  ]);
+  // Total: 200ms (longest operation)
+}
+
+// ❌ Missing await
+async function badExample() {
+  const user = fetchUser(1); // Returns Promise, not user data
+  console.log(user.name); // Error: Cannot read property 'name' of undefined
+}
+
+// ✅ Correct
+async function goodExample() {
+  const user = await fetchUser(1); // Waits for Promise to resolve
+  console.log(user.name); // Works correctly
+}
+```
+
+**Error Handling:**
+```javascript
+async function fetchWithRetry(url, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
+```
+
+### 2.7. Explain the Fetch API and how it differs from XMLHttpRequest. Provide examples of common use cases.
+
+The Fetch API is a modern, promise-based interface for making HTTP requests that replaces the older XMLHttpRequest.
+
+**Basic Fetch Usage:**
+```javascript
+// Simple GET request
+async function fetchUser(id) {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.error('Fetch failed:', error);
+    throw error;
+  }
+}
+
+// POST request with JSON
+async function createUser(userData) {
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
+  });
+  return await response.json();
+}
+```
+
+**Fetch vs XMLHttpRequest:**
+```javascript
+// XMLHttpRequest (old way)
+function fetchUserXHR(id) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/api/users/${id}`);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+      }
+    };
+    xhr.onerror = function() {
+      reject(new Error('Network error'));
+    };
+    xhr.send();
+  });
+}
+
+// Fetch API (modern way)
+async function fetchUserFetch(id) {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  return await response.json();
+}
+```
+
+**Advanced Features:**
+```javascript
+// AbortController for cancellation
+async function fetchWithAbort(url, timeout = 5000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    return await response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('Request was aborted');
+    }
+    throw error;
+  }
+}
+```
+
+### 2.8. Explain localStorage, sessionStorage, and IndexedDB. When would you use each?
+
+These are different browser storage mechanisms with varying capabilities and use cases.
+
+**localStorage:**
+```javascript
+// Persistent storage that survives browser restarts
+localStorage.setItem('username', 'john_doe');
+localStorage.setItem('userPreferences', JSON.stringify({ theme: 'dark', lang: 'en' }));
+
+const username = localStorage.getItem('username');
+const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+
+localStorage.removeItem('username');
+localStorage.clear(); // Remove all items
+
+// Storage event (fires on other tabs)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'username') {
+    console.log('Username changed in another tab:', e.newValue);
+  }
+});
+```
+
+**sessionStorage:**
+```javascript
+// Temporary storage that lasts only for the browser session
+sessionStorage.setItem('currentPage', 'dashboard');
+sessionStorage.setItem('formData', JSON.stringify({ name: 'John', email: 'john@example.com' }));
+
+const currentPage = sessionStorage.getItem('currentPage');
+// Automatically cleared when tab closes
+```
+
+**IndexedDB:**
+```javascript
+// Low-level API for client-side storage of significant amounts of structured data
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('MyDatabase', 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('users')) {
+        const store = db.createObjectStore('users', { keyPath: 'id' });
+        store.createIndex('email', 'email', { unique: true });
+      }
+    };
+  });
+}
+
+async function addUser(user) {
+  const db = await openDB();
+  const transaction = db.transaction(['users'], 'readwrite');
+  const store = transaction.objectStore('users');
+  return new Promise((resolve, reject) => {
+    const request = store.add(user);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+```
+
+**Comparison:**
+| Feature | localStorage | sessionStorage | IndexedDB |
+|---------|--------------|----------------|-----------|
+| Storage Limit | ~5-10MB | ~5-10MB | ~50MB+ |
+| Persistence | Survives restart | Tab session only | Survives restart |
+| Data Type | Strings only | Strings only | Any structured data |
+| Synchronous | Yes | Yes | No (async) |
+
+### 2.9. Explain DOM manipulation and event handling. What are event delegation, bubbling, and capturing?
+
+DOM manipulation involves interacting with HTML elements, and event handling manages user interactions.
+
+**Basic DOM Manipulation:**
+```javascript
+// Selecting elements
+const element = document.getElementById('myId');
+const elements = document.querySelectorAll('.myClass');
+const firstElement = document.querySelector('.myClass');
+
+// Creating elements
+const newDiv = document.createElement('div');
+newDiv.textContent = 'Hello World';
+newDiv.className = 'my-class';
+newDiv.setAttribute('data-id', '123');
+
+// Appending elements
+document.body.appendChild(newDiv);
+element.insertBefore(newDiv, element.firstChild);
+
+// Modifying content
+element.innerHTML = '<p>New content</p>';
+element.textContent = 'Plain text content';
+element.style.color = 'red';
+element.classList.add('active');
+element.classList.remove('inactive');
+element.classList.toggle('visible');
+```
+
+**Event Handling:**
+```javascript
+// Basic event listener
+element.addEventListener('click', function(event) {
+  console.log('Element clicked:', event.target);
+});
+
+// Event delegation
+document.addEventListener('click', function(event) {
+  if (event.target.matches('.button')) {
+    console.log('Button clicked:', event.target);
+  }
+});
+
+// Event bubbling and capturing
+// Bubbling (default): event goes from target to root
+// Capturing: event goes from root to target
+
+element.addEventListener('click', handler, true); // Capturing phase
+element.addEventListener('click', handler, false); // Bubbling phase (default)
+```
+
+**Event Delegation:**
+```javascript
+// Instead of adding listeners to each button
+const buttons = document.querySelectorAll('.button');
+buttons.forEach(button => {
+  button.addEventListener('click', handleClick);
+});
+
+// Use event delegation (more efficient)
+document.addEventListener('click', function(event) {
+  if (event.target.classList.contains('button')) {
+    handleClick(event);
+  }
+});
+
+// Dynamic content example
+document.addEventListener('click', function(event) {
+  if (event.target.matches('.delete-btn')) {
+    const item = event.target.closest('.item');
+    item.remove();
+  }
+});
+```
+
+**Event Bubbling and Capturing:**
+```javascript
+// HTML: <div id="parent"><button id="child">Click me</button></div>
+
+const parent = document.getElementById('parent');
+const child = document.getElementById('child');
+
+// Capturing phase (parent -> child)
+parent.addEventListener('click', () => console.log('Parent capturing'), true);
+child.addEventListener('click', () => console.log('Child capturing'), true);
+
+// Bubbling phase (child -> parent)
+child.addEventListener('click', () => console.log('Child bubbling'), false);
+parent.addEventListener('click', () => console.log('Parent bubbling'), false);
+
+// Clicking child outputs:
+// Parent capturing
+// Child capturing
+// Child bubbling
+// Parent bubbling
+
+// Stop propagation
+child.addEventListener('click', (event) => {
+  event.stopPropagation(); // Prevents bubbling
+  console.log('Child clicked, propagation stopped');
+});
+```
+
+### 2.10. Explain Regular Expressions in JavaScript. Provide examples of common patterns and use cases.
+
+Regular expressions are patterns used to match character combinations in strings.
+
+**Basic Syntax:**
+```javascript
+// Literal notation
+const regex = /pattern/flags;
+
+// Constructor notation
+const regex = new RegExp('pattern', 'flags');
+
+// Common flags
+const regex = /hello/gi; // g = global, i = case-insensitive
+```
+
+**Common Patterns:**
+```javascript
+// Email validation
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+console.log(emailRegex.test('user@example.com')); // true
+
+// Phone number (US format)
+const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+console.log(phoneRegex.test('(555) 123-4567')); // true
+
+// URL validation
+const urlRegex = /^https?:\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/;
+console.log(urlRegex.test('https://www.example.com')); // true
+
+// Password (8+ chars, 1 uppercase, 1 lowercase, 1 number)
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+console.log(passwordRegex.test('Password123')); // true
+```
+
+**String Methods:**
+```javascript
+const text = 'Hello World! Hello JavaScript!';
+
+// test() - returns boolean
+const regex = /hello/i;
+console.log(regex.test(text)); // true
+
+// exec() - returns match details or null
+const match = regex.exec(text);
+console.log(match); // ['Hello', index: 0, input: 'Hello World! Hello JavaScript!']
+
+// match() - returns array of matches
+const matches = text.match(/hello/gi);
+console.log(matches); // ['Hello', 'Hello']
+
+// replace() - replaces matches
+const newText = text.replace(/hello/gi, 'Hi');
+console.log(newText); // 'Hi World! Hi JavaScript!'
+
+// search() - returns index of first match
+const index = text.search(/world/i);
+console.log(index); // 6
+
+// split() - splits string by pattern
+const words = text.split(/\s+/);
+console.log(words); // ['Hello', 'World!', 'Hello', 'JavaScript!']
+```
+
+**Common Use Cases:**
+```javascript
+// Extract data from strings
+const text = 'Contact: John Doe (555) 123-4567, jane@example.com';
+const phoneRegex = /\(\d{3}\) \d{3}-\d{4}/g;
+const emailRegex = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
+
+const phones = text.match(phoneRegex); // ['(555) 123-4567']
+const emails = text.match(emailRegex); // ['jane@example.com']
+
+// Format strings
+function formatPhoneNumber(phone) {
+  const cleaned = phone.replace(/\D/g, ''); // Remove non-digits
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return phone;
+}
+
+console.log(formatPhoneNumber('5551234567')); // '(555) 123-4567'
+
+// Validate and sanitize input
+function sanitizeInput(input) {
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+    .replace(/[<>]/g, ''); // Remove angle brackets
+}
+
+// Extract URLs from text
+function extractUrls(text) {
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  return text.match(urlRegex) || [];
+}
+```
+
+### 2.11. Explain error handling in JavaScript. Compare different error handling strategies and when to use each.
+
+Error handling in JavaScript involves catching and managing errors to prevent application crashes.
+
+**Basic Error Handling:**
+```javascript
+// try-catch blocks
+try {
+  const result = riskyOperation();
+  console.log('Success:', result);
+} catch (error) {
+  console.error('Error occurred:', error.message);
+} finally {
+  console.log('This always runs');
+}
+
+// Throwing custom errors
+function validateAge(age) {
+  if (age < 0) {
+    throw new Error('Age cannot be negative');
+  }
+  if (age > 150) {
+    throw new Error('Age cannot exceed 150');
+  }
+  return true;
+}
+```
+
+**Error Types:**
+```javascript
+// Built-in error types
+throw new Error('Generic error');
+throw new TypeError('Type error');
+throw new ReferenceError('Reference error');
+throw new SyntaxError('Syntax error');
+throw new RangeError('Range error');
+
+// Custom error classes
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+class APIError extends Error {
+  constructor(message, status, url) {
+    super(message);
+    this.name = 'APIError';
+    this.status = status;
+    this.url = url;
+  }
+}
+```
+
+**Error Handling Strategies:**
+```javascript
+// 1. Defensive programming
+function safeDivide(a, b) {
+  if (typeof a !== 'number' || typeof b !== 'number') {
+    throw new TypeError('Arguments must be numbers');
+  }
+  if (b === 0) {
+    throw new Error('Division by zero');
+  }
+  return a / b;
+}
+
+// 2. Error boundaries (React pattern)
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught:', error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <div>Something went wrong.</div>;
+    }
+    return this.props.children;
+  }
+}
+
+// 3. Result pattern
+class Result {
+  constructor(success, data, error) {
+    this.success = success;
+    this.data = data;
+    this.error = error;
+  }
+  
+  static success(data) {
+    return new Result(true, data, null);
+  }
+  
+  static failure(error) {
+    return new Result(false, null, error);
+  }
+}
+
+async function safeFetchUser(id) {
+  try {
+    const user = await fetchUser(id);
+    return Result.success(user);
+  } catch (error) {
+    return Result.failure(error);
+  }
+}
+
+// 4. Global error handling
+window.addEventListener('error', (event) => {
+  console.error('Global error:', event.error);
+  // Send to error reporting service
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // Send to error reporting service
+});
+```
+
+**Async Error Handling:**
+```javascript
+// Promise error handling
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Fetch error:', error));
+
+// Async/await error handling
+async function fetchData() {
+  try {
+    const response = await fetch('/api/data');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error; // Re-throw if needed
+  }
+}
+
+// Error handling in loops
+async function processItems(items) {
+  const results = [];
+  const errors = [];
+  
+  for (const item of items) {
+    try {
+      const result = await processItem(item);
+      results.push(result);
+    } catch (error) {
+      errors.push({ item, error });
+      console.error(`Failed to process item ${item.id}:`, error);
+    }
+  }
+  
+  return { results, errors };
+}
+```
+
+---
+
+## 3. TypeScript Advanced Topics
+
+### 3.1. Explain the difference between `type` and `interface`. When would you choose one over the other?
 
 **Answer:**
 Both `type` and `interface` are used to define object shapes in TypeScript, but they have important differences:
@@ -1128,7 +2471,7 @@ type DeepPartial<T> = {
 4. Prefer `interface` for public APIs
 5. Use `type` for internal utilities and transformations
 
-### 2.2. What are generics and why are they useful? Provide an example of a generic function that demonstrates type safety.
+### 3.2. What are generics and why are they useful? Provide an example of a generic function that demonstrates type safety.
 
 **Answer:**
 Generics allow you to create reusable components that work with multiple types while maintaining type safety. They act as placeholders for types that will be specified later.
@@ -1401,7 +2744,7 @@ const clonedComplex = advancedDeepClone(complexObject);
 4. **Performance**: Efficient handling of different object types
 5. **Error Prevention**: Avoids circular reference issues with proper checks
 
-### 2.3. Explain how Partial, Pick, Omit, and Record utility types work. When would you use conditional types?
+### 3.3. Explain how Partial, Pick, Omit, and Record utility types work. When would you use conditional types?
 
 **Answer:**
 TypeScript provides several built-in utility types that help transform existing types. These are essential for creating flexible and reusable type definitions.
@@ -1694,7 +3037,7 @@ addEventListener('keydown', (event) => {
 5. Create custom utility types for domain-specific needs
 6. Use conditional types sparingly - they can make code hard to understand
 
-### 2.4. What are type guards? Implement a custom type guard function and explain how TypeScript narrows types.
+### 3.4. What are type guards? Implement a custom type guard function and explain how TypeScript narrows types.
 
 **Answer:**
 Type guards are expressions that perform runtime checks to narrow down the type of a variable within a specific scope. They help TypeScript understand the actual type of a value at runtime, enabling better type safety and IntelliSense.
@@ -2062,7 +3405,7 @@ function goodGuard(value: unknown): value is User {
 
 Type guards are essential for working with dynamic data, API responses, and user input where types aren't known at compile time. They provide runtime type safety while maintaining TypeScript's compile-time benefits.
 
-### 2.5. Explain mapped types and template literal types. Provide a practical example where these would be beneficial.
+### 3.5. Explain mapped types and template literal types. Provide a practical example where these would be beneficial.
 
 **Answer:**
 Mapped types and template literal types are advanced TypeScript features that allow you to create new types by transforming existing ones. They're powerful tools for creating reusable and flexible type definitions.
@@ -2532,7 +3875,7 @@ const handleSubmit = (data: UserFormData) => {
 
 This example demonstrates how mapped types and template literal types can be combined to create powerful, type-safe abstractions that would be impossible to achieve with traditional type definitions alone.
 
-### 2.6. How does TypeScript's type inference work? What are the limitations, and when should you explicitly type things?
+### 3.6. How does TypeScript's type inference work? What are the limitations, and when should you explicitly type things?
 
 **Answer:**
 TypeScript's type inference is the compiler's ability to automatically determine types without explicit type annotations. It uses contextual information, usage patterns, and type relationships to infer the most appropriate types.
@@ -2901,9 +4244,9 @@ Type inference is a powerful feature that reduces boilerplate while maintaining 
 
 ---
 
-## 3. React Architecture & Patterns
+## 4. React Architecture & Patterns
 
-### 3.1. Explain the React component lifecycle in function components. How do useEffect dependencies work, and what are common pitfalls?
+### 4.1. Explain the React component lifecycle in function components. How do useEffect dependencies work, and what are common pitfalls?
 
 **Answer:**
 React function components use hooks to manage lifecycle behavior, replacing the traditional class component lifecycle methods. The main lifecycle hook is `useEffect`, which handles side effects and cleanup.
@@ -3361,7 +4704,7 @@ function ComplexComponent({ userId, settings }) {
 
 Understanding useEffect dependencies and lifecycle patterns is crucial for building reliable React applications. The key is to think about when effects should run and ensure proper cleanup to prevent memory leaks.
 
-### 3.2. Compare different state management solutions (Context API, Redux, Zustand, Jotai). When would you choose each?
+### 4.2. Compare different state management solutions (Context API, Redux, Zustand, Jotai). When would you choose each?
 
 **Answer:**
 Choosing the right state management solution depends on your application's complexity, team preferences, and specific requirements. Here's a comprehensive comparison:
@@ -4118,7 +5461,7 @@ function UserList() {
 
 The key is to profile your application first to identify the actual bottlenecks, then apply these techniques strategically rather than preemptively.
 
-### 3.3. Explain React.memo, useMemo, and useCallback. What's the difference, and when should each be used?
+### 4.3. Explain React.memo, useMemo, and useCallback. What's the difference, and when should each be used?
 
 **Answer:**
 React provides three main optimization hooks/methods to prevent unnecessary re-renders and expensive calculations. Understanding when and how to use each is crucial for building performant React applications.
@@ -4715,7 +6058,7 @@ function OptimizedComponent() {
 
 The key is to understand that these optimizations come with a cost (memory usage, complexity) and should only be used when they provide actual performance benefits.
 
-### 3.4. What are the rules of hooks? Design a custom hook for handling form state with validation.
+### 4.4. What are the rules of hooks? Design a custom hook for handling form state with validation.
 
 **Answer:**
 Custom hooks are functions that start with "use" and can call other hooks. They allow you to extract component logic into reusable functions, making your code more modular and testable.
@@ -5461,7 +6804,7 @@ function useApi<T>({ url, initialData, dependencies = [] }: UseApiOptions<T>) {
 
 Custom hooks are powerful tools for code reuse and separation of concerns. They allow you to extract complex logic from components and make it reusable across your application while maintaining the benefits of React's hooks system.
 
-### 3.5. Explain React 18's concurrent features (useTransition, useDeferredValue, Suspense). How do they improve user experience?
+### 4.5. Explain React 18's concurrent features (useTransition, useDeferredValue, Suspense). How do they improve user experience?
 
 **Answer:**
 React 18 introduced concurrent features that allow React to interrupt, pause, and resume work, enabling better user experience through non-blocking updates and improved responsiveness. These features work together to make applications feel more responsive and fluid.
@@ -6049,7 +7392,7 @@ function ProgressiveDataLoader() {
 
 These concurrent features work together to create a more responsive and fluid user experience, especially in applications with complex state updates and data fetching.
 
-### 3.6. Explain how React's reconciliation algorithm works. What is the significance of keys in lists?
+### 4.6. Explain how React's reconciliation algorithm works. What is the significance of keys in lists?
 
 **Answer:**
 React's reconciliation is the process by which React updates the DOM to match the new component tree. It's a diffing algorithm that determines what changes need to be made to the actual DOM based on the differences between the previous and current virtual DOM trees.
@@ -6489,7 +7832,7 @@ function GoodList({ items }: { items: any[] }) {
 
 Understanding reconciliation and keys is crucial for building performant React applications, especially when dealing with dynamic lists and complex component trees.
 
-### 3.7. What are Error Boundaries and their limitations? How would you implement error handling in a React application?
+### 4.7. What are Error Boundaries and their limitations? How would you implement error handling in a React application?
 
 **Answer:**
 Error Boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. They're essential for building robust React applications that can gracefully handle errors.
@@ -7014,7 +8357,7 @@ function ErrorMessage({ error, type }: { error: Error, type: string }) {
 
 Error Boundaries are a crucial part of building robust React applications, but they should be combined with other error handling techniques for comprehensive coverage.
 
-### 3.8. Explain the difference between Server Components and Client Components. What are the trade-offs?
+### 4.8. Explain the difference between Server Components and Client Components. What are the trade-offs?
 
 **Answer:**
 Server Components and Client Components are two different rendering paradigms in React, each with distinct characteristics and use cases. Understanding their differences is crucial for building modern React applications.
@@ -7406,7 +8749,7 @@ Server Components represent a significant shift in React architecture, enabling 
 
 ---
 
-### 3.9. What's the difference between useEffect and useLayoutEffect? When would you use each?
+### 4.9. What's the difference between useEffect and useLayoutEffect? When would you use each?
 
 **Answer:**
 
@@ -7523,7 +8866,7 @@ function DynamicHeightComponent({ content }: { content: string }) {
 - Use `useLayoutEffect` only when you need to read layout from the DOM and synchronously re-render to prevent visual flicker
 - Common use cases for `useLayoutEffect`: tooltips, modals, measuring elements, animations that depend on DOM measurements
 
-### 3.10. When should you use useState vs useReducer? Provide examples of each.
+### 4.10. When should you use useState vs useReducer? Provide examples of each.
 
 **Answer:**
 
@@ -7750,7 +9093,7 @@ function formReducer(state: FormState, action: FormAction): FormState {
 }
 ```
 
-### 3.11. Explain the Context API in detail. How do you avoid performance issues with Context?
+### 4.11. Explain the Context API in detail. How do you avoid performance issues with Context?
 
 **Answer:**
 
@@ -7987,7 +9330,7 @@ function ThemeButton() {
 4. **Consider alternatives** - For complex state, consider Redux or Zustand
 5. **Avoid frequent updates** - Batch updates when possible
 
-### 3.12. How do you implement routing in React applications? Compare different routing solutions.
+### 4.12. How do you implement routing in React applications? Compare different routing solutions.
 
 **Answer:**
 
@@ -8241,7 +9584,7 @@ function App() {
 }
 ```
 
-### 3.13. What are React Portals and when would you use them?
+### 4.13. What are React Portals and when would you use them?
 
 **Answer:**
 
@@ -8502,7 +9845,7 @@ function MyComponent() {
 }
 ```
 
-### 3.14. Provide a comprehensive overview of all React hooks in table format with brief descriptions and use cases.
+### 4.14. Provide a comprehensive overview of all React hooks in table format with brief descriptions and use cases.
 
 **Answer:**
 
@@ -8629,7 +9972,7 @@ useDebugValue(value, format);
 - **useTransition**: Marking expensive updates as non-urgent
 - **useDeferredValue**: Deferring expensive value updates
 
-### 3.15. How do you use refs for DOM interaction in React? What are the different types of refs?
+### 4.15. How do you use refs for DOM interaction in React? What are the different types of refs?
 
 **Answer:**
 
@@ -8993,15 +10336,1126 @@ function ParentComponent() {
 }
 ```
 
-## 4. System Design & Architecture
+### 4.16. What are the new features in React 19? How do they improve developer experience and performance?
 
-### 4.1. How would you design a reusable, accessible component library? What principles would you follow?
+React 19 introduces several significant features that enhance both developer experience and application performance.
+
+**New Features:**
+
+1. **React Compiler:**
+```javascript
+// Automatic memoization - no need for useMemo/useCallback
+function ExpensiveComponent({ items, filter }) {
+  // React Compiler automatically optimizes this
+  const filteredItems = items.filter(item => item.category === filter);
+  const expensiveValue = filteredItems.reduce((sum, item) => sum + item.value, 0);
+  
+  return <div>{expensiveValue}</div>;
+}
+
+// Before React 19, you'd need:
+function ExpensiveComponentOld({ items, filter }) {
+  const filteredItems = useMemo(() => 
+    items.filter(item => item.category === filter), [items, filter]
+  );
+  const expensiveValue = useMemo(() => 
+    filteredItems.reduce((sum, item) => sum + item.value, 0), [filteredItems]
+  );
+  
+  return <div>{expensiveValue}</div>;
+}
+```
+
+2. **Actions and useActionState:**
+```javascript
+import { useActionState } from 'react';
+
+// Server actions with built-in state management
+async function updateUser(prevState, formData) {
+  try {
+    const result = await fetch('/api/users', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!result.ok) {
+      return { error: 'Failed to update user' };
+    }
+    
+    return { success: true, user: await result.json() };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+function UserForm() {
+  const [state, formAction, isPending] = useActionState(updateUser, {});
+  
+  return (
+    <form action={formAction}>
+      <input name="name" required />
+      <button disabled={isPending}>
+        {isPending ? 'Updating...' : 'Update User'}
+      </button>
+      {state.error && <div className="error">{state.error}</div>}
+      {state.success && <div className="success">User updated!</div>}
+    </form>
+  );
+}
+```
+
+3. **use() Hook:**
+```javascript
+import { use } from 'react';
+
+function UserProfile({ userPromise }) {
+  // Can unwrap promises directly
+  const user = use(userPromise);
+  
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+// Usage with async data
+function App() {
+  const userPromise = fetch('/api/user/123').then(res => res.json());
+  
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserProfile userPromise={userPromise} />
+    </Suspense>
+  );
+}
+```
+
+4. **Document Metadata:**
+```javascript
+import { Title, Meta, Link } from 'react';
+
+function BlogPost({ post }) {
+  return (
+    <>
+      <Title>{post.title}</Title>
+      <Meta name="description" content={post.excerpt} />
+      <Meta property="og:title" content={post.title} />
+      <Link rel="canonical" href={`/posts/${post.slug}`} />
+      
+      <article>
+        <h1>{post.title}</h1>
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      </article>
+    </>
+  );
+}
+```
+
+5. **Ref as Prop:**
+```javascript
+// ref can now be passed as a regular prop
+function MyInput({ ref, ...props }) {
+  return <input ref={ref} {...props} />;
+}
+
+function Form() {
+  const inputRef = useRef(null);
+  
+  return (
+    <form>
+      <MyInput ref={inputRef} placeholder="Enter text..." />
+      <button onClick={() => inputRef.current?.focus()}>
+        Focus Input
+      </button>
+    </form>
+  );
+}
+```
+
+**Performance Improvements:**
+- Automatic memoization reduces unnecessary re-renders
+- Better tree-shaking and bundle optimization
+- Improved hydration performance
+- Enhanced concurrent features
+
+### 4.17. How do you use React DevTools for debugging and performance optimization?
+
+React DevTools is an essential browser extension for debugging React applications.
+
+**Installation and Setup:**
+```javascript
+// Install via browser extension store
+// Chrome: React Developer Tools
+// Firefox: React Developer Tools
+
+// For development, you can also use the standalone version
+npm install -g react-devtools
+react-devtools
+```
+
+**Component Inspection:**
+```javascript
+// Components tab shows the component tree
+function App() {
+  const [count, setCount] = useState(0);
+  const [users, setUsers] = useState([]);
+  
+  return (
+    <div>
+      <Counter count={count} onIncrement={() => setCount(c => c + 1)} />
+      <UserList users={users} />
+    </div>
+  );
+}
+
+// In DevTools:
+// - Inspect component props and state
+// - Edit props/state in real-time
+// - View component hierarchy
+// - Check component render count
+```
+
+**Profiler Usage:**
+```javascript
+import { Profiler } from 'react';
+
+function onRenderCallback(id, phase, actualDuration, baseDuration, startTime, commitTime) {
+  console.log('Component:', id);
+  console.log('Phase:', phase); // mount or update
+  console.log('Actual duration:', actualDuration);
+  console.log('Base duration:', baseDuration);
+}
+
+function App() {
+  return (
+    <Profiler id="App" onRender={onRenderCallback}>
+      <ExpensiveComponent />
+    </Profiler>
+  );
+}
+
+// Profiler tab in DevTools:
+// - Record performance sessions
+// - Identify slow components
+// - Analyze render times
+// - Find unnecessary re-renders
+```
+
+**Debugging Techniques:**
+```javascript
+// 1. Component state debugging
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetchUser(userId).then(userData => {
+      setUser(userData);
+      setLoading(false);
+    });
+  }, [userId]);
+  
+  // DevTools shows state changes in real-time
+  return loading ? <div>Loading...</div> : <div>{user.name}</div>;
+}
+
+// 2. Props debugging
+function Button({ onClick, children, disabled, ...props }) {
+  // DevTools shows all props including spread props
+  return (
+    <button onClick={onClick} disabled={disabled} {...props}>
+      {children}
+    </button>
+  );
+}
+
+// 3. Context debugging
+const ThemeContext = createContext();
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  
+  // DevTools shows context value and consumers
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+**Performance Optimization:**
+```javascript
+// 1. Identify unnecessary re-renders
+function ExpensiveComponent({ data, filter }) {
+  // DevTools Profiler shows this re-renders on every parent update
+  const processedData = useMemo(() => {
+    return data.filter(item => item.category === filter);
+  }, [data, filter]);
+  
+  return <div>{processedData.length} items</div>;
+}
+
+// 2. Debug memoization issues
+const MemoizedComponent = React.memo(function MyComponent({ name, age }) {
+  return <div>{name} is {age} years old</div>;
+});
+
+// DevTools shows when memoization works/fails
+function Parent() {
+  const [count, setCount] = useState(0);
+  const [user, setUser] = useState({ name: 'John', age: 30 });
+  
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      <MemoizedComponent name={user.name} age={user.age} />
+    </div>
+  );
+}
+```
+
+### 4.18. How do you analyze and optimize React bundle size? What tools and techniques do you use?
+
+Bundle analysis is crucial for optimizing React application performance and loading times.
+
+**Bundle Analysis Tools:**
+
+1. **Webpack Bundle Analyzer:**
+```bash
+# Install
+npm install --save-dev webpack-bundle-analyzer
+
+# Add to webpack.config.js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'server',
+      openAnalyzer: true,
+    })
+  ]
+};
+
+# Or use with Create React App
+npm install --save-dev webpack-bundle-analyzer
+npx webpack-bundle-analyzer build/static/js/*.js
+```
+
+2. **Source Map Explorer:**
+```bash
+# Install
+npm install --save-dev source-map-explorer
+
+# Analyze build
+npx source-map-explorer 'build/static/js/*.js'
+```
+
+3. **Bundlephobia:**
+```bash
+# Check package sizes before installing
+npx bundlephobia lodash
+npx bundlephobia react-router-dom
+```
+
+**Code Splitting Strategies:**
+```javascript
+// 1. Route-based splitting
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+// 2. Component-based splitting
+const HeavyChart = lazy(() => import('./components/HeavyChart'));
+const DataTable = lazy(() => import('./components/DataTable'));
+
+function Dashboard() {
+  const [showChart, setShowChart] = useState(false);
+  
+  return (
+    <div>
+      <button onClick={() => setShowChart(true)}>Show Chart</button>
+      {showChart && (
+        <Suspense fallback={<div>Loading chart...</div>}>
+          <HeavyChart />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+// 3. Library splitting
+const loadMoment = () => import('moment');
+const loadChart = () => import('chart.js');
+
+async function handleExport() {
+  const moment = await loadMoment();
+  const chart = await loadChart();
+  // Use libraries
+}
+```
+
+**Bundle Optimization Techniques:**
+```javascript
+// 1. Tree shaking
+// ✅ Good - only imports what you need
+import { debounce } from 'lodash-es';
+import { format } from 'date-fns';
+
+// ❌ Bad - imports entire library
+import _ from 'lodash';
+import * as dateFns from 'date-fns';
+
+// 2. Dynamic imports for large libraries
+async function loadPDFLibrary() {
+  const { PDFDocument } = await import('pdf-lib');
+  return PDFDocument;
+}
+
+// 3. Vendor chunk splitting
+// webpack.config.js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+        }
+      }
+    }
+  }
+};
+```
+
+**Performance Monitoring:**
+```javascript
+// 1. Bundle size monitoring
+// package.json
+{
+  "scripts": {
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "size-limit": "size-limit"
+  }
+}
+
+// 2. Runtime performance monitoring
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+function sendToAnalytics(metric) {
+  // Send to your analytics service
+  console.log(metric);
+}
+
+getCLS(sendToAnalytics);
+getFID(sendToAnalytics);
+getFCP(sendToAnalytics);
+getLCP(sendToAnalytics);
+getTTFB(sendToAnalytics);
+
+// 3. Bundle size tracking in CI
+// .github/workflows/bundle-size.yml
+name: Bundle Size
+on: [pull_request]
+jobs:
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run build
+      - uses: preactjs/compressed-size-action@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: './build/static/js/*.js'
+```
+
+### 4.19. What are the key security considerations when building React applications? How do you prevent common vulnerabilities?
+
+React applications face various security challenges that developers must address.
+
+**XSS Prevention:**
+```javascript
+// 1. Sanitize user input
+import DOMPurify from 'dompurify';
+
+function UserComment({ comment }) {
+  // ❌ Dangerous - can execute scripts
+  // return <div dangerouslySetInnerHTML={{ __html: comment }} />;
+  
+  // ✅ Safe - sanitize HTML
+  const cleanHTML = DOMPurify.sanitize(comment);
+  return <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />;
+}
+
+// 2. Use textContent instead of innerHTML
+function UserName({ name }) {
+  // ✅ Safe - automatically escapes HTML
+  return <div>{name}</div>;
+  
+  // ❌ Dangerous if name contains HTML
+  // return <div dangerouslySetInnerHTML={{ __html: name }} />;
+}
+
+// 3. Validate and escape props
+function Link({ href, children }) {
+  // Validate URL to prevent javascript: protocol
+  const isValidUrl = (url) => {
+    try {
+      const urlObj = new URL(url);
+      return ['http:', 'https:'].includes(urlObj.protocol);
+    } catch {
+      return false;
+    }
+  };
+  
+  if (!isValidUrl(href)) {
+    throw new Error('Invalid URL provided');
+  }
+  
+  return <a href={href}>{children}</a>;
+}
+```
+
+**CSRF Protection:**
+```javascript
+// 1. Include CSRF tokens in requests
+function useCSRFToken() {
+  const [token, setToken] = useState(null);
+  
+  useEffect(() => {
+    // Get CSRF token from meta tag or API
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    setToken(csrfToken);
+  }, []);
+  
+  return token;
+}
+
+function UserForm() {
+  const csrfToken = useCSRFToken();
+  
+  const handleSubmit = async (formData) => {
+    await fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify(formData)
+    });
+  };
+  
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+
+// 2. Use SameSite cookies
+// Server-side: Set SameSite=Strict on cookies
+// res.cookie('session', sessionId, { sameSite: 'strict' });
+```
+
+**Authentication Security:**
+```javascript
+// 1. Secure token storage
+class AuthService {
+  static setToken(token) {
+    // ✅ Store in httpOnly cookie (server-side)
+    // ✅ Or use secure storage for client-side
+    sessionStorage.setItem('token', token); // Temporary storage
+  }
+  
+  static getToken() {
+    return sessionStorage.getItem('token');
+  }
+  
+  static removeToken() {
+    sessionStorage.removeItem('token');
+  }
+  
+  static isTokenExpired(token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+}
+
+// 2. Protected routes with token validation
+function ProtectedRoute({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const token = AuthService.getToken();
+    if (token && !AuthService.isTokenExpired(token)) {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
+  }, []);
+  
+  if (loading) return <div>Loading...</div>;
+  if (!isAuthenticated) return <Navigate to="/login" />;
+  
+  return children;
+}
+```
+
+**Content Security Policy (CSP):**
+```html
+<!-- index.html -->
+<meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; 
+               script-src 'self' 'unsafe-inline' https://cdn.example.com; 
+               style-src 'self' 'unsafe-inline'; 
+               img-src 'self' data: https:; 
+               connect-src 'self' https://api.example.com;">
+```
+
+```javascript
+// 1. Nonce-based CSP
+function App() {
+  const nonce = useMemo(() => {
+    return btoa(Math.random().toString()).substring(0, 16);
+  }, []);
+  
+  useEffect(() => {
+    // Add nonce to dynamically created scripts
+    const script = document.createElement('script');
+    script.nonce = nonce;
+    script.src = '/dynamic-script.js';
+    document.head.appendChild(script);
+  }, [nonce]);
+  
+  return <div>App content</div>;
+}
+
+// 2. Report CSP violations
+// Add to CSP header: report-uri /csp-report
+```
+
+**Environment Security:**
+```javascript
+// 1. Secure environment variables
+// ✅ Only expose necessary variables to client
+const config = {
+  apiUrl: process.env.REACT_APP_API_URL,
+  // ❌ Never expose secrets
+  // secretKey: process.env.SECRET_KEY // This would be undefined in client
+};
+
+// 2. Validate environment in production
+function validateEnvironment() {
+  const requiredVars = ['REACT_APP_API_URL'];
+  
+  for (const varName of requiredVars) {
+    if (!process.env[varName]) {
+      throw new Error(`Missing required environment variable: ${varName}`);
+    }
+  }
+}
+
+// 3. Use different configs for different environments
+const getConfig = () => {
+  switch (process.env.NODE_ENV) {
+    case 'development':
+      return { apiUrl: 'http://localhost:3001' };
+    case 'production':
+      return { apiUrl: 'https://api.myapp.com' };
+    default:
+      throw new Error('Unknown environment');
+  }
+};
+```
+
+**Dependency Security:**
+```bash
+# 1. Audit dependencies regularly
+npm audit
+npm audit fix
+
+# 2. Use tools like Snyk
+npm install -g snyk
+snyk test
+snyk monitor
+
+# 3. Keep dependencies updated
+npm update
+npm outdated
+```
+
+**Secure Development Practices:**
+```javascript
+// 1. Input validation
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function validatePassword(password) {
+  return password.length >= 8 && 
+         /[A-Z]/.test(password) && 
+         /[a-z]/.test(password) && 
+         /\d/.test(password);
+}
+
+// 2. Rate limiting on client side
+class RateLimiter {
+  constructor(maxRequests, windowMs) {
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+    this.requests = [];
+  }
+  
+  isAllowed() {
+    const now = Date.now();
+    this.requests = this.requests.filter(time => now - time < this.windowMs);
+    
+    if (this.requests.length >= this.maxRequests) {
+      return false;
+    }
+    
+    this.requests.push(now);
+    return true;
+  }
+}
+
+const apiRateLimiter = new RateLimiter(10, 60000); // 10 requests per minute
+
+async function makeAPICall() {
+  if (!apiRateLimiter.isAllowed()) {
+    throw new Error('Rate limit exceeded');
+  }
+  
+  return fetch('/api/data');
+}
+```
+
+### 4.20. Compare Webpack and Vite for React development. What are the advantages and disadvantages of each?
+
+Webpack and Vite are both popular build tools for React applications, but they have different approaches to bundling and development.
+
+**Webpack Overview:**
+Webpack is a mature, feature-rich module bundler that processes all modules and creates dependency graphs.
+
+**Vite Overview:**
+Vite is a modern build tool that uses native ES modules during development and Rollup for production builds.
+
+**Key Differences:**
+
+| Feature | Webpack | Vite |
+|---------|---------|------|
+| Development Server | Bundles everything | Native ES modules |
+| Hot Module Replacement | Full bundle reload | Native HMR |
+| Build Speed | Slower (bundles everything) | Faster (uses Rollup) |
+| Configuration | Complex, highly configurable | Simple, opinionated |
+| Plugin Ecosystem | Mature, extensive | Growing, modern |
+| Bundle Size | Larger | Smaller (better tree-shaking) |
+| Learning Curve | Steep | Gentle |
+
+**Webpack Advantages:**
+```javascript
+// 1. Extensive plugin ecosystem
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
+    ]
+  }
+};
+
+// 2. Advanced code splitting
+module.exports = {
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        },
+        common: {
+          name: 'common',
+          minChunks: 2,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  }
+};
+
+// 3. Custom loaders and plugins
+const customLoader = {
+  test: /\.custom$/,
+  use: {
+    loader: path.resolve('./custom-loader.js'),
+    options: {
+      customOption: true
+    }
+  }
+};
+```
+
+**Vite Advantages:**
+```javascript
+// 1. Lightning-fast development server
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    open: true
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true
+  }
+});
+
+// 2. Native ES modules in development
+// No bundling during development - browser loads modules directly
+import React from 'react';
+import { useState } from 'react';
+import MyComponent from './MyComponent.jsx';
+
+// 3. Built-in optimizations
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          utils: ['lodash', 'date-fns']
+        }
+      }
+    }
+  }
+});
+```
+
+**Development Experience Comparison:**
+
+**Webpack Development:**
+```javascript
+// webpack.config.js - Development configuration
+module.exports = {
+  mode: 'development',
+  devtool: 'eval-source-map',
+  devServer: {
+    contentBase: './dist',
+    hot: true,
+    port: 3000,
+    historyApiFallback: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
+      }
+    ]
+  }
+};
+
+// Slower startup time - bundles everything
+// npm start -> 10-30 seconds for large apps
+```
+
+**Vite Development:**
+```javascript
+// vite.config.js - Much simpler configuration
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    hmr: true
+  }
+});
+
+// Faster startup time - no bundling
+// npm run dev -> 1-3 seconds for any app size
+```
+
+**Production Build Comparison:**
+
+**Webpack Production:**
+```javascript
+// webpack.prod.js
+module.exports = {
+  mode: 'production',
+  optimization: {
+    minimize: true,
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  ]
+};
+
+// Build time: 30-60 seconds for large apps
+// Bundle size: Larger due to webpack overhead
+```
+
+**Vite Production:**
+```javascript
+// vite.config.js
+export default defineConfig({
+  build: {
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom']
+        }
+      }
+    }
+  }
+});
+
+// Build time: 10-20 seconds for large apps
+// Bundle size: Smaller, better tree-shaking
+```
+
+**When to Choose Webpack:**
+
+1. **Complex Build Requirements:**
+```javascript
+// Custom webpack configurations
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' }
+      },
+      {
+        test: /\.wasm$/,
+        type: 'webassembly/async'
+      }
+    ]
+  }
+};
+```
+
+2. **Legacy Browser Support:**
+```javascript
+// Extensive polyfill support
+module.exports = {
+  entry: ['core-js/stable', './src/index.js'],
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                targets: {
+                  browsers: ['> 1%', 'last 2 versions', 'ie >= 11']
+                }
+              }]
+            ]
+          }
+        }
+      }
+    ]
+  }
+};
+```
+
+3. **Micro-frontend Architecture:**
+```javascript
+// Module Federation
+const ModuleFederationPlugin = require('@module-federation/webpack');
+
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'shell',
+      remotes: {
+        mfe1: 'mfe1@http://localhost:3001/remoteEntry.js',
+        mfe2: 'mfe2@http://localhost:3002/remoteEntry.js'
+      }
+    })
+  ]
+};
+```
+
+**When to Choose Vite:**
+
+1. **Modern Development:**
+```javascript
+// Simple, fast development
+// vite.config.js
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000
+  }
+});
+
+// Instant server start
+// Fast HMR
+// Native ES modules
+```
+
+2. **Small to Medium Projects:**
+```javascript
+// Minimal configuration needed
+// Built-in optimizations
+// Great for React, Vue, Svelte
+```
+
+3. **Performance-Critical Applications:**
+```javascript
+// Faster builds
+// Smaller bundle sizes
+// Better tree-shaking
+// Modern browser support
+```
+
+**Migration Considerations:**
+
+**From Webpack to Vite:**
+```javascript
+// 1. Update package.json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0",
+    "@vitejs/plugin-react": "^3.0.0"
+  }
+}
+
+// 2. Create vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
+});
+
+// 3. Update imports (if needed)
+// Change .jsx extensions to .jsx or configure resolve.extensions
+```
+
+**Summary:**
+
+**Choose Webpack when:**
+- You need extensive customization
+- Working with legacy browsers
+- Building micro-frontends
+- You have complex build requirements
+- Your team is already familiar with webpack
+
+**Choose Vite when:**
+- You want fast development experience
+- Building modern applications
+- You prefer minimal configuration
+- Performance is critical
+- You're starting a new project
+
+**Recommendation:**
+For new React projects, Vite is often the better choice due to its speed and simplicity. For existing projects with complex webpack configurations, the migration effort might not be worth it unless development speed is a major concern.
+
+## 5. System Design & Architecture
+
+### 5.1. How would you design a reusable, accessible component library? What principles would you follow?
 
 **Answer:**
 
 Designing a reusable, accessible component library requires careful consideration of multiple aspects:
 
-#### 4.1.1. Core Design Principles
+#### 5.1.1. Core Design Principles
 
 1. **Single Responsibility Principle**
    - Each component should have one clear purpose
@@ -9033,7 +11487,7 @@ Designing a reusable, accessible component library requires careful consideratio
    - Use consistent patterns across components
    - Example: `size`, `variant`, `disabled` props across all interactive components
 
-#### 4.1.2. Accessibility (a11y) Principles
+#### 5.1.2. Accessibility (a11y) Principles
 
 1. **Semantic HTML**
    ```tsx
@@ -9077,7 +11531,7 @@ Designing a reusable, accessible component library requires careful consideratio
    };
    ```
 
-#### 4.1.3. TypeScript Integration
+#### 5.1.3. TypeScript Integration
 
 1. **Strong Typing**
    ```tsx
@@ -9124,7 +11578,7 @@ Designing a reusable, accessible component library requires careful consideratio
    }
    ```
 
-#### 4.1.4. Styling Strategy
+#### 5.1.4. Styling Strategy
 
 1. **CSS-in-JS with Theme Support**
    ```tsx
@@ -9151,7 +11605,7 @@ Designing a reusable, accessible component library requires careful consideratio
    }
    ```
 
-#### 4.1.5. Documentation & Testing
+#### 5.1.5. Documentation & Testing
 
 1. **Storybook Integration**
    - Document all component variants
@@ -9178,7 +11632,7 @@ Designing a reusable, accessible component library requires careful consideratio
    });
    ```
 
-#### 4.1.6. Performance Considerations
+#### 5.1.6. Performance Considerations
 
 1. **Memoization**
    ```tsx
@@ -9204,13 +11658,13 @@ Designing a reusable, accessible component library requires careful consideratio
 
 This approach ensures components are maintainable, accessible, performant, and provide a great developer experience.
 
-### 4.2. Explain different strategies for code splitting in React. How would you implement route-based code splitting?
+### 5.2. Explain different strategies for code splitting in React. How would you implement route-based code splitting?
 
 **Answer:**
 
 Code splitting is a technique to split your code into smaller chunks that can be loaded on demand, improving initial load performance.
 
-#### 4.2.1. Code Splitting Strategies
+#### 5.2.1. Code Splitting Strategies
 
 1. **Route-Based Code Splitting**
    ```tsx
@@ -9294,7 +11748,7 @@ Code splitting is a technique to split your code into smaller chunks that can be
    };
    ```
 
-#### 4.2.2. Advanced Code Splitting Patterns
+#### 5.2.2. Advanced Code Splitting Patterns
 
 1. **Preloading with Intersection Observer**
    ```tsx
@@ -9422,7 +11876,7 @@ Code splitting is a technique to split your code into smaller chunks that can be
    };
    ```
 
-#### 4.2.3. Webpack Configuration for Code Splitting
+#### 5.2.3. Webpack Configuration for Code Splitting
 
 ```javascript
 // webpack.config.js
@@ -9448,7 +11902,7 @@ module.exports = {
 };
 ```
 
-#### 4.2.4. Performance Monitoring
+#### 5.2.4. Performance Monitoring
 
 ```tsx
 const useChunkLoadTime = () => {
@@ -9491,7 +11945,7 @@ const Dashboard = () => {
 };
 ```
 
-#### 4.2.5. Best Practices
+#### 5.2.5. Best Practices
 
 1. **Bundle Analysis**
    ```bash
@@ -9517,19 +11971,19 @@ const Dashboard = () => {
 
 This comprehensive approach ensures optimal performance while maintaining a great user experience.
 
-### 4.3. What's your approach to testing React applications? How do you balance unit, integration, and e2e tests?
+### 5.3. What's your approach to testing React applications? How do you balance unit, integration, and e2e tests?
 
 **Answer:**
 
 A comprehensive testing strategy for React applications follows the testing pyramid principle, balancing different types of tests for optimal coverage and maintainability.
 
-#### 4.3.1. Testing Pyramid Structure
+#### 5.3.1. Testing Pyramid Structure
 
 1. **Unit Tests (70%)** - Fast, isolated tests for individual functions/components
 2. **Integration Tests (20%)** - Test component interactions and data flow
 3. **End-to-End Tests (10%)** - Full user journey testing
 
-#### 4.3.2. Unit Testing
+#### 5.3.2. Unit Testing
 
 **Component Testing with React Testing Library**
 ```tsx
@@ -9629,7 +12083,7 @@ describe('Utility Functions', () => {
 });
 ```
 
-#### 4.3.3. Integration Testing
+#### 5.3.3. Integration Testing
 
 **Component Integration with Context**
 ```tsx
@@ -9748,7 +12202,7 @@ describe('ContactForm Integration', () => {
 });
 ```
 
-#### 4.3.4. End-to-End Testing
+#### 5.3.4. End-to-End Testing
 
 **Playwright E2E Tests**
 ```typescript
@@ -9804,7 +12258,7 @@ test.describe('Shopping Cart Flow', () => {
 });
 ```
 
-#### 4.3.5. Testing Configuration
+#### 5.3.5. Testing Configuration
 
 **Jest Configuration**
 ```javascript
@@ -9857,7 +12311,7 @@ global.IntersectionObserver = class IntersectionObserver {
 };
 ```
 
-#### 4.3.6. Testing Best Practices
+#### 5.3.6. Testing Best Practices
 
 1. **Test Behavior, Not Implementation**
    ```tsx
@@ -9917,7 +12371,7 @@ global.IntersectionObserver = class IntersectionObserver {
    });
    ```
 
-#### 4.3.7. Continuous Integration
+#### 5.3.7. Continuous Integration
 
 **GitHub Actions Workflow**
 ```yaml
@@ -9956,13 +12410,13 @@ jobs:
 
 This comprehensive testing strategy ensures code quality, catches regressions early, and provides confidence when deploying changes to production.
 
-### 4.4. How would you implement authentication in a React SPA? Discuss token management, refresh strategies, and protected routes.
+### 5.4. How would you implement authentication in a React SPA? Discuss token management, refresh strategies, and protected routes.
 
 **Answer:**
 
 Implementing authentication in a React SPA requires careful consideration of security, user experience, and token management. Here's a comprehensive approach:
 
-#### 4.4.1. Authentication Architecture
+#### 5.4.1. Authentication Architecture
 
 **Auth Context and Provider**
 ```tsx
@@ -10153,7 +12607,7 @@ export const useAuth = () => {
 };
 ```
 
-#### 4.4.2. Token Management
+#### 5.4.2. Token Management
 
 **HTTP Client with Automatic Token Refresh**
 ```tsx
@@ -10271,7 +12725,7 @@ class ApiClient {
 export const apiClient = new ApiClient(process.env.REACT_APP_API_URL || '');
 ```
 
-#### 4.4.3. Protected Routes
+#### 5.4.3. Protected Routes
 
 **Route Protection Components**
 ```tsx
@@ -10350,7 +12804,7 @@ const AppRoutes = () => {
 };
 ```
 
-#### 4.4.4. Advanced Security Features
+#### 5.4.4. Advanced Security Features
 
 **Session Management**
 ```tsx
@@ -10436,7 +12890,7 @@ const useMFA = () => {
 };
 ```
 
-#### 4.4.5. Security Best Practices
+#### 5.4.5. Security Best Practices
 
 **Token Storage Security**
 ```tsx
@@ -10505,7 +12959,7 @@ const useCSRFProtection = () => {
 };
 ```
 
-#### 4.4.6. Error Handling and User Experience
+#### 5.4.6. Error Handling and User Experience
 
 **Auth Error Boundary**
 ```tsx
@@ -10544,13 +12998,13 @@ class AuthErrorBoundary extends React.Component<
 
 This comprehensive authentication system provides secure, user-friendly authentication with proper token management, role-based access control, and advanced security features.
 
-### 4.5. Design a robust data fetching layer for a React application. How would you handle caching, error states, and optimistic updates?
+### 5.5. Design a robust data fetching layer for a React application. How would you handle caching, error states, and optimistic updates?
 
 **Answer:**
 
 A robust data fetching layer is crucial for modern React applications. Here's a comprehensive approach that handles caching, error states, optimistic updates, and more:
 
-#### 4.5.1. Core Data Fetching Architecture
+#### 5.5.1. Core Data Fetching Architecture
 
 **Custom Hook for Data Fetching**
 ```tsx
@@ -10662,7 +13116,7 @@ const useFetch = <T>(
 };
 ```
 
-#### 4.5.2. Advanced Caching with React Query
+#### 5.5.2. Advanced Caching with React Query
 
 **React Query Setup**
 ```tsx
@@ -10723,7 +13177,7 @@ export const useCreateUser = () => {
 };
 ```
 
-#### 4.5.3. Optimistic Updates
+#### 5.5.3. Optimistic Updates
 
 **Optimistic Update Implementation**
 ```tsx
@@ -10805,7 +13259,7 @@ const useToggleLike = () => {
 };
 ```
 
-#### 4.5.4. Error Handling and Retry Logic
+#### 5.5.4. Error Handling and Retry Logic
 
 **Advanced Error Handling**
 ```tsx
@@ -10896,7 +13350,7 @@ const useApiCall = <T>(
 };
 ```
 
-#### 4.5.5. Real-time Data with WebSockets
+#### 5.5.5. Real-time Data with WebSockets
 
 **WebSocket Integration**
 ```tsx
@@ -11003,7 +13457,7 @@ const useRealtimePosts = () => {
 };
 ```
 
-#### 4.5.6. Offline Support and Background Sync
+#### 5.5.6. Offline Support and Background Sync
 
 **Service Worker Integration**
 ```tsx
@@ -11099,7 +13553,7 @@ const useOfflineAwareFetch = <T>(url: string, options: RequestInit = {}) => {
 };
 ```
 
-#### 4.5.7. Performance Optimization
+#### 5.5.7. Performance Optimization
 
 **Request Deduplication**
 ```tsx
@@ -11134,9 +13588,9 @@ This comprehensive data fetching layer provides robust caching, error handling, 
 
 ---
 
-## 5. Coding Challenges
+## 6. Coding Challenges
 
-### 5.1. Implement a Debounce Function
+### 6.1. Implement a Debounce Function
 Create a debounce function with TypeScript types that properly handles the `this` context and cleanup.
 
 **Solution:**
@@ -11192,7 +13646,7 @@ function debounceWithCleanup<T extends (...args: any[]) => any>(
 }
 ```
 
-### 5.2. Build a Custom useIntersectionObserver Hook
+### 6.2. Build a Custom useIntersectionObserver Hook
 Implement a hook that tracks when an element enters/exits the viewport with proper TypeScript typing.
 
 **Solution:**
@@ -11236,7 +13690,7 @@ const MyComponent = () => {
 };
 ```
 
-### 5.3. Create a Higher-Order Component
+### 6.3. Create a Higher-Order Component
 Build a HOC that adds loading and error states to any component that fetches data.
 
 **Solution:**
@@ -11282,7 +13736,7 @@ const UserProfileWithData = withDataFetching(
 );
 ```
 
-### 5.4. Implement a Virtual Scroll List
+### 6.4. Implement a Virtual Scroll List
 Design a component that efficiently renders large lists by only rendering visible items.
 
 **Solution:**
@@ -11343,7 +13797,7 @@ const LargeList = () => {
 };
 ```
 
-### 5.5. Build a Form Builder
+### 6.5. Build a Form Builder
 Create a dynamic form system with validation, conditional fields, and TypeScript type safety for form values.
 
 **Solution:**
@@ -11467,9 +13921,9 @@ const MyForm = () => {
 
 ---
 
-## 6. Behavioral & Scenario-Based
+## 7. Behavioral & Scenario-Based
 
-### 6.1. Your React application is experiencing slow rendering. Walk through your debugging process.
+### 7.1. Your React application is experiencing slow rendering. Walk through your debugging process.
 
 **Answer:**
 1. **Identify the Problem:**
@@ -11514,7 +13968,7 @@ const MyForm = () => {
    });
    ```
 
-### 6.2. How would you approach migrating a large JavaScript codebase to TypeScript?
+### 7.2. How would you approach migrating a large JavaScript codebase to TypeScript?
 
 **Answer:**
 1. **Planning Phase:**
@@ -11593,7 +14047,7 @@ const MyForm = () => {
    - Set up ESLint rules for TypeScript
    - Use gradual strict mode enabling
 
-### 6.3. You're building a dashboard with real-time updates, complex filtering, and must support 1000+ concurrent users. Describe your architecture.
+### 7.3. You're building a dashboard with real-time updates, complex filtering, and must support 1000+ concurrent users. Describe your architecture.
 
 **Answer:**
 
@@ -11711,7 +14165,7 @@ const MyForm = () => {
    - Data streaming with Apache Kafka for high-volume updates
    - Client-side data synchronization with conflict resolution
 
-### 6.4. What do you look for during code reviews? How do you balance perfectionism with pragmatism?
+### 7.4. What do you look for during code reviews? How do you balance perfectionism with pragmatism?
 
 **Answer:**
 
@@ -11861,7 +14315,7 @@ const UserList: React.FC<UserListProps> = ({
 4. **Technical Debt:** Will this create future maintenance issues?
 5. **Team Standards:** What are the established coding standards?
 
-### 6.5. How do you identify and prioritize technical debt? Give an example of when you advocated for refactoring.
+### 7.5. How do you identify and prioritize technical debt? Give an example of when you advocated for refactoring.
 
 **Answer:**
 
@@ -12029,9 +14483,9 @@ const UserCharts = () => {
 
 ---
 
-## 7. Best Practices & Patterns
+## 8. Best Practices & Patterns
 
-### 7.1. What are your preferred patterns for handling side effects in React?
+### 8.1. What are your preferred patterns for handling side effects in React?
 
 **Answer:**
 
@@ -12270,7 +14724,7 @@ const useDataFetcher = (initialUrl) => {
 - **Use useCallback and useMemo** to prevent unnecessary re-renders
 - **Consider using libraries** like React Query for complex data fetching scenarios
 
-### 7.2. How do you ensure type safety when working with external APIs?
+### 8.2. How do you ensure type safety when working with external APIs?
 
 **Answer:**
 
@@ -12579,7 +15033,7 @@ const safeApiCall = async <T>(
 - **Use TypeScript strict mode** for better type checking
 - **Document API contracts** and keep types in sync
 
-### 7.3. What's your approach to styling in React applications? (CSS Modules, Styled Components, Tailwind, etc.)
+### 8.3. What's your approach to styling in React applications? (CSS Modules, Styled Components, Tailwind, etc.)
 
 **Answer:**
 
@@ -12974,7 +15428,7 @@ export const createResponsiveValue = <T>(values: Partial<Record<keyof typeof tok
 6. **Responsive Design:** Always consider mobile-first approach
 7. **Theme Support:** Plan for dark mode and theme switching if needed
 
-### 7.4. How do you handle internationalization (i18n) and accessibility (a11y) in React apps?
+### 8.4. How do you handle internationalization (i18n) and accessibility (a11y) in React apps?
 
 **Answer:**
 
@@ -13481,7 +15935,7 @@ const useScreenReaderAnnouncement = () => {
 - Use proper heading hierarchy
 - Test with real users with disabilities
 
-### 7.5. What tools and processes do you use for maintaining code quality? (ESLint, Prettier, Husky, CI/CD, etc.)
+### 8.5. What tools and processes do you use for maintaining code quality? (ESLint, Prettier, Husky, CI/CD, etc.)
 
 **Answer:**
 
